@@ -158,7 +158,8 @@ public class CardPool_GUI_1_Stable {
 					JMenuItem Ritual = new JMenuItem("Ritual");
 					JMenuItem Fusion = new JMenuItem("Fusion");
 					JMenuItem Draw = new JMenuItem("Card Draw");
-					JMenuItem Limited = new JMenuItem("Limited Cards");
+					JMenuItem Limited = new JMenuItem("Limited");
+					JMenuItem SemiLimited = new JMenuItem("Semi-Limited");
 					JMenuItem LowAtk = new JMenuItem("Attack < 1500");
 					JMenuItem HighAtk = new JMenuItem("Attack > 2600");
 					JMenuItem LowLvl = new JMenuItem("Level < 4");
@@ -185,15 +186,15 @@ public class CardPool_GUI_1_Stable {
 			mnBanGrouping.add(Exodia); mnBanGrouping.add(Naturia);
 			mnBanGrouping.add(Water); mnBanGrouping.add(Toon);
 			mnBanGrouping.add(Ritual); mnBanGrouping.add(Fusion);
-			mnBanGrouping.add(Draw); mnBanGrouping.add(Limited);
+			mnBanGrouping.add(Draw); mnBanGrouping.add(Limited); mnBanGrouping.add(SemiLimited);
 			mnBanGrouping.add(LowAtk); mnBanGrouping.add(HighAtk);
 			mnBanGrouping.add(LowLvl); mnBanGrouping.add(HighLvl);
 			mnBanAll.add(ultimateBanner); mnBanAll.add(ultraBanner); 
 			mnBanAll.add(superBanner); mnBanAll.add(rareBanner);
 			mnBanAll.add(commonBanner); mnBan.add(reset);
-			blackListenerInit(blacklist, allCards, blackListed, banned, dumbThing, banModel, lblCardCount, lblUniqueCards, DraftInit, mntmUltraRares, mntmSuperRares,
-					mntmRares, mntmCommon, ultimateBanner, ultraBanner, superBanner, rareBanner, commonBanner, mntmNewMenuItem, Monarchs, Fissure, TrapHole, Exodia,
-					Water, Naturia, Toon, Draw, Ritual, Fusion, LowAtk, Limited, HighAtk, LowLvl, HighLvl, reset, HighLvl, backupAllCards, allCardsNopeDupe);
+			blackListenerInit(blacklist, allCards, blackListed, banned, dumbThing, banModel, lblCardCount, lblUniqueCards, DraftInit, mntmUltraRares, mntmSuperRares, mntmRares,
+					mntmCommon, ultimateBanner, ultraBanner, superBanner, rareBanner, commonBanner, mntmNewMenuItem, Monarchs, Fissure, TrapHole, Exodia, Water, Naturia,
+					Toon, Draw, Ritual, Fusion, LowAtk, Limited, SemiLimited, HighAtk, LowLvl, HighLvl, reset, backupAllCards, allCardsNopeDupe);
 		
 		// End primary window components
 			
@@ -3328,7 +3329,6 @@ public class CardPool_GUI_1_Stable {
 			JMenuItem Exodia, JMenuItem Water, JMenuItem Naturia, JMenuItem Toon, JMenuItem Draw, JMenuItem Ritual, JMenuItem Fusion, JMenuItem LowAtk, JMenuItem Limited,
 			JMenuItem SemiLimited, JMenuItem HighAtk, JMenuItem LowLvl, JMenuItem HighLvl, JMenuItem reset, ArrayList<Card> backupAllCards, ArrayList<Card> allCardsNopeDupe)
 	{
-		
 		KeyListener keyListener2 = new KeyListener()
 		{
 			public void keyPressed(KeyEvent e)
@@ -3741,7 +3741,7 @@ public class CardPool_GUI_1_Stable {
 				Fissure.setEnabled(true); TrapHole.setEnabled(true);
 				Exodia.setEnabled(true); Naturia.setEnabled(true);
 				Water.setEnabled(true);	Toon.setEnabled(true);
-				Draw.setEnabled(true); Limited.setEnabled(true);
+				Draw.setEnabled(true); Limited.setEnabled(true); SemiLimited.setEnabled(true);
 				LowAtk.setEnabled(true); HighAtk.setEnabled(true);
 				LowLvl.setEnabled(true); HighLvl.setEnabled(true);
 				Ritual.setEnabled(true); Fusion.setEnabled(true);
