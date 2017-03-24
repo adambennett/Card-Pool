@@ -1192,7 +1192,7 @@ public class CardPool_GUI_1_Stable {
 		}
 
 
-		drafted = temp3;
+		copyPoolVoid(temp3, drafted);
 	}
 
 	// Returns how many of the given card exist within the given pool
@@ -1591,7 +1591,8 @@ public class CardPool_GUI_1_Stable {
 		{
 			if (card.getName().equals(drafted.get(i).getName()))
 			{
-				if (drafted.get(i).getQuantity() + 1 > drafted.get(i).getLimit())
+				if (drafted.get(i).getQuantity() >= drafted.get(i).getLimit())
+				//if (drafted.get(i).getQuantity() >= 3 || drafted.get(i).getQuantity() >= drafted.get(i).getLimit())
 				{
 					checker = false;
 				}
