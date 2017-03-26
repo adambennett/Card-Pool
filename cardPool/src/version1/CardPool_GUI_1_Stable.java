@@ -4867,6 +4867,14 @@ public class CardPool_GUI_1_Stable {
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
+				
+				Card tempLady = new Card("7 Colored Fish");
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getName().equals(tempLady.getName())) { allCards.remove(allCards.get(a)); }
+				}
+				
+				
 				boolean checker = false;
 				for (int a = 0; a < allCards.size(); a++)
 				{
@@ -4909,6 +4917,13 @@ public class CardPool_GUI_1_Stable {
 			boolean checker = false;
 			public void actionPerformed(ActionEvent arg0) 
 			{
+				Card tempLady = new Card("4-Starred Ladybug of Doom");
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getName().equals(tempLady.getName())) { allCards.remove(allCards.get(a)); }
+				}
+				
+				
 				for (int a = 0; a < allCards.size(); a++)
 				{
 					if (allCards.get(a).getRarity().equals("Rare")) 
@@ -4932,6 +4947,7 @@ public class CardPool_GUI_1_Stable {
 						checker = false;
 					}
 				}
+			
 
 				mntmRares.setEnabled(false);
 				rareBanner.setEnabled(false);
