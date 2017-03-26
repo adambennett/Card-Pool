@@ -615,6 +615,8 @@ public class CardPool_GUI_1_Stable {
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
 											Card highCard = new Card("temp", 0);
+											Card highCard2 = new Card("temp", 0);
+											Card highCard3 = new Card("temp", 0);
 											int deckScore = 0;
 											int ultimates = 0;
 											int ultras = 0;
@@ -642,9 +644,29 @@ public class CardPool_GUI_1_Stable {
 												}
 											}
 											
-											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nUltimate Rares: " + ultimates 
+											for (Card card : allCardsNoDupes)
+											{
+												if (card.getTierScore() < highCard.getTierScore() && card.getTierScore() > highCard2.getTierScore())
+												{
+													highCard2 = card;
+												}
+											}
+											
+											for (Card card : allCardsNoDupes)
+											{
+												if (card.getTierScore() < highCard2.getTierScore() && card.getTierScore() > highCard3.getTierScore())
+												{
+													highCard3 = card;
+												}
+											}
+											
+											int avgCardScore = deckScore / cardsToDraftLocal;
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
-													+ "\nCommons: " + commons + "\n\nBest Card:\n" + highCard.getName() + " (" + highCard.getTierScore() + ")");
+													+ "\nCommons: " + commons + "\n\nTop 3 Cards:\n"
+													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
+													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
+													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
 											
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
@@ -890,6 +912,8 @@ public class CardPool_GUI_1_Stable {
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
 											Card highCard = new Card("temp", 0);
+											Card highCard2 = new Card("temp", 0);
+											Card highCard3 = new Card("temp", 0);
 											int deckScore = 0;
 											int ultimates = 0;
 											int ultras = 0;
@@ -917,9 +941,29 @@ public class CardPool_GUI_1_Stable {
 												}
 											}
 											
-											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nUltimate Rares: " + ultimates 
+											for (Card card : allCardsNoDupes)
+											{
+												if (card.getTierScore() < highCard.getTierScore() && card.getTierScore() > highCard2.getTierScore())
+												{
+													highCard2 = card;
+												}
+											}
+											
+											for (Card card : allCardsNoDupes)
+											{
+												if (card.getTierScore() < highCard2.getTierScore() && card.getTierScore() > highCard3.getTierScore())
+												{
+													highCard3 = card;
+												}
+											}
+											
+											int avgCardScore = deckScore / cardsToDraftLocal;
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
-													+ "\nCommons: " + commons + "\n\nBest Card:\n" + highCard.getName() + " (" + highCard.getTierScore() + ")");
+													+ "\nCommons: " + commons + "\n\nTop 3 Cards:\n"
+													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
+													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
+													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
 											
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
@@ -1165,6 +1209,8 @@ public class CardPool_GUI_1_Stable {
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
 											Card highCard = new Card("temp", 0);
+											Card highCard2 = new Card("temp", 0);
+											Card highCard3 = new Card("temp", 0);
 											int deckScore = 0;
 											int ultimates = 0;
 											int ultras = 0;
@@ -1192,9 +1238,29 @@ public class CardPool_GUI_1_Stable {
 												}
 											}
 											
-											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nUltimate Rares: " + ultimates 
+											for (Card card : allCardsNoDupes)
+											{
+												if (card.getTierScore() < highCard.getTierScore() && card.getTierScore() > highCard2.getTierScore())
+												{
+													highCard2 = card;
+												}
+											}
+											
+											for (Card card : allCardsNoDupes)
+											{
+												if (card.getTierScore() < highCard2.getTierScore() && card.getTierScore() > highCard3.getTierScore())
+												{
+													highCard3 = card;
+												}
+											}
+											
+											int avgCardScore = deckScore / cardsToDraftLocal;
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
-													+ "\nCommons: " + commons + "\n\nBest Card:\n" + highCard.getName() + " (" + highCard.getTierScore() + ")");
+													+ "\nCommons: " + commons + "\n\nTop 3 Cards:\n"
+													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
+													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
+													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
 											
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
