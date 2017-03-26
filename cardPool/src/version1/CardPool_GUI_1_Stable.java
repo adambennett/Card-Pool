@@ -1,11 +1,11 @@
 package version1;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -39,8 +39,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-
-
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 
@@ -326,6 +324,14 @@ public class CardPool_GUI_1_Stable {
 				menuBar.remove(mnBan);
 				mnViewDatabase.removeAll();
 				DraftInit.getContentPane().removeAll();	
+				
+				DraftInit.setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+	
+				
+				
+				
 				JButton viewDeck = new JButton("View Deck");
 				JButton reroll = new JButton("Reroll"); if (rerollsLocal == 0) { reroll.setEnabled(false); }
 				
@@ -335,10 +341,11 @@ public class CardPool_GUI_1_Stable {
 				else if (fillStyleString == "Equal") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
 				else { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
 							
+				int defPoolSize = draftPools.get(playerDrafting).size();
 			
 				// Fills up an array used to display the correct database of cards during the draft (banned cards removed)
 				ArrayList<Card> draftAllCards = new ArrayList<Card>();
-				for (int d = 0; d < draftPools.size(); d++) { for (int c = 0; c < draftPools.get(d).size(); c++) { draftAllCards.add(draftPools.get(d).get(c)); } }
+				for (int d = 0; d < draftPools.size(); d++) { for (int e = 0; e < draftPools.get(d).size(); e++) { draftAllCards.add(draftPools.get(d).get(e)); } }
 				cardCounter(draftAllCards);
 				draftAllCards.sort(draftAllCards.get(0));
 				
@@ -363,17 +370,27 @@ public class CardPool_GUI_1_Stable {
 				
 				// Setup the labels on the draft window
 				JLabel pickCounter = new JLabel("Pick " + pickNumber + "/" + cardsToDraftLocal);
-				JLabel poolCardCount = new JLabel("Cards in Pool: " + draftPools.get(playerDrafting).size());
-				JLabel playerDraftLbl = new JLabel("Player: " + (playerDrafting + 1) + " drafting");
-				JLabel pick1Rarity = new JLabel(threeChoiceTemp.get(0).getRarity());
-				JLabel pick2Rarity = new JLabel(threeChoiceTemp.get(1).getRarity());
-				JLabel pick3Rarity = new JLabel(threeChoiceTemp.get(2).getRarity());
+				JLabel poolCardCount = new JLabel("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
+				JLabel playerDraftLbl = new JLabel("Player " + (playerDrafting + 1));
+				JLabel pick1Rarity = new JLabel(threeChoiceTemp.get(0).getRarity()); textColor(threeChoiceTemp.get(0), pick1Rarity);
+				JLabel pick2Rarity = new JLabel(threeChoiceTemp.get(1).getRarity()); textColor(threeChoiceTemp.get(1), pick2Rarity);
+				JLabel pick3Rarity = new JLabel(threeChoiceTemp.get(2).getRarity()); textColor(threeChoiceTemp.get(2), pick3Rarity);
 				
 				// Adding everything to the draft window
-				DraftInit.getContentPane().add(cardPick1); DraftInit.getContentPane().add(cardPick2); DraftInit.getContentPane().add(cardPick3);
-				DraftInit.getContentPane().add(viewDeck); DraftInit.getContentPane().add(reroll); 
-				DraftInit.getContentPane().add(pickCounter); DraftInit.getContentPane().add(poolCardCount);
-				DraftInit.getContentPane().add(playerDraftLbl);
+				c.insets = new Insets(0,10,10,10); 
+				c.weightx = 0.5;  c.gridx = 1; c.gridy = 0; playerDraftLbl.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(playerDraftLbl, c);
+				c.gridx = 0; c.gridy = 1; DraftInit.getContentPane().add(cardPick1, c); 
+				c.gridx = 1; c.gridy = 1; DraftInit.getContentPane().add(cardPick2, c); 
+				c.gridx = 2; c.gridy = 1; DraftInit.getContentPane().add(cardPick3, c);
+				c.gridx = 0; c.gridy = 3; DraftInit.getContentPane().add(viewDeck, c);
+				c.gridx = 1; c.gridy = 3; pickCounter.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pickCounter, c);
+				c.gridx = 2; c.gridy = 3; DraftInit.getContentPane().add(reroll, c);
+				c.gridx = 0; c.gridy = 2; pick1Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Rarity, c);
+				c.gridx = 1; c.gridy = 2; pick2Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Rarity, c); 
+				c.gridx = 2; c.gridy = 2; pick3Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Rarity, c);
+				c.gridx = 1; c.gridy = 4; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolCardCount, c);
+				
+				 
 				
 				// Button Listeners for the draft window - cardPick listeners handle most of the draft logic	
 				cardPick1.addActionListener(new ActionListener() 
@@ -403,12 +420,19 @@ public class CardPool_GUI_1_Stable {
 							ImageIcon exodia2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 							else { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
-							cardPick3.setIcon(exodia2);			
+							cardPick3.setIcon(exodia2);		
+							
+							pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
+							pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
+							pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
+							textColor(threeChoiceTemp.get(0), pick1Rarity);
+							textColor(threeChoiceTemp.get(1), pick2Rarity);
+							textColor(threeChoiceTemp.get(2), pick3Rarity);
 							
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 							
-							poolCardCount.setText("Cards in Pool: " + draftPools.get(playerDrafting).size());
+							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 							
 							if (pickNumber > cardsToDraftLocal)
 							{
@@ -447,7 +471,14 @@ public class CardPool_GUI_1_Stable {
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 									cardPick3.setIcon(exodia2);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
-									poolCardCount.setText("Cards in Pool: " + draftPools.get(playerDrafting).size());
+									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
+									
+									pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
+									pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
+									pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
+									textColor(threeChoiceTemp.get(0), pick1Rarity);
+									textColor(threeChoiceTemp.get(1), pick2Rarity);
+									textColor(threeChoiceTemp.get(2), pick3Rarity);
 								}
 								else
 								{
@@ -668,10 +699,17 @@ public class CardPool_GUI_1_Stable {
 							else { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 							cardPick3.setIcon(exodia2);			
 							
+							pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
+							pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
+							pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
+							textColor(threeChoiceTemp.get(0), pick1Rarity);
+							textColor(threeChoiceTemp.get(1), pick2Rarity);
+							textColor(threeChoiceTemp.get(2), pick3Rarity);
+							
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 							
-							poolCardCount.setText("Cards in Pool: " + draftPools.get(playerDrafting).size());
+							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 							
 							if (pickNumber > cardsToDraftLocal)
 							{
@@ -708,7 +746,14 @@ public class CardPool_GUI_1_Stable {
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 									cardPick3.setIcon(exodia2);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
-									poolCardCount.setText("Cards in Pool: " + draftPools.get(playerDrafting).size());
+									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
+									
+									pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
+									pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
+									pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
+									textColor(threeChoiceTemp.get(0), pick1Rarity);
+									textColor(threeChoiceTemp.get(1), pick2Rarity);
+									textColor(threeChoiceTemp.get(2), pick3Rarity);
 								}
 								else
 								{
@@ -929,10 +974,17 @@ public class CardPool_GUI_1_Stable {
 							else { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 							cardPick3.setIcon(exodia2);			
 							
+							pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
+							pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
+							pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
+							textColor(threeChoiceTemp.get(0), pick1Rarity);
+							textColor(threeChoiceTemp.get(1), pick2Rarity);
+							textColor(threeChoiceTemp.get(2), pick3Rarity);
+							
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 							
-							poolCardCount.setText("Cards in Pool: " + draftPools.get(playerDrafting).size());
+							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 							
 							if (pickNumber > cardsToDraftLocal)
 							{
@@ -969,7 +1021,14 @@ public class CardPool_GUI_1_Stable {
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 									cardPick3.setIcon(exodia2);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
-									poolCardCount.setText("Cards in Pool: " + draftPools.get(playerDrafting).size());
+									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
+									
+									pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
+									pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
+									pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
+									textColor(threeChoiceTemp.get(0), pick1Rarity);
+									textColor(threeChoiceTemp.get(1), pick2Rarity);
+									textColor(threeChoiceTemp.get(2), pick3Rarity);
 								}
 								else
 								{
@@ -1191,11 +1250,18 @@ public class CardPool_GUI_1_Stable {
 							if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 							else { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 							cardPick3.setIcon(exodia2);			
-							rerollsSoFar++;
 							
+							pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
+							pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
+							pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
+							textColor(threeChoiceTemp.get(0), pick1Rarity);
+							textColor(threeChoiceTemp.get(1), pick2Rarity);
+							textColor(threeChoiceTemp.get(2), pick3Rarity);
+							
+							rerollsSoFar++;
 							if (canReroll(rerollsSoFar, rerollsLocal) == false) { reroll.setEnabled(false); }
 							
-							poolCardCount.setText("Cards in Pool: " + draftPools.get(playerDrafting).size());
+							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 							
 							DraftInit.revalidate(); DraftInit.repaint();
 						}
@@ -1283,6 +1349,9 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.pack();
 				DraftInit.revalidate();
 				DraftInit.repaint();
+				DraftInit.setVisible(false);
+				DraftInit.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+				DraftInit.setVisible(true);
 			}
 		});
 		
@@ -1700,11 +1769,11 @@ public class CardPool_GUI_1_Stable {
 			while (rolling)
 			{
 				int seed = oneKDie();
-				if ((seed < 690) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
-				else if ((seed >= 690 && seed < 770) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
-				else if ((seed >= 850 && seed < 890) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
-				else if ((seed >= 890 && seed < 910) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
-				else if ((seed >= 990 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
+				if ((seed < 850) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 								// 85% chance at common				
+				else if ((seed >= 850 && seed < 925) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }				// 7.5% chance at rare
+				else if ((seed >= 925 && seed < 980) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }			// 5.5% chance at super rare
+				else if ((seed >= 980 && seed < 995) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }				// 1.5% chance at ultra rare
+				else if ((seed >= 995 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 0.5% chance at ultimate rare
 				// Backup
 				else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
 			}
@@ -1733,11 +1802,11 @@ public class CardPool_GUI_1_Stable {
 				while (rolling)
 				{
 					int seed = oneKDie();
-					if ((seed < 690) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
-					else if ((seed >= 690 && seed < 770) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
-					else if ((seed >= 850 && seed < 890) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
-					else if ((seed >= 890 && seed < 910) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
-					else if ((seed >= 990 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
+					if ((seed < 850) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
+					else if ((seed >= 850 && seed < 925) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
+					else if ((seed >= 925 && seed < 980) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
+					else if ((seed >= 980 && seed < 995) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
+					else if ((seed >= 995 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
 					// Backup
 					else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
 				}
@@ -4524,6 +4593,8 @@ public class CardPool_GUI_1_Stable {
 			}
 		});
 		mnViewDatabase.add(cardViewer);
+		
+		cardViewer.setEnabled(false);
 		// End View Database 
 	}
 
@@ -5018,6 +5089,31 @@ public class CardPool_GUI_1_Stable {
 	public void  incrRerolls(int rerollsAllowed)
 	{
 		rerollsAllowed++;
+	}
+	
+	// Font color logic
+	public void textColor(Card card, JLabel tag)
+	{
+		switch (card.getRarity())
+		{
+			case "Ultimate Rare":
+				tag.setForeground(Color.ORANGE); break;
+				
+			case "Ultra Rare":
+				tag.setForeground(Color.GREEN); break;
+			
+			case "Super Rare":
+				tag.setForeground(Color.RED); break;
+			
+			case "Rare":
+				tag.setForeground(Color.BLUE); break;
+			
+			case "Common":
+				tag.setForeground(Color.GRAY); break;
+				
+			default:
+				tag.setForeground(Color.BLACK); break;
+		}
 	}
 
 }
