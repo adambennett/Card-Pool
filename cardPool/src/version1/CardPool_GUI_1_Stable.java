@@ -36,8 +36,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+
 
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
@@ -148,22 +150,88 @@ public class CardPool_GUI_1_Stable {
 					JMenuItem rareBanner = new JMenuItem("Rare");
 					JMenuItem commonBanner = new JMenuItem("Common");	
 				JMenu mnBanGrouping = new JMenu("Ban: Grouping");
-					JMenuItem Monarchs = new JMenuItem("Monarchs");
-					JMenuItem Fissure = new JMenuItem("Fissure");
-					JMenuItem TrapHole = new JMenuItem("Trap Hole");
+					JMenuItem AncientGear = new JMenuItem("Ancient Gear");
+					JMenuItem Archfiend = new JMenuItem("Archfiend");
+					JMenuItem Crashbug = new JMenuItem("Crashbug");
+					JMenuItem Destiny = new JMenuItem("Destiny Hero");
+					JMenuItem Elemental = new JMenuItem("Elemental Hero");
 					JMenuItem Exodia = new JMenuItem("Exodia");
+					JMenuItem Fissure = new JMenuItem("Fissure");
+					JMenuItem Flip = new JMenuItem("Flip");
+					JMenuItem Gishki = new JMenuItem("Gishki");
+					JMenuItem God = new JMenuItem("God");
+					JMenuItem Harpies = new JMenuItem("Harpies");
+					JMenuItem Hazy = new JMenuItem("Hazy");
+					JMenuItem LV = new JMenuItem("LV");
+					JMenuItem Lightsworn = new JMenuItem("Lightsworn");
+					JMenuItem Magnet = new JMenuItem("Magnet Warriors");
+					JMenuItem Monarchs = new JMenuItem("Monarchs");
 					JMenuItem Naturia = new JMenuItem("Naturia");
-					JMenuItem Water = new JMenuItem("Water");
+					JMenuItem Ojama = new JMenuItem("Ojama");
+					JMenuItem SuperHeavy = new JMenuItem("Superheavy Samurai");
+					JMenuItem Creator = new JMenuItem("The Creator");
 					JMenuItem Toon = new JMenuItem("Toon");
-					JMenuItem Ritual = new JMenuItem("Ritual");
+					JMenuItem TrapHole = new JMenuItem("Trap Hole");
+					JMenuItem Volcanic = new JMenuItem("Volcanic");
 					JMenuItem Fusion = new JMenuItem("Fusion");
+					JMenuItem Ritual = new JMenuItem("Ritual");
 					JMenuItem Draw = new JMenuItem("Card Draw");
+					JMenuItem Discard = new JMenuItem("Discard");
+					JMenuItem EasySummon = new JMenuItem("Easy Summon");
 					JMenuItem Limited = new JMenuItem("Limited");
 					JMenuItem SemiLimited = new JMenuItem("Semi-Limited");
 					JMenuItem LowAtk = new JMenuItem("Attack < 1500");
 					JMenuItem HighAtk = new JMenuItem("Attack > 2600");
 					JMenuItem LowLvl = new JMenuItem("Level < 4");
 					JMenuItem HighLvl = new JMenuItem("Level > 7");
+				JMenu mnBanAttribute = new JMenu("Ban: Attributes");
+					JMenuItem Dark = new JMenuItem("Dark");
+					JMenuItem Earth = new JMenuItem("Earth");
+					JMenuItem Fire = new JMenuItem("Fire");
+					JMenuItem Light = new JMenuItem("Light");
+					JMenuItem Water = new JMenuItem("Water");
+					JMenuItem Wind = new JMenuItem("Wind");
+				JMenu mnBanType = new JMenu("Ban: Types");
+					JMenuItem Aqua = new JMenuItem("Aqua");
+					JMenuItem Beast = new JMenuItem("Beast");
+					JMenuItem BeastWarrior = new JMenuItem("Beast-Warrior");
+					JMenuItem Dinosaur = new JMenuItem("Dinosaur");
+					JMenuItem Divine = new JMenuItem("Divine-Beast");
+					JMenuItem Dragon = new JMenuItem("Dragon");
+					JMenuItem Fairy = new JMenuItem("Fairy");
+					JMenuItem Fiend = new JMenuItem("Fiend");
+					JMenuItem Fish = new JMenuItem("Fish");
+					JMenuItem Insect = new JMenuItem("Insect");
+					JMenuItem Machine = new JMenuItem("Machine");
+					JMenuItem Plant = new JMenuItem("Plant");
+					JMenuItem Psychic = new JMenuItem("Psychic");
+					JMenuItem Pyro = new JMenuItem("Pyro");
+					JMenuItem Reptile = new JMenuItem("Reptile");
+					JMenuItem Rock = new JMenuItem("Rock");
+					JMenuItem SeaSerpent = new JMenuItem("Sea Serpent");
+					JMenuItem Spellcaster = new JMenuItem("Spellcaster");
+					JMenuItem Thunder = new JMenuItem("Thunder");
+					JMenuItem Warrior = new JMenuItem("Warrior");
+					JMenuItem WingedBeast = new JMenuItem("Winged Beast");
+					JMenuItem Wyrm = new JMenuItem("Wyrm");
+					JMenuItem Zombie = new JMenuItem("Zombie");
+				JMenu mnBanCard = new JMenu("Ban: Card Type");
+					JMenuItem Spell = new JMenuItem("Spells");
+					JMenuItem Trap = new JMenuItem("Traps");
+					JMenuItem ContinSpell = new JMenuItem("Continuous Spells");
+					JMenuItem ContinTrap = new JMenuItem("Continuous Traps");
+					JMenuItem Contin = new JMenuItem("Continuous");
+					JMenuItem Field = new JMenuItem("Field");
+					JMenuItem Quickplay = new JMenuItem("Quickplay");
+					JMenuItem Equip = new JMenuItem("Equip");
+					JMenuItem Counter = new JMenuItem("Counter");
+				JMenu mnBanScore = new JMenu("Ban: Score");
+					JMenuItem lowScore = new JMenuItem("Tier Score < 30");
+					JMenuItem medScore = new JMenuItem("30 < Tier Score < 60");
+					JMenuItem highScore = new JMenuItem("TierScore > 60");
+					JMenuItem veryHighScore = new JMenuItem("TierScore > 75");
+					JMenuItem OP = new JMenuItem("TierScore > 85");
+					
 			
 		DraftInit.getContentPane().add(lblOfPlayers); DraftInit.getContentPane().add(spinner);
 		DraftInit.getContentPane().add(lblOfCards); DraftInit.getContentPane().add(cardsToDraft);
@@ -181,20 +249,61 @@ public class CardPool_GUI_1_Stable {
 			menuBar.add(mnViewDatabase); menuBar.add(mnBan);
 			viewDatabaseListenerInit(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, allCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon, cardViewer);
 			mnBan.add(blacklist); mnBan.add(mnBanAll);
-			mnBan.add(mnBanGrouping); mnBanGrouping.add(Monarchs);
-			mnBanGrouping.add(Fissure); mnBanGrouping.add(TrapHole);
-			mnBanGrouping.add(Exodia); mnBanGrouping.add(Naturia);
-			mnBanGrouping.add(Water); mnBanGrouping.add(Toon);
-			mnBanGrouping.add(Ritual); mnBanGrouping.add(Fusion);
-			mnBanGrouping.add(Draw); mnBanGrouping.add(Limited); mnBanGrouping.add(SemiLimited);
-			mnBanGrouping.add(LowAtk); mnBanGrouping.add(HighAtk);
-			mnBanGrouping.add(LowLvl); mnBanGrouping.add(HighLvl);
+			mnBan.add(mnBanGrouping); mnBan.add(mnBanAttribute);
+			mnBan.add(mnBanType); mnBan.add(mnBanCard); mnBan.add(mnBanScore);
+			
 			mnBanAll.add(ultimateBanner); mnBanAll.add(ultraBanner); 
 			mnBanAll.add(superBanner); mnBanAll.add(rareBanner);
 			mnBanAll.add(commonBanner); mnBan.add(reset);
+			
+			mnBanGrouping.add(AncientGear); mnBanGrouping.add(Archfiend);
+			mnBanGrouping.add(Crashbug); mnBanGrouping.add(Destiny);
+			mnBanGrouping.add(Elemental); mnBanGrouping.add(Exodia);
+			mnBanGrouping.add(Fissure); mnBanGrouping.add(Flip);
+			mnBanGrouping.add(Gishki); mnBanGrouping.add(God);
+			mnBanGrouping.add(Harpies); mnBanGrouping.add(Hazy);
+			mnBanGrouping.add(LV); mnBanGrouping.add(Lightsworn);
+			mnBanGrouping.add(Magnet); mnBanGrouping.add(Monarchs); 
+			mnBanGrouping.add(Naturia); mnBanGrouping.add(Ojama);
+			mnBanGrouping.add(SuperHeavy); mnBanGrouping.add(Creator);
+			mnBanGrouping.add(Toon); mnBanGrouping.add(TrapHole);
+			mnBanGrouping.add(Volcanic); mnBanGrouping.add(Fusion);
+			mnBanGrouping.add(Ritual); mnBanGrouping.add(Draw); 
+			mnBanGrouping.add(Discard); mnBanGrouping.add(EasySummon);
+			mnBanGrouping.add(Limited); mnBanGrouping.add(SemiLimited);
+			mnBanGrouping.add(LowAtk); mnBanGrouping.add(HighAtk);
+			mnBanGrouping.add(LowLvl); mnBanGrouping.add(HighLvl);
+			
+			mnBanAttribute.add(Dark); mnBanAttribute.add(Earth);
+			mnBanAttribute.add(Fire); mnBanAttribute.add(Light);
+			mnBanAttribute.add(Water); mnBanAttribute.add(Wind);
+			
+			mnBanType.add(Aqua); mnBanType.add(Beast); mnBanType.add(BeastWarrior);
+			mnBanType.add(Dinosaur); mnBanType.add(Divine); mnBanType.add(Dragon);
+			mnBanType.add(Fairy); mnBanType.add(Fiend); mnBanType.add(Fish);
+			mnBanType.add(Insect); mnBanType.add(Machine); mnBanType.add(Plant);
+			mnBanType.add(Psychic); mnBanType.add(Pyro); mnBanType.add(Reptile);
+			mnBanType.add(Rock); mnBanType.add(SeaSerpent); mnBanType.add(Spellcaster);
+			mnBanType.add(Thunder); mnBanType.add(Warrior); mnBanType.add(WingedBeast);
+			mnBanType.add(Wyrm); mnBanType.add(Zombie);
+			
+			mnBanCard.add(Spell); mnBanCard.add(Trap); mnBanCard.add(ContinSpell);
+			mnBanCard.add(ContinTrap); mnBanCard.add(Contin); mnBanCard.add(Field);
+			mnBanCard.add(Quickplay); mnBanCard.add(Equip); mnBanCard.add(Counter); 
+			
+			mnBanScore.add(lowScore); mnBanScore.add(medScore); mnBanScore.add(highScore);
+			mnBanScore.add(veryHighScore); mnBanScore.add(OP);
+			
+			// Grey out buttons that don't work yet
+			mnBanType.setEnabled(false); mnBanCard.setEnabled(false);
+			mnBanScore.setEnabled(false); cardViewer.setEnabled(false);
+			fillStyle.setEnabled(false);
+			
 			blackListenerInit(blacklist, allCards, blackListed, banned, dumbThing, banModel, lblCardCount, lblUniqueCards, DraftInit, mntmUltraRares, mntmSuperRares, mntmRares,
 					mntmCommon, ultimateBanner, ultraBanner, superBanner, rareBanner, commonBanner, mntmNewMenuItem, Monarchs, Fissure, TrapHole, Exodia, Water, Naturia,
-					Toon, Draw, Ritual, Fusion, LowAtk, Limited, SemiLimited, HighAtk, LowLvl, HighLvl, reset, backupAllCards, allCardsNopeDupe);
+					Toon, Draw, Ritual, Fusion, LowAtk, Limited, SemiLimited, HighAtk, LowLvl, HighLvl, reset, backupAllCards, allCardsNopeDupe, Light, Dark, Wind, Fire, Earth,
+					AncientGear, Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, SuperHeavy, Creator, Volcanic,
+					Discard, EasySummon);
 		
 		// End primary window components
 			
@@ -225,9 +334,7 @@ public class CardPool_GUI_1_Stable {
 				if (fillStyleString == "Random") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
 				else if (fillStyleString == "Equal") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
 				else { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
-				
-				//draftDecks.clear();
-				
+							
 			
 				// Fills up an array used to display the correct database of cards during the draft (banned cards removed)
 				ArrayList<Card> draftAllCards = new ArrayList<Card>();
@@ -351,6 +458,7 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 									
 									JButton viewDeckOf = new JButton("View Deck");
+									JButton viewStats = new JButton("Deck Stats");
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
@@ -466,10 +574,58 @@ public class CardPool_GUI_1_Stable {
 										
 									});
 									
+									viewStats.addActionListener(new ActionListener() 
+									{
+										public void actionPerformed(ActionEvent arg0) 
+										{
+											JFrame cardViewLocal = new JFrame();	
+											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+											cardViewLocal.setBounds(100, 100, 496, 443);
+											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
+											Card highCard = new Card("temp", 0);
+											int deckScore = 0;
+											int ultimates = 0;
+											int ultras = 0;
+											int supers = 0;
+											int rares = 0;
+											int commons = 0;
+											for (Card card : allCardsNoDupes) 
+											{
+												if (card.getTierScore() > highCard.getTierScore()) { highCard = card; }
+												deckScore += (card.getTierScore() * card.getQuantity());
+												switch (card.getRarity())
+												{
+													case "Ultimate Rare":
+														ultimates++; break;
+													case "Ultra Rare":
+														ultras++; break;
+													case "Super Rare":
+														supers++; break;
+													case "Rare":
+														rares++; break;
+													case "Common":
+														commons++; break;
+													default:
+														break;
+												}
+											}
+											
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nUltimate Rares: " + ultimates 
+													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
+													+ "\nCommons: " + commons + "\n\nBest Card:\n" + highCard.getName() + " (" + highCard.getTierScore() + ")");
+											
+											cardViewLocal.getContentPane().add(stats);
+											cardViewLocal.pack();
+											cardViewLocal.setVisible(true);
+											
+										}
+									});
 									
 									
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
+									finalFrame.getContentPane().add(viewStats);
 									
 									finalFrame.pack();
 									finalFrame.setVisible(true);
@@ -563,6 +719,7 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 									
 									JButton viewDeckOf = new JButton("View Deck");
+									JButton viewStats = new JButton("Deck Stats");
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
@@ -678,10 +835,59 @@ public class CardPool_GUI_1_Stable {
 										
 									});
 									
+									viewStats.addActionListener(new ActionListener() 
+									{
+										public void actionPerformed(ActionEvent arg0) 
+										{
+											JFrame cardViewLocal = new JFrame();	
+											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+											cardViewLocal.setBounds(100, 100, 496, 443);
+											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
+											Card highCard = new Card("temp", 0);
+											int deckScore = 0;
+											int ultimates = 0;
+											int ultras = 0;
+											int supers = 0;
+											int rares = 0;
+											int commons = 0;
+											for (Card card : allCardsNoDupes) 
+											{
+												if (card.getTierScore() > highCard.getTierScore()) { highCard = card; }
+												deckScore += (card.getTierScore() * card.getQuantity());
+												switch (card.getRarity())
+												{
+													case "Ultimate Rare":
+														ultimates++; break;
+													case "Ultra Rare":
+														ultras++; break;
+													case "Super Rare":
+														supers++; break;
+													case "Rare":
+														rares++; break;
+													case "Common":
+														commons++; break;
+													default:
+														break;
+												}
+											}
+											
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nUltimate Rares: " + ultimates 
+													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
+													+ "\nCommons: " + commons + "\n\nBest Card:\n" + highCard.getName() + " (" + highCard.getTierScore() + ")");
+											
+											cardViewLocal.getContentPane().add(stats);
+											cardViewLocal.pack();
+											cardViewLocal.setVisible(true);
+											
+										}
+									});
+									
 									
 									
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
+									finalFrame.getContentPane().add(viewStats);
 									
 									finalFrame.pack();
 									finalFrame.setVisible(true);
@@ -774,6 +980,7 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 									
 									JButton viewDeckOf = new JButton("View Deck");
+									JButton viewStats = new JButton("Deck Stats");
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
@@ -889,10 +1096,59 @@ public class CardPool_GUI_1_Stable {
 										
 									});
 									
+									viewStats.addActionListener(new ActionListener() 
+									{
+										public void actionPerformed(ActionEvent arg0) 
+										{
+											JFrame cardViewLocal = new JFrame();	
+											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+											cardViewLocal.setBounds(100, 100, 496, 443);
+											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
+											Card highCard = new Card("temp", 0);
+											int deckScore = 0;
+											int ultimates = 0;
+											int ultras = 0;
+											int supers = 0;
+											int rares = 0;
+											int commons = 0;
+											for (Card card : allCardsNoDupes) 
+											{
+												if (card.getTierScore() > highCard.getTierScore()) { highCard = card; }
+												deckScore += (card.getTierScore() * card.getQuantity());
+												switch (card.getRarity())
+												{
+													case "Ultimate Rare":
+														ultimates++; break;
+													case "Ultra Rare":
+														ultras++; break;
+													case "Super Rare":
+														supers++; break;
+													case "Rare":
+														rares++; break;
+													case "Common":
+														commons++; break;
+													default:
+														break;
+												}
+											}
+											
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nUltimate Rares: " + ultimates 
+													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
+													+ "\nCommons: " + commons + "\n\nBest Card:\n" + highCard.getName() + " (" + highCard.getTierScore() + ")");
+											
+											cardViewLocal.getContentPane().add(stats);
+											cardViewLocal.pack();
+											cardViewLocal.setVisible(true);
+											
+										}
+									});
+									
 									
 									
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
+									finalFrame.getContentPane().add(viewStats);
 									
 									finalFrame.pack();
 									finalFrame.setVisible(true);
@@ -905,6 +1161,11 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 				});	
+				
+				
+				
+				
+				
 				reroll.addActionListener(new ActionListener() 
 				{
 					public void actionPerformed(ActionEvent arg0) 
@@ -1221,9 +1482,8 @@ public class CardPool_GUI_1_Stable {
 		for (int k = 0; k < pool.size(); k++)
 		{
 			checker = true;
-			if (temp.size() == 0) { Card tempCard2 = new Card(pool.get(k)); temp.add(tempCard2); }
-			else
-			{
+			if (temp.size() == 0) { Card tempCard2 = new Card("temp"); temp.add(tempCard2); }
+			
 				for (int i = 0; i < temp.size(); i++)
 				{
 					if (pool.get(k).getName().equals(temp.get(i).getName()))
@@ -1238,7 +1498,8 @@ public class CardPool_GUI_1_Stable {
 					Card newCard = new Card(pool.get(k), howMany); 
 					temp.add(newCard); 
 				}
-			}
+			
+			for (Card card : temp) { if (card.getName().equals("temp")) { temp.remove(card); } }
 		}
 
 		return temp;
@@ -1293,8 +1554,8 @@ public class CardPool_GUI_1_Stable {
 				Card dumbo = new Card("dumbo");
 				temp.add(dumbo);
 			}
-			else
-			{
+			
+			
 				for (int i = 0; i < temp.size(); i++)
 				{
 					if (pool.get(k).getName().equals(temp.get(i).getName()))
@@ -1312,7 +1573,7 @@ public class CardPool_GUI_1_Stable {
 						temp.add(newCard); 
 					}
 				}
-			}
+			
 		}
 
 
@@ -1618,12 +1879,254 @@ public class CardPool_GUI_1_Stable {
 
 		return checker;
 	}
+	
+	static void banAttributeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Water,
+			JMenuItem Fire, JMenuItem Wind, JMenuItem Light, JMenuItem Earth, JMenuItem Dark)
+	{
+		Water.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getAttribute().equals("Water")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Water.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Wind.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getAttribute().equals("Wind")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Wind.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Light.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getAttribute().equals("Light")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Light.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Dark.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getAttribute().equals("Dark")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Dark.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Fire.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getAttribute().equals("Fire")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Fire.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Earth.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getAttribute().equals("Earth")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Earth.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+	}
 
 	// Sets up all the ban>grouping listeners within the ban menu
 	@SuppressWarnings("rawtypes")
 	static void banGroupListenerInit(ArrayList<Card> allCards, JFrame DraftInit, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, 
-			JMenuItem Monarchs, JMenuItem Fissure, JMenuItem TrapHole, JMenuItem Exodia, JMenuItem Water, JMenuItem Naturia, JMenuItem Toon, JMenuItem Draw,
-			JMenuItem Ritual, JMenuItem Fusion, JMenuItem LowAtk, JMenuItem Limited, JMenuItem SemiLimited, JMenuItem HighAtk, JMenuItem LowLvl, JMenuItem HighLvl)
+			JMenuItem Monarchs, JMenuItem Fissure, JMenuItem TrapHole, JMenuItem Exodia, JMenuItem Naturia, JMenuItem Toon, JMenuItem Draw,
+			JMenuItem Ritual, JMenuItem Fusion, JMenuItem LowAtk, JMenuItem Limited, JMenuItem SemiLimited, JMenuItem HighAtk, JMenuItem LowLvl, JMenuItem HighLvl,
+			JMenuItem AncientGear, JMenuItem Archfiend, JMenuItem Crashbug, JMenuItem Destiny, JMenuItem Elemental,
+			JMenuItem Flip, JMenuItem Gishki, JMenuItem God, JMenuItem Harpies, JMenuItem Hazy, JMenuItem LV,
+			JMenuItem Lightsworn, JMenuItem Magnet, JMenuItem Ojama, JMenuItem SuperHeavy, JMenuItem Creator, JMenuItem Volcanic,
+			JMenuItem Discard, JMenuItem EasySummon)
 	{
 		Monarchs.addActionListener(new ActionListener() 
 		{
@@ -2054,44 +2557,7 @@ public class CardPool_GUI_1_Stable {
 			}
 		});
 
-		Water.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				boolean checker = false;
-				for (int a = 0; a < allCards.size(); a++)
-				{
-					if (allCards.get(a).getAttribute().equals("Water")) 
-					{				
-						for (int bm = 0; bm < banModel.getSize(); bm++)
-						{
-							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-							{
-								checker = true; 
-							}
-						}
-
-						if (checker == false) 
-						{ 
-							int howMany = howManyCards(allCards, allCards.get(a));
-							Card temp = new Card(allCards.get(a), howMany); 
-							banModel.addElement(temp); 
-						}
-						allCards.remove(a);
-						a = 0;
-						checker = false;
-					}
-				}
-
-				Water.setEnabled(false);
-				int totalCards2 = cardCount(allCards);
-				lblCardCount.setText("Cards Available: " + totalCards2);
-				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-				int totalUnique = allCardsNopeDupe.size();
-				lblUniqueCards.setText("Unique Cards: " + totalUnique);
-				DraftInit.revalidate(); DraftInit.repaint(); 
-			}
-		});
+		
 
 		LowAtk.addActionListener(new ActionListener() 
 		{
@@ -2240,6 +2706,747 @@ public class CardPool_GUI_1_Stable {
 				}
 
 				HighLvl.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		AncientGear.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("ancient gear")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				AncientGear.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Archfiend.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("archfiend")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Archfiend.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Crashbug.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("crashbug")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Crashbug.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Destiny.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("destiny hero")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Destiny.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Elemental.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("elemental hero")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Elemental.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Flip.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("flip")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Flip.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Gishki.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("gishki")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Gishki.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		God.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("god")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				God.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Harpies.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("harpie")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Harpies.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Hazy.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("hazy")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Hazy.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		LV.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("LV")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				LV.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Lightsworn.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("lightsworn")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Lightsworn.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Magnet.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("magnet warrior")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Magnet.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Ojama.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("ojama")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Ojama.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		SuperHeavy.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("superheavy samurai")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				SuperHeavy.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Creator.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("creator")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Creator.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Volcanic.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("volcanic")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Volcanic.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Discard.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if ((allCards.get(a).getSynergies().contains("player discard")) || (allCards.get(a).getSynergies().contains("opponent discard"))) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Discard.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		EasySummon.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("easy summon")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				EasySummon.setEnabled(false);
 				int totalCards2 = cardCount(allCards);
 				lblCardCount.setText("Cards Available: " + totalCards2);
 				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -3327,7 +4534,10 @@ public class CardPool_GUI_1_Stable {
 			JMenuItem mntmUltraRares, JMenuItem mntmSuperRares, JMenuItem mntmRares, JMenuItem mntmCommon, JMenuItem ultimateBanner, JMenuItem ultraBanner,
 			JMenuItem superBanner, JMenuItem rareBanner, JMenuItem commonBanner, JMenuItem mntmNewMenuItem, JMenuItem Monarchs, JMenuItem Fissure, JMenuItem TrapHole, 
 			JMenuItem Exodia, JMenuItem Water, JMenuItem Naturia, JMenuItem Toon, JMenuItem Draw, JMenuItem Ritual, JMenuItem Fusion, JMenuItem LowAtk, JMenuItem Limited,
-			JMenuItem SemiLimited, JMenuItem HighAtk, JMenuItem LowLvl, JMenuItem HighLvl, JMenuItem reset, ArrayList<Card> backupAllCards, ArrayList<Card> allCardsNopeDupe)
+			JMenuItem SemiLimited, JMenuItem HighAtk, JMenuItem LowLvl, JMenuItem HighLvl, JMenuItem reset, ArrayList<Card> backupAllCards, ArrayList<Card> allCardsNopeDupe,
+			JMenuItem Light, JMenuItem Dark, JMenuItem Wind, JMenuItem Fire, JMenuItem Earth, JMenuItem AncientGear, JMenuItem Archfiend, JMenuItem Crashbug, JMenuItem Destiny,
+			JMenuItem Elemental, JMenuItem Flip, JMenuItem Gishki, JMenuItem God, JMenuItem Harpies, JMenuItem Hazy, JMenuItem LV, JMenuItem Lightsworn, JMenuItem Magnet,
+			JMenuItem Ojama, JMenuItem SuperHeavy, JMenuItem Creator, JMenuItem Volcanic, JMenuItem Discard, JMenuItem EasySummon)
 	{
 		KeyListener keyListener2 = new KeyListener()
 		{
@@ -3745,6 +4955,28 @@ public class CardPool_GUI_1_Stable {
 				LowAtk.setEnabled(true); HighAtk.setEnabled(true);
 				LowLvl.setEnabled(true); HighLvl.setEnabled(true);
 				Ritual.setEnabled(true); Fusion.setEnabled(true);
+				Wind.setEnabled(true); Dark.setEnabled(true);
+				Light.setEnabled(true); Fire.setEnabled(true); Earth.setEnabled(true);
+				AncientGear.setEnabled(true); Archfiend.setEnabled(true);
+				Crashbug.setEnabled(true); Destiny.setEnabled(true); Elemental.setEnabled(true);
+				Flip.setEnabled(true); Gishki.setEnabled(true); God.setEnabled(true);
+				Harpies.setEnabled(true); Hazy.setEnabled(true); LV.setEnabled(true);
+				Lightsworn.setEnabled(true); Magnet.setEnabled(true); Ojama.setEnabled(true);
+				SuperHeavy.setEnabled(true); Creator.setEnabled(true); Volcanic.setEnabled(true);
+				Discard.setEnabled(true); EasySummon.setEnabled(true); /*Aqua.setEnabled(true);
+				Beast.setEnabled(true); BeastWarrior.setEnabled(true); Dinosaur.setEnabled(true);
+				Divine.setEnabled(true); Dragon.setEnabled(true); Fairy.setEnabled(true);
+				Fiend.setEnabled(true); Fish.setEnabled(true); Insect.setEnabled(true);
+				Machine.setEnabled(true); Plant.setEnabled(true); Psychic.setEnabled(true);
+				Pyro.setEnabled(true); Reptile.setEnabled(true); Rock.setEnabled(true);
+				SeaSerpent.setEnabled(true); Spellcaster.setEnabled(true); Thunder.setEnabled(true);
+				Warrior.setEnabled(true); WingedBeast.setEnabled(true); Wyrm.setEnabled(true);
+				Zombie.setEnabled(true); Spell.setEnabled(true); Trap.setEnabled(true);
+				ContinSpell.setEnabled(true); ContinTrap.setEnabled(true); Contin.setEnabled(true);
+				Quickplay.setEnabled(true); Field.setEnabled(true); Equip.setEnabled(true);
+				Counter.setEnabled(true); lowScore.setEnabled(true); medScore.setEnabled(true);
+				highScore.setEnabled(true); veryHighScore.setEnabled(true); OP.setEnabled(true);
+				*/
 				int totalCards2 = cardCount(allCards); lblCardCount.setText("Cards Available: " + totalCards2);
 				int totalUnique = allCardsNopeDupe.size(); lblUniqueCards.setText("Unique Cards: " + totalUnique);
 				DraftInit.revalidate(); DraftInit.repaint();
@@ -3752,8 +4984,14 @@ public class CardPool_GUI_1_Stable {
 		});
 		// end reset listener
 
-		banGroupListenerInit(allCards, DraftInit, banModel, lblCardCount, lblUniqueCards, Monarchs, Fissure, TrapHole,  Exodia,  Water,  
-				Naturia,  Toon,  Draw, Ritual,  Fusion,  LowAtk,  Limited, SemiLimited,  HighAtk,  LowLvl,  HighLvl);	
+		banGroupListenerInit(allCards, DraftInit, banModel, lblCardCount, lblUniqueCards, Monarchs, Fissure, TrapHole,  Exodia,  
+				Naturia,  Toon,  Draw, Ritual,  Fusion,  LowAtk,  Limited, SemiLimited,  HighAtk,  LowLvl,  HighLvl, AncientGear, 
+				Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, SuperHeavy,
+				Creator, Volcanic, Discard, EasySummon);	
+		
+		banAttributeListenerInit(allCards, banModel, lblCardCount, lblUniqueCards, DraftInit, Water, Fire, Wind, Light, Earth, Dark);
+		
+		
 	}
 	
 	// Returns true if an image exists at the given path

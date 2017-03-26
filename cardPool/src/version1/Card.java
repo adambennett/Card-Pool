@@ -117,6 +117,12 @@ public class Card implements Comparator<Card>
 		this.name = name;
 		this.text = text;
 	}
+	
+	public Card(String name, int tierScore)
+	{
+		this.name = name;
+		this.tierScore = tierScore;
+	}
 
 	// Getters and Setters //
 	public String getName() { return name;	}
