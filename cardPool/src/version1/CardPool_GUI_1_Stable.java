@@ -53,7 +53,10 @@ public class CardPool_GUI_1_Stable {
 	private int playerDrafting = 0;
 	private ArrayList<Card> drafted = new ArrayList<Card>();
 	private ArrayList<Card> threeChoiceTemp = new ArrayList<Card>();
-	
+	private static JList<Card> dynamicList = new JList<Card>();
+	private static DefaultListModel<Card> dynamicModel1 = new DefaultListModel<Card>();
+	private static DefaultListModel<Card> dynamicModel2 = new DefaultListModel<Card>();
+
 	// GUI Init Stuff
 	public static void main(String[] args) 
 	{
@@ -73,9 +76,9 @@ public class CardPool_GUI_1_Stable {
 		initialize();
 	}
 	// End GUI Init Stuff
-	
-	
-	
+
+
+
 	// MAIN
 	@SuppressWarnings("unchecked")
 	private void initialize() 
@@ -114,206 +117,209 @@ public class CardPool_GUI_1_Stable {
 		// GUI Setup
 		DraftInit = new JFrame();	
 		DraftInit.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-		DraftInit.setBounds(100, 100, 189, 250);
+		DraftInit.setBounds(600, 600, 260, 200);
 		DraftInit.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		DraftInit.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
 
 		// Draft Start window components
-		JLabel lblOfPlayers = DefaultComponentFactory.getInstance().createLabel("Players");
+		JLabel lblOfPlayers = DefaultComponentFactory.getInstance().createLabel("Players"); 
 		JLabel lblOfCards = DefaultComponentFactory.getInstance().createLabel("Cards to Draft");
-		JLabel lblOfRerolls = DefaultComponentFactory.getInstance().createLabel("Rerolls");
-		JLabel lblCardCount = DefaultComponentFactory.getInstance().createTitle("Card Count");
-		JLabel lblUniqueCards = new JLabel("Unique Cards: " + totalUnique);
-		JSpinner spinner = new JSpinner(); spinner.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-		JSpinner cardsToDraft = new JSpinner(); cardsToDraft.setModel(new SpinnerNumberModel(60, 10, 200, 5));
-		JSpinner rerolls = new JSpinner(); rerolls.setModel(new SpinnerNumberModel(1, 0, 10, 1));
-		JComboBox fillStyle = new JComboBox();
-		JButton draftStart = new JButton("Start Draft");
+		JLabel lblOfRerolls = DefaultComponentFactory.getInstance().createLabel("Rerolls"); 
+		JLabel lblOfPool = new JLabel("Pool Fill");	
+		JLabel lblCardCount = DefaultComponentFactory.getInstance().createTitle("Cards Available: " + totalCards); 
+		JLabel lblUniqueCards = new JLabel("Unique Cards: " + totalUnique); 
+		JSpinner numberOfPlayers = new JSpinner(); numberOfPlayers.setModel(new SpinnerNumberModel(1, 1, 10, 1));	
+		JSpinner cardsToDraft = new JSpinner(); cardsToDraft.setModel(new SpinnerNumberModel(60, 10, 200, 5)); 
+		JSpinner rerolls = new JSpinner(); rerolls.setModel(new SpinnerNumberModel(1, 0, 10, 1)); 
+		JComboBox<String> fillStyle = new JComboBox<String>(); 
+		JButton draftStart = new JButton("Start Draft"); 
 		JMenuBar menuBar = new JMenuBar();
-			JMenu mnViewDatabase = new JMenu("Database");
-				JMenuItem mntmViewAllCards = new JMenuItem("View all cards");
-				JMenuItem mntmNewMenuItem = new JMenuItem("Ultimate Rare");
-				JMenuItem mntmUltraRares = new JMenuItem("Ultra Rare");
-				JMenuItem mntmSuperRares = new JMenuItem("Super Rare");
-				JMenuItem mntmRares = new JMenuItem("Rare");
-				JMenuItem mntmCommon = new JMenuItem("Common");
-				JMenuItem cardViewer = new JMenuItem("Card Viewer");
-			JMenu mnBan = new JMenu("Ban Menu");
-				JMenuItem blacklist = new JMenuItem("Ban Cards");
-				JMenuItem reset = new JMenuItem("Reset Pool");
-				JMenu mnBanAll = new JMenu("Ban: Rarities");
-					JMenuItem ultimateBanner = new JMenuItem("Ultimate Rare");
-					JMenuItem ultraBanner = new JMenuItem("Ultra Rare");
-					JMenuItem superBanner = new JMenuItem("Super Rare");
-					JMenuItem rareBanner = new JMenuItem("Rare");
-					JMenuItem commonBanner = new JMenuItem("Common");	
-				JMenu mnBanGrouping = new JMenu("Ban: Grouping");
-					JMenuItem AncientGear = new JMenuItem("Ancient Gear");
-					JMenuItem Archfiend = new JMenuItem("Archfiend");
-					JMenuItem Crashbug = new JMenuItem("Crashbug");
-					JMenuItem Destiny = new JMenuItem("Destiny Hero");
-					JMenuItem Elemental = new JMenuItem("Elemental Hero");
-					JMenuItem Exodia = new JMenuItem("Exodia");
-					JMenuItem Fissure = new JMenuItem("Fissure");
-					JMenuItem Flip = new JMenuItem("Flip");
-					JMenuItem Gishki = new JMenuItem("Gishki");
-					JMenuItem God = new JMenuItem("God");
-					JMenuItem Harpies = new JMenuItem("Harpies");
-					JMenuItem Hazy = new JMenuItem("Hazy");
-					JMenuItem LV = new JMenuItem("LV");
-					JMenuItem Lightsworn = new JMenuItem("Lightsworn");
-					JMenuItem Magnet = new JMenuItem("Magnet Warriors");
-					JMenuItem Monarchs = new JMenuItem("Monarchs");
-					JMenuItem Naturia = new JMenuItem("Naturia");
-					JMenuItem Ojama = new JMenuItem("Ojama");
-					JMenuItem SuperHeavy = new JMenuItem("Superheavy Samurai");
-					JMenuItem Creator = new JMenuItem("The Creator");
-					JMenuItem Toon = new JMenuItem("Toon");
-					JMenuItem TrapHole = new JMenuItem("Trap Hole");
-					JMenuItem Volcanic = new JMenuItem("Volcanic");
-					JMenuItem Fusion = new JMenuItem("Fusion");
-					JMenuItem Ritual = new JMenuItem("Ritual");
-					JMenuItem Draw = new JMenuItem("Card Draw");
-					JMenuItem Discard = new JMenuItem("Discard");
-					JMenuItem EasySummon = new JMenuItem("Easy Summon");
-					JMenuItem Limited = new JMenuItem("Limited");
-					JMenuItem SemiLimited = new JMenuItem("Semi-Limited");
-					JMenuItem LowAtk = new JMenuItem("Attack < 1500");
-					JMenuItem HighAtk = new JMenuItem("Attack > 2600");
-					JMenuItem LowLvl = new JMenuItem("Level < 4");
-					JMenuItem HighLvl = new JMenuItem("Level > 7");
-				JMenu mnBanAttribute = new JMenu("Ban: Attributes");
-					JMenuItem Dark = new JMenuItem("Dark");
-					JMenuItem Earth = new JMenuItem("Earth");
-					JMenuItem Fire = new JMenuItem("Fire");
-					JMenuItem Light = new JMenuItem("Light");
-					JMenuItem Water = new JMenuItem("Water");
-					JMenuItem Wind = new JMenuItem("Wind");
-				JMenu mnBanType = new JMenu("Ban: Types");
-					JMenuItem Aqua = new JMenuItem("Aqua");
-					JMenuItem Beast = new JMenuItem("Beast");
-					JMenuItem BeastWarrior = new JMenuItem("Beast-Warrior");
-					JMenuItem Dinosaur = new JMenuItem("Dinosaur");
-					JMenuItem Divine = new JMenuItem("Divine-Beast");
-					JMenuItem Dragon = new JMenuItem("Dragon");
-					JMenuItem Fairy = new JMenuItem("Fairy");
-					JMenuItem Fiend = new JMenuItem("Fiend");
-					JMenuItem Fish = new JMenuItem("Fish");
-					JMenuItem Insect = new JMenuItem("Insect");
-					JMenuItem Machine = new JMenuItem("Machine");
-					JMenuItem Plant = new JMenuItem("Plant");
-					JMenuItem Psychic = new JMenuItem("Psychic");
-					JMenuItem Pyro = new JMenuItem("Pyro");
-					JMenuItem Reptile = new JMenuItem("Reptile");
-					JMenuItem Rock = new JMenuItem("Rock");
-					JMenuItem SeaSerpent = new JMenuItem("Sea Serpent");
-					JMenuItem Spellcaster = new JMenuItem("Spellcaster");
-					JMenuItem Thunder = new JMenuItem("Thunder");
-					JMenuItem Warrior = new JMenuItem("Warrior");
-					JMenuItem WingedBeast = new JMenuItem("Winged Beast");
-					JMenuItem Wyrm = new JMenuItem("Wyrm");
-					JMenuItem Zombie = new JMenuItem("Zombie");
-				JMenu mnBanCard = new JMenu("Ban: Card Type");
-					JMenuItem Spell = new JMenuItem("Spells");
-					JMenuItem Trap = new JMenuItem("Traps");
-					JMenuItem ContinSpell = new JMenuItem("Continuous Spells");
-					JMenuItem ContinTrap = new JMenuItem("Continuous Traps");
-					JMenuItem Contin = new JMenuItem("Continuous");
-					JMenuItem Field = new JMenuItem("Field");
-					JMenuItem Quickplay = new JMenuItem("Quickplay");
-					JMenuItem Equip = new JMenuItem("Equip");
-					JMenuItem Counter = new JMenuItem("Counter");
-				JMenu mnBanScore = new JMenu("Ban: Score");
-					JMenuItem lowScore = new JMenuItem("Tier Score < 30");
-					JMenuItem medScore = new JMenuItem("30 < Tier Score < 60");
-					JMenuItem highScore = new JMenuItem("TierScore > 60");
-					JMenuItem veryHighScore = new JMenuItem("TierScore > 75");
-					JMenuItem OP = new JMenuItem("TierScore > 85");
-					
-			
-		DraftInit.getContentPane().add(lblOfPlayers); DraftInit.getContentPane().add(spinner);
-		DraftInit.getContentPane().add(lblOfCards); DraftInit.getContentPane().add(cardsToDraft);
-		DraftInit.getContentPane().add(lblOfRerolls); DraftInit.getContentPane().add(rerolls);
-		DraftInit.getContentPane().add(fillStyle);
-			fillStyle.setModel(new DefaultComboBoxModel(new String[] {"Random", "Equal"}));
+		JMenu mnViewDatabase = new JMenu("Database");
+		JMenuItem mntmViewAllCards = new JMenuItem("View all cards");
+		JMenuItem mntmNewMenuItem = new JMenuItem("Ultimate Rare");
+		JMenuItem mntmUltraRares = new JMenuItem("Ultra Rare");
+		JMenuItem mntmSuperRares = new JMenuItem("Super Rare");
+		JMenuItem mntmRares = new JMenuItem("Rare");
+		JMenuItem mntmCommon = new JMenuItem("Common");
+		JMenuItem cardViewer = new JMenuItem("Card Viewer");
+		JMenu mnBan = new JMenu("Ban Menu");
+		JMenuItem blacklist = new JMenuItem("Ban Cards");
+		JMenuItem reset = new JMenuItem("Reset Pool");
+		JMenu mnBanAll = new JMenu("Ban: Rarities");
+		JMenuItem ultimateBanner = new JMenuItem("Ultimate Rare");
+		JMenuItem ultraBanner = new JMenuItem("Ultra Rare");
+		JMenuItem superBanner = new JMenuItem("Super Rare");
+		JMenuItem rareBanner = new JMenuItem("Rare");
+		JMenuItem commonBanner = new JMenuItem("Common");	
+		JMenu mnBanGrouping = new JMenu("Ban: Grouping");
+		JMenuItem AncientGear = new JMenuItem("Ancient Gear");
+		JMenuItem Archfiend = new JMenuItem("Archfiend");
+		JMenuItem Crashbug = new JMenuItem("Crashbug");
+		JMenuItem Destiny = new JMenuItem("Destiny Hero");
+		JMenuItem Elemental = new JMenuItem("Elemental Hero");
+		JMenuItem Exodia = new JMenuItem("Exodia");
+		JMenuItem Fissure = new JMenuItem("Fissure");
+		JMenuItem Flip = new JMenuItem("Flip");
+		JMenuItem Gishki = new JMenuItem("Gishki");
+		JMenuItem God = new JMenuItem("God");
+		JMenuItem Harpies = new JMenuItem("Harpies");
+		JMenuItem Hazy = new JMenuItem("Hazy");
+		JMenuItem LV = new JMenuItem("LV");
+		JMenuItem Lightsworn = new JMenuItem("Lightsworn");
+		JMenuItem Magnet = new JMenuItem("Magnet Warriors");
+		JMenuItem Monarchs = new JMenuItem("Monarchs");
+		JMenuItem Naturia = new JMenuItem("Naturia");
+		JMenuItem Ojama = new JMenuItem("Ojama");
+		JMenuItem SuperHeavy = new JMenuItem("Superheavy Samurai");
+		JMenuItem Creator = new JMenuItem("The Creator");
+		JMenuItem Toon = new JMenuItem("Toon");
+		JMenuItem TrapHole = new JMenuItem("Trap Hole");
+		JMenuItem Volcanic = new JMenuItem("Volcanic");
+		JMenuItem Fusion = new JMenuItem("Fusion");
+		JMenuItem Ritual = new JMenuItem("Ritual");
+		JMenuItem Draw = new JMenuItem("Card Draw");
+		JMenuItem Discard = new JMenuItem("Discard");
+		JMenuItem EasySummon = new JMenuItem("Easy Summon");
+		JMenuItem Limited = new JMenuItem("Limited");
+		JMenuItem SemiLimited = new JMenuItem("Semi-Limited");
+		JMenuItem LowAtk = new JMenuItem("Attack < 1500");
+		JMenuItem HighAtk = new JMenuItem("Attack > 2600");
+		JMenuItem LowLvl = new JMenuItem("Level < 4");
+		JMenuItem HighLvl = new JMenuItem("Level > 7");
+		JMenu mnBanAttribute = new JMenu("Ban: Attributes");
+		JMenuItem Dark = new JMenuItem("Dark");
+		JMenuItem Earth = new JMenuItem("Earth");
+		JMenuItem Fire = new JMenuItem("Fire");
+		JMenuItem Light = new JMenuItem("Light");
+		JMenuItem Water = new JMenuItem("Water");
+		JMenuItem Wind = new JMenuItem("Wind");
+		JMenu mnBanType = new JMenu("Ban: Types");
+		JMenuItem Aqua = new JMenuItem("Aqua");
+		JMenuItem Beast = new JMenuItem("Beast");
+		JMenuItem BeastWarrior = new JMenuItem("Beast-Warrior");
+		JMenuItem Dinosaur = new JMenuItem("Dinosaur");
+		JMenuItem Divine = new JMenuItem("Divine-Beast");
+		JMenuItem Dragon = new JMenuItem("Dragon");
+		JMenuItem Fairy = new JMenuItem("Fairy");
+		JMenuItem Fiend = new JMenuItem("Fiend");
+		JMenuItem Fish = new JMenuItem("Fish");
+		JMenuItem Insect = new JMenuItem("Insect");
+		JMenuItem Machine = new JMenuItem("Machine");
+		JMenuItem Plant = new JMenuItem("Plant");
+		JMenuItem Psychic = new JMenuItem("Psychic");
+		JMenuItem Pyro = new JMenuItem("Pyro");
+		JMenuItem Reptile = new JMenuItem("Reptile");
+		JMenuItem Rock = new JMenuItem("Rock");
+		JMenuItem SeaSerpent = new JMenuItem("Sea Serpent");
+		JMenuItem Spellcaster = new JMenuItem("Spellcaster");
+		JMenuItem Thunder = new JMenuItem("Thunder");
+		JMenuItem Warrior = new JMenuItem("Warrior");
+		JMenuItem WingedBeast = new JMenuItem("Winged Beast");
+		JMenuItem Wyrm = new JMenuItem("Wyrm");
+		JMenuItem Zombie = new JMenuItem("Zombie");
+		JMenu mnBanCard = new JMenu("Ban: Card Type");
+		JMenuItem Spell = new JMenuItem("Spells");
+		JMenuItem Trap = new JMenuItem("Traps");
+		JMenuItem ContinSpell = new JMenuItem("Continuous Spells");
+		JMenuItem ContinTrap = new JMenuItem("Continuous Traps");
+		JMenuItem Contin = new JMenuItem("Continuous");
+		JMenuItem Field = new JMenuItem("Field");
+		JMenuItem Quickplay = new JMenuItem("Quickplay");
+		JMenuItem Equip = new JMenuItem("Equip");
+		JMenuItem Counter = new JMenuItem("Counter");
+		JMenu mnBanScore = new JMenu("Ban: Score");
+		JMenuItem lowScore = new JMenuItem("Tier Score < 30");
+		JMenuItem medScore = new JMenuItem("30 < Tier Score < 60");
+		JMenuItem highScore = new JMenuItem("TierScore > 60");
+		JMenuItem veryHighScore = new JMenuItem("TierScore > 75");
+		JMenuItem OP = new JMenuItem("TierScore > 85");
+
+		DraftInit.getContentPane().add(lblOfPlayers); 
+		DraftInit.getContentPane().add(numberOfPlayers);
+		DraftInit.getContentPane().add(lblOfCards); 
+		DraftInit.getContentPane().add(cardsToDraft);
+		DraftInit.getContentPane().add(lblOfRerolls); 
+		DraftInit.getContentPane().add(rerolls);
+		DraftInit.getContentPane().add(lblOfPool);
+		DraftInit.getContentPane().add(fillStyle); 
+			fillStyle.setModel(new DefaultComboBoxModel(new String[] {"Random", "Equal"})); 
 			fillStyle.setEditable(false);
-			fillStyle.setToolTipText("Pool Fill");
-		DraftInit.getContentPane().add(draftStart);
-			lblCardCount.setHorizontalAlignment(SwingConstants.CENTER);
-			lblCardCount.setText("Cards Available: " + totalCards);
+		DraftInit.getContentPane().add(draftStart); 
 		DraftInit.getContentPane().add(lblCardCount);
+			lblCardCount.setHorizontalAlignment(SwingConstants.CENTER);
 		DraftInit.getContentPane().add(lblUniqueCards);
 		DraftInit.setJMenuBar(menuBar);
-			menuBar.add(mnViewDatabase); menuBar.add(mnBan);
-			viewDatabaseListenerInit(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, allCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon, cardViewer);
-			mnBan.add(blacklist); mnBan.add(mnBanAll);
-			mnBan.add(mnBanGrouping); mnBan.add(mnBanAttribute);
-			mnBan.add(mnBanType); mnBan.add(mnBanCard); mnBan.add(mnBanScore);
-			
-			mnBanAll.add(ultimateBanner); mnBanAll.add(ultraBanner); 
-			mnBanAll.add(superBanner); mnBanAll.add(rareBanner);
-			mnBanAll.add(commonBanner); mnBan.add(reset);
-			
-			mnBanGrouping.add(AncientGear); mnBanGrouping.add(Archfiend);
-			mnBanGrouping.add(Crashbug); mnBanGrouping.add(Destiny);
-			mnBanGrouping.add(Elemental); mnBanGrouping.add(Exodia);
-			mnBanGrouping.add(Fissure); mnBanGrouping.add(Flip);
-			mnBanGrouping.add(Gishki); mnBanGrouping.add(God);
-			mnBanGrouping.add(Harpies); mnBanGrouping.add(Hazy);
-			mnBanGrouping.add(LV); mnBanGrouping.add(Lightsworn);
-			mnBanGrouping.add(Magnet); mnBanGrouping.add(Monarchs); 
-			mnBanGrouping.add(Naturia); mnBanGrouping.add(Ojama);
-			mnBanGrouping.add(SuperHeavy); mnBanGrouping.add(Creator);
-			mnBanGrouping.add(Toon); mnBanGrouping.add(TrapHole);
-			mnBanGrouping.add(Volcanic); mnBanGrouping.add(Fusion);
-			mnBanGrouping.add(Ritual); mnBanGrouping.add(Draw); 
-			mnBanGrouping.add(Discard); mnBanGrouping.add(EasySummon);
-			mnBanGrouping.add(Limited); mnBanGrouping.add(SemiLimited);
-			mnBanGrouping.add(LowAtk); mnBanGrouping.add(HighAtk);
-			mnBanGrouping.add(LowLvl); mnBanGrouping.add(HighLvl);
-			
-			mnBanAttribute.add(Dark); mnBanAttribute.add(Earth);
-			mnBanAttribute.add(Fire); mnBanAttribute.add(Light);
-			mnBanAttribute.add(Water); mnBanAttribute.add(Wind);
-			
-			mnBanType.add(Aqua); mnBanType.add(Beast); mnBanType.add(BeastWarrior);
-			mnBanType.add(Dinosaur); mnBanType.add(Divine); mnBanType.add(Dragon);
-			mnBanType.add(Fairy); mnBanType.add(Fiend); mnBanType.add(Fish);
-			mnBanType.add(Insect); mnBanType.add(Machine); mnBanType.add(Plant);
-			mnBanType.add(Psychic); mnBanType.add(Pyro); mnBanType.add(Reptile);
-			mnBanType.add(Rock); mnBanType.add(SeaSerpent); mnBanType.add(Spellcaster);
-			mnBanType.add(Thunder); mnBanType.add(Warrior); mnBanType.add(WingedBeast);
-			mnBanType.add(Wyrm); mnBanType.add(Zombie);
-			
-			mnBanCard.add(Spell); mnBanCard.add(Trap); mnBanCard.add(ContinSpell);
-			mnBanCard.add(ContinTrap); mnBanCard.add(Contin); mnBanCard.add(Field);
-			mnBanCard.add(Quickplay); mnBanCard.add(Equip); mnBanCard.add(Counter); 
-			
-			mnBanScore.add(lowScore); mnBanScore.add(medScore); mnBanScore.add(highScore);
-			mnBanScore.add(veryHighScore); mnBanScore.add(OP);
-			
-			// Grey out buttons that don't work yet
-			mnBanCard.setEnabled(false); mnBanScore.setEnabled(false); 
-			cardViewer.setEnabled(false); fillStyle.setEnabled(false);
-			
-			// Grey out ban buttons that currently ban 0 cards
-			Divine.setEnabled(false); Psychic.setEnabled(false);
-			Wyrm.setEnabled(false); Creator.setEnabled(false);
-			Gishki.setEnabled(false); Hazy.setEnabled(false);
-			Volcanic.setEnabled(false); Ojama.setEnabled(false);
-			Magnet.setEnabled(false); God.setEnabled(false);
-			AncientGear.setEnabled(false);
-			
-			blackListenerInit(blacklist, allCards, blackListed, banned, dumbThing, banModel, lblCardCount, lblUniqueCards, DraftInit, mntmUltraRares, mntmSuperRares, mntmRares,
-					mntmCommon, ultimateBanner, ultraBanner, superBanner, rareBanner, commonBanner, mntmNewMenuItem, Monarchs, Fissure, TrapHole, Exodia, Water, Naturia,
-					Toon, Draw, Ritual, Fusion, LowAtk, Limited, SemiLimited, HighAtk, LowLvl, HighLvl, reset, backupAllCards, allCardsNopeDupe, Light, Dark, Wind, Fire, Earth,
-					AncientGear, Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, SuperHeavy, Creator, Volcanic,
-					Discard, EasySummon, Aqua, Beast, BeastWarrior, Dinosaur, Divine, Dragon, Fairy, Fiend, Fish, Insect, Machine, Plant, Psychic, Pyro, Reptile, Rock, SeaSerpent, 
-					Spellcaster, Thunder, Warrior, WingedBeast, Wyrm, Zombie);
-		
+		menuBar.add(mnViewDatabase); menuBar.add(mnBan);
+		viewDatabaseListenerInit(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, allCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon, cardViewer);
+		mnBan.add(blacklist); mnBan.add(mnBanAll);
+		mnBan.add(mnBanGrouping); mnBan.add(mnBanAttribute);
+		mnBan.add(mnBanType); mnBan.add(mnBanCard); mnBan.add(mnBanScore);
+
+		mnBanAll.add(ultimateBanner); mnBanAll.add(ultraBanner); 
+		mnBanAll.add(superBanner); mnBanAll.add(rareBanner);
+		mnBanAll.add(commonBanner); mnBan.add(reset);
+
+		mnBanGrouping.add(AncientGear); mnBanGrouping.add(Archfiend);
+		mnBanGrouping.add(Crashbug); mnBanGrouping.add(Destiny);
+		mnBanGrouping.add(Elemental); mnBanGrouping.add(Exodia);
+		mnBanGrouping.add(Fissure); mnBanGrouping.add(Flip);
+		mnBanGrouping.add(Gishki); mnBanGrouping.add(God);
+		mnBanGrouping.add(Harpies); mnBanGrouping.add(Hazy);
+		mnBanGrouping.add(LV); mnBanGrouping.add(Lightsworn);
+		mnBanGrouping.add(Magnet); mnBanGrouping.add(Monarchs); 
+		mnBanGrouping.add(Naturia); mnBanGrouping.add(Ojama);
+		mnBanGrouping.add(SuperHeavy); mnBanGrouping.add(Creator);
+		mnBanGrouping.add(Toon); mnBanGrouping.add(TrapHole);
+		mnBanGrouping.add(Volcanic); mnBanGrouping.add(Fusion);
+		mnBanGrouping.add(Ritual); mnBanGrouping.add(Draw); 
+		mnBanGrouping.add(Discard); mnBanGrouping.add(EasySummon);
+		mnBanGrouping.add(Limited); mnBanGrouping.add(SemiLimited);
+		mnBanGrouping.add(LowAtk); mnBanGrouping.add(HighAtk);
+		mnBanGrouping.add(LowLvl); mnBanGrouping.add(HighLvl);
+
+		mnBanAttribute.add(Dark); mnBanAttribute.add(Earth);
+		mnBanAttribute.add(Fire); mnBanAttribute.add(Light);
+		mnBanAttribute.add(Water); mnBanAttribute.add(Wind);
+
+		mnBanType.add(Aqua); mnBanType.add(Beast); mnBanType.add(BeastWarrior);
+		mnBanType.add(Dinosaur); mnBanType.add(Divine); mnBanType.add(Dragon);
+		mnBanType.add(Fairy); mnBanType.add(Fiend); mnBanType.add(Fish);
+		mnBanType.add(Insect); mnBanType.add(Machine); mnBanType.add(Plant);
+		mnBanType.add(Psychic); mnBanType.add(Pyro); mnBanType.add(Reptile);
+		mnBanType.add(Rock); mnBanType.add(SeaSerpent); mnBanType.add(Spellcaster);
+		mnBanType.add(Thunder); mnBanType.add(Warrior); mnBanType.add(WingedBeast);
+		mnBanType.add(Wyrm); mnBanType.add(Zombie);
+
+		mnBanCard.add(Spell); mnBanCard.add(Trap); mnBanCard.add(ContinSpell);
+		mnBanCard.add(ContinTrap); mnBanCard.add(Contin); mnBanCard.add(Field);
+		mnBanCard.add(Quickplay); mnBanCard.add(Equip); mnBanCard.add(Counter); 
+
+		mnBanScore.add(lowScore); mnBanScore.add(medScore); mnBanScore.add(highScore);
+		mnBanScore.add(veryHighScore); mnBanScore.add(OP);
+
+		// Grey out buttons that don't work yet
+		mnBanScore.setEnabled(false); 
+		cardViewer.setEnabled(false); fillStyle.setEnabled(false);
+
+		// Grey out ban buttons that currently ban 0 cards
+		Divine.setEnabled(false); Psychic.setEnabled(false);
+		Wyrm.setEnabled(false); Creator.setEnabled(false);
+		Gishki.setEnabled(false); Hazy.setEnabled(false);
+		Volcanic.setEnabled(false); Ojama.setEnabled(false);
+		Magnet.setEnabled(false); God.setEnabled(false);
+		AncientGear.setEnabled(false);
+
+		blackListenerInit(blacklist, allCards, blackListed, banned, dumbThing, banModel, lblCardCount, lblUniqueCards, DraftInit, mntmUltraRares, mntmSuperRares, mntmRares,
+				mntmCommon, ultimateBanner, ultraBanner, superBanner, rareBanner, commonBanner, mntmNewMenuItem, Monarchs, Fissure, TrapHole, Exodia, Water, Naturia,
+				Toon, Draw, Ritual, Fusion, LowAtk, Limited, SemiLimited, HighAtk, LowLvl, HighLvl, reset, backupAllCards, allCardsNopeDupe, Light, Dark, Wind, Fire, Earth,
+				AncientGear, Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, SuperHeavy, Creator, Volcanic,
+				Discard, EasySummon, Aqua, Beast, BeastWarrior, Dinosaur, Divine, Dragon, Fairy, Fiend, Fish, Insect, Machine, Plant, Psychic, Pyro, Reptile, Rock, SeaSerpent, 
+				Spellcaster, Thunder, Warrior, WingedBeast, Wyrm, Zombie, Spell, Trap, Contin, ContinSpell, ContinTrap, Field, Quickplay, Equip, Counter);
+
 		// End primary window components
-			
-		
+
+
 		// Init main draft window
 		draftStart.addActionListener(new ActionListener() 
 		{
@@ -321,7 +327,7 @@ public class CardPool_GUI_1_Stable {
 			{
 				DraftInit.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 				// Final Draft Variable Init
-				int playerCountLocal = (Integer) spinner.getValue();
+				int playerCountLocal = (Integer) numberOfPlayers.getValue();
 				int cardsToDraftLocal = (Integer) cardsToDraft.getValue();
 				int rerollsLocal = (Integer) rerolls.getValue();
 				boolean urItem = mntmNewMenuItem.isEnabled();
@@ -332,39 +338,39 @@ public class CardPool_GUI_1_Stable {
 				menuBar.remove(mnBan);
 				mnViewDatabase.removeAll();
 				DraftInit.getContentPane().removeAll();	
-				
-				DraftInit.setLayout(new GridBagLayout());
+
+				DraftInit.getContentPane().setLayout(new GridBagLayout());
 				GridBagConstraints c = new GridBagConstraints();
 				c.fill = GridBagConstraints.HORIZONTAL;
-	
-				
-				
-				
+
+
+
+
 				JButton viewDeck = new JButton("View Deck");
 				JButton reroll = new JButton("Reroll"); if (rerollsLocal == 0) { reroll.setEnabled(false); }
-				
+
 				// Change pool fill based on selection made in primary window
 				String fillStyleString = fillStyle.getSelectedItem().toString();
 				if (fillStyleString == "Random") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
 				else if (fillStyleString == "Equal") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
 				else { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
-							
+
 				int defPoolSize = draftPools.get(playerDrafting).size();
-			
+
 				// Fills up an array used to display the correct database of cards during the draft (banned cards removed)
 				ArrayList<Card> draftAllCards = new ArrayList<Card>();
 				for (int d = 0; d < draftPools.size(); d++) { for (int e = 0; e < draftPools.get(d).size(); e++) { draftAllCards.add(draftPools.get(d).get(e)); } }
 				cardCounter(draftAllCards);
 				draftAllCards.sort(draftAllCards.get(0));
-				
+
 				// Sets up the database view menu again after rechecking the database contents
 				viewDatabaseListenerReinit(mnViewDatabase, draftAllCards, urItem, ulrItem, srItem, rItem, cItem);
-				
+
 				// Setup the arrays used for the draft - drafted holds the current players drafted cards, threeChoiceTemp holds the three picks at any given pick
 				drafted.clear();
 				removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
 				threeChoiceTemp = picks(draftPools.get(playerDrafting), drafted, 3);
-				
+
 				// Setup the card image buttons - looks to fill images with the Small.png suffix first, standardized images for this part of the draft ideally 310x450
 				JButton cardPick1 = new JButton(); ImageIcon coh = null;
 				JButton cardPick2 = new JButton(); ImageIcon bewd = null;
@@ -375,7 +381,7 @@ public class CardPool_GUI_1_Stable {
 				else { bewd = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); } cardPick2.setIcon(bewd);
 				if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 				else { exodia = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); } cardPick3.setIcon(exodia);
-				
+
 				// Setup the labels on the draft window
 				JLabel pickCounter = new JLabel("Pick " + pickNumber + "/" + cardsToDraftLocal);
 				JLabel poolCardCount = new JLabel("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
@@ -383,7 +389,7 @@ public class CardPool_GUI_1_Stable {
 				JLabel pick1Rarity = new JLabel(threeChoiceTemp.get(0).getRarity()); textColor(threeChoiceTemp.get(0), pick1Rarity);
 				JLabel pick2Rarity = new JLabel(threeChoiceTemp.get(1).getRarity()); textColor(threeChoiceTemp.get(1), pick2Rarity);
 				JLabel pick3Rarity = new JLabel(threeChoiceTemp.get(2).getRarity()); textColor(threeChoiceTemp.get(2), pick3Rarity);
-				
+
 				// Adding everything to the draft window
 				c.insets = new Insets(0,10,10,10); 
 				c.weightx = 0.5;  c.gridx = 1; c.gridy = 0; playerDraftLbl.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(playerDraftLbl, c);
@@ -397,9 +403,9 @@ public class CardPool_GUI_1_Stable {
 				c.gridx = 1; c.gridy = 2; pick2Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Rarity, c); 
 				c.gridx = 2; c.gridy = 2; pick3Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Rarity, c);
 				c.gridx = 1; c.gridy = 4; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolCardCount, c);
-				
-				 
-				
+
+
+
 				// Button Listeners for the draft window - cardPick listeners handle most of the draft logic	
 				cardPick1.addActionListener(new ActionListener() 
 				{
@@ -414,34 +420,34 @@ public class CardPool_GUI_1_Stable {
 							drafted.get(drafted.size() - 1).setQuantity(1);		
 							cardCounter(drafted); drafted.sort(drafted.get(0));
 							picksVoid(draftPools.get(playerDrafting), drafted, 3, threeChoiceTemp);
-								
+
 							ImageIcon coh2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 							else { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
 							cardPick1.setIcon(coh2);
-							
+
 							ImageIcon bewd2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd2 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 							else { bewd2 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
 							cardPick2.setIcon(bewd2);
-							
+
 							ImageIcon exodia2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 							else { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 							cardPick3.setIcon(exodia2);		
-							
+
 							pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
 							pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
 							pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
 							textColor(threeChoiceTemp.get(0), pick1Rarity);
 							textColor(threeChoiceTemp.get(1), pick2Rarity);
 							textColor(threeChoiceTemp.get(2), pick3Rarity);
-							
+
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
-							
+
 							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
-							
+
 							if (pickNumber > cardsToDraftLocal)
 							{
 								draftDecks.get(playerDrafting).clear();
@@ -449,11 +455,11 @@ public class CardPool_GUI_1_Stable {
 								cardCounter(draftDecks.get(playerDrafting));
 								draftDecks.get(playerDrafting).sort(drafted.get(0));
 							}
-							
-							
+
+
 							if (pickNumber > cardsToDraftLocal)
 							{
-								
+
 								playerDrafting++;
 								playerDraftLbl.setText("Player: " + (playerDrafting + 1) + " drafting");
 								if (playerDrafting < playerCountLocal)
@@ -468,19 +474,19 @@ public class CardPool_GUI_1_Stable {
 									if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 									else { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
 									cardPick1.setIcon(coh2);
-									
+
 									ImageIcon bewd3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 									else { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
 									cardPick2.setIcon(bewd2);
-									
+
 									ImageIcon exodia3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 									cardPick3.setIcon(exodia2);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
-									
+
 									pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
 									pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
 									pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
@@ -495,48 +501,48 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.setBounds(100, 100, 496, 443);
 									finalFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-									
+
 									JButton viewDeckOf = new JButton("View Deck");
 									JButton viewStats = new JButton("Deck Stats");
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
 									{
-										case 1:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1"}));
-											break;
-										case 2:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2"}));
-											break;
-										case 3:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3"}));
-											break;
-										case 4:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4"}));
-											break;
-										case 5:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5"}));
-											break;
-										case 6:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"}));
-											break;
-										case 7:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7"}));
-											break;
-										case 8:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"}));
-											break;
-										case 9:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9"}));
-											break;
-										case 10:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
-											break;
-										default: 
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
-											break;
+									case 1:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1"}));
+										break;
+									case 2:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2"}));
+										break;
+									case 3:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3"}));
+										break;
+									case 4:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4"}));
+										break;
+									case 5:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5"}));
+										break;
+									case 6:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"}));
+										break;
+									case 7:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7"}));
+										break;
+									case 8:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"}));
+										break;
+									case 9:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9"}));
+										break;
+									case 10:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
+										break;
+									default: 
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
+										break;
 									}
-									
+
 									viewDeckOf.addActionListener(new ActionListener() 
 									{
 										public void actionPerformed(ActionEvent arg0) 
@@ -600,9 +606,9 @@ public class CardPool_GUI_1_Stable {
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
 										}
-										
+
 									});
-									
+
 									viewStats.addActionListener(new ActionListener() 
 									{
 										public void actionPerformed(ActionEvent arg0) 
@@ -627,21 +633,21 @@ public class CardPool_GUI_1_Stable {
 												deckScore += (card.getTierScore() * card.getQuantity());
 												switch (card.getRarity())
 												{
-													case "Ultimate Rare":
-														ultimates++; break;
-													case "Ultra Rare":
-														ultras++; break;
-													case "Super Rare":
-														supers++; break;
-													case "Rare":
-														rares++; break;
-													case "Common":
-														commons++; break;
-													default:
-														break;
+												case "Ultimate Rare":
+													ultimates++; break;
+												case "Ultra Rare":
+													ultras++; break;
+												case "Super Rare":
+													supers++; break;
+												case "Rare":
+													rares++; break;
+												case "Common":
+													commons++; break;
+												default:
+													break;
 												}
 											}
-											
+
 											for (Card card : allCardsNoDupes)
 											{
 												if (card.getTierScore() < highCard.getTierScore() && card.getTierScore() > highCard2.getTierScore())
@@ -649,7 +655,7 @@ public class CardPool_GUI_1_Stable {
 													highCard2 = card;
 												}
 											}
-											
+
 											for (Card card : allCardsNoDupes)
 											{
 												if (card.getTierScore() < highCard2.getTierScore() && card.getTierScore() > highCard3.getTierScore())
@@ -657,7 +663,7 @@ public class CardPool_GUI_1_Stable {
 													highCard3 = card;
 												}
 											}
-											
+
 											int avgCardScore = deckScore / cardsToDraftLocal;
 											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
@@ -665,29 +671,29 @@ public class CardPool_GUI_1_Stable {
 													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
 													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
 													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
-											
+
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
-											
+
 										}
 									});
-									
-									
+
+
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
 									finalFrame.getContentPane().add(viewStats);
-									
+
 									finalFrame.pack();
 									finalFrame.setVisible(true);
 									DraftInit.setVisible(false);
-									
+
 								}
 							}
-							
+
 							DraftInit.revalidate(); DraftInit.repaint();
 						}
-						
+
 					}
 				});
 				cardPick2.addActionListener(new ActionListener() 
@@ -703,34 +709,34 @@ public class CardPool_GUI_1_Stable {
 							drafted.get(drafted.size() - 1).setQuantity(1);		
 							cardCounter(drafted); drafted.sort(drafted.get(0));
 							picksVoid(draftPools.get(playerDrafting), drafted, 3, threeChoiceTemp);
-								
+
 							ImageIcon coh2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 							else { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
 							cardPick1.setIcon(coh2);
-							
+
 							ImageIcon bewd2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd2 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 							else { bewd2 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
 							cardPick2.setIcon(bewd2);
-							
+
 							ImageIcon exodia2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 							else { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 							cardPick3.setIcon(exodia2);			
-							
+
 							pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
 							pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
 							pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
 							textColor(threeChoiceTemp.get(0), pick1Rarity);
 							textColor(threeChoiceTemp.get(1), pick2Rarity);
 							textColor(threeChoiceTemp.get(2), pick3Rarity);
-							
+
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
-							
+
 							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
-							
+
 							if (pickNumber > cardsToDraftLocal)
 							{
 								draftDecks.get(playerDrafting).clear();
@@ -738,7 +744,7 @@ public class CardPool_GUI_1_Stable {
 								cardCounter(draftDecks.get(playerDrafting));
 								draftDecks.get(playerDrafting).sort(drafted.get(0));
 							}
-							
+
 							if (pickNumber > cardsToDraftLocal)
 							{
 								playerDrafting++;
@@ -755,19 +761,19 @@ public class CardPool_GUI_1_Stable {
 									if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 									else { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
 									cardPick1.setIcon(coh2);
-									
+
 									ImageIcon bewd3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 									else { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
 									cardPick2.setIcon(bewd2);
-									
+
 									ImageIcon exodia3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 									cardPick3.setIcon(exodia2);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
-									
+
 									pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
 									pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
 									pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
@@ -782,48 +788,48 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.setBounds(100, 100, 496, 443);
 									finalFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-									
+
 									JButton viewDeckOf = new JButton("View Deck");
 									JButton viewStats = new JButton("Deck Stats");
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
 									{
-										case 1:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1"}));
-											break;
-										case 2:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2"}));
-											break;
-										case 3:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3"}));
-											break;
-										case 4:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4"}));
-											break;
-										case 5:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5"}));
-											break;
-										case 6:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"}));
-											break;
-										case 7:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7"}));
-											break;
-										case 8:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"}));
-											break;
-										case 9:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9"}));
-											break;
-										case 10:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
-											break;
-										default: 
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
-											break;
+									case 1:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1"}));
+										break;
+									case 2:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2"}));
+										break;
+									case 3:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3"}));
+										break;
+									case 4:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4"}));
+										break;
+									case 5:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5"}));
+										break;
+									case 6:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"}));
+										break;
+									case 7:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7"}));
+										break;
+									case 8:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"}));
+										break;
+									case 9:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9"}));
+										break;
+									case 10:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
+										break;
+									default: 
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
+										break;
 									}
-									
+
 									viewDeckOf.addActionListener(new ActionListener() 
 									{
 										public void actionPerformed(ActionEvent arg0) 
@@ -887,9 +893,9 @@ public class CardPool_GUI_1_Stable {
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
 										}
-										
+
 									});
-									
+
 									viewStats.addActionListener(new ActionListener() 
 									{
 										public void actionPerformed(ActionEvent arg0) 
@@ -914,21 +920,21 @@ public class CardPool_GUI_1_Stable {
 												deckScore += (card.getTierScore() * card.getQuantity());
 												switch (card.getRarity())
 												{
-													case "Ultimate Rare":
-														ultimates++; break;
-													case "Ultra Rare":
-														ultras++; break;
-													case "Super Rare":
-														supers++; break;
-													case "Rare":
-														rares++; break;
-													case "Common":
-														commons++; break;
-													default:
-														break;
+												case "Ultimate Rare":
+													ultimates++; break;
+												case "Ultra Rare":
+													ultras++; break;
+												case "Super Rare":
+													supers++; break;
+												case "Rare":
+													rares++; break;
+												case "Common":
+													commons++; break;
+												default:
+													break;
 												}
 											}
-											
+
 											for (Card card : allCardsNoDupes)
 											{
 												if (card.getTierScore() < highCard.getTierScore() && card.getTierScore() > highCard2.getTierScore())
@@ -936,7 +942,7 @@ public class CardPool_GUI_1_Stable {
 													highCard2 = card;
 												}
 											}
-											
+
 											for (Card card : allCardsNoDupes)
 											{
 												if (card.getTierScore() < highCard2.getTierScore() && card.getTierScore() > highCard3.getTierScore())
@@ -944,7 +950,7 @@ public class CardPool_GUI_1_Stable {
 													highCard3 = card;
 												}
 											}
-											
+
 											int avgCardScore = deckScore / cardsToDraftLocal;
 											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
@@ -952,27 +958,27 @@ public class CardPool_GUI_1_Stable {
 													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
 													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
 													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
-											
+
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
-											
+
 										}
 									});
-									
-									
-									
+
+
+
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
 									finalFrame.getContentPane().add(viewStats);
-									
+
 									finalFrame.pack();
 									finalFrame.setVisible(true);
 									DraftInit.setVisible(false);
-									
+
 								}
 							}
-							
+
 							DraftInit.revalidate(); DraftInit.repaint();
 						}
 					}
@@ -990,34 +996,34 @@ public class CardPool_GUI_1_Stable {
 							drafted.get(drafted.size() - 1).setQuantity(1);		
 							cardCounter(drafted); drafted.sort(drafted.get(0));
 							picksVoid(draftPools.get(playerDrafting), drafted, 3, threeChoiceTemp);
-								
+
 							ImageIcon coh2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 							else { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
 							cardPick1.setIcon(coh2);
-							
+
 							ImageIcon bewd2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd2 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 							else { bewd2 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
 							cardPick2.setIcon(bewd2);
-							
+
 							ImageIcon exodia2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 							else { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 							cardPick3.setIcon(exodia2);			
-							
+
 							pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
 							pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
 							pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
 							textColor(threeChoiceTemp.get(0), pick1Rarity);
 							textColor(threeChoiceTemp.get(1), pick2Rarity);
 							textColor(threeChoiceTemp.get(2), pick3Rarity);
-							
+
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
-							
+
 							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
-							
+
 							if (pickNumber > cardsToDraftLocal)
 							{
 								draftDecks.get(playerDrafting).clear();
@@ -1025,7 +1031,7 @@ public class CardPool_GUI_1_Stable {
 								cardCounter(draftDecks.get(playerDrafting));
 								draftDecks.get(playerDrafting).sort(drafted.get(0));
 							}
-							
+
 							if (pickNumber > cardsToDraftLocal)
 							{
 								playerDrafting++;
@@ -1042,19 +1048,19 @@ public class CardPool_GUI_1_Stable {
 									if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 									else { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
 									cardPick1.setIcon(coh2);
-									
+
 									ImageIcon bewd3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 									else { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
 									cardPick2.setIcon(bewd2);
-									
+
 									ImageIcon exodia3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 									cardPick3.setIcon(exodia2);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
-									
+
 									pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
 									pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
 									pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
@@ -1069,48 +1075,48 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.setBounds(100, 100, 496, 443);
 									finalFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-									
+
 									JButton viewDeckOf = new JButton("View Deck");
 									JButton viewStats = new JButton("Deck Stats");
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
 									{
-										case 1:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1"}));
-											break;
-										case 2:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2"}));
-											break;
-										case 3:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3"}));
-											break;
-										case 4:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4"}));
-											break;
-										case 5:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5"}));
-											break;
-										case 6:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"}));
-											break;
-										case 7:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7"}));
-											break;
-										case 8:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"}));
-											break;
-										case 9:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9"}));
-											break;
-										case 10:
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
-											break;
-										default: 
-											playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
-											break;
+									case 1:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1"}));
+										break;
+									case 2:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2"}));
+										break;
+									case 3:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3"}));
+										break;
+									case 4:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4"}));
+										break;
+									case 5:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5"}));
+										break;
+									case 6:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"}));
+										break;
+									case 7:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7"}));
+										break;
+									case 8:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"}));
+										break;
+									case 9:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9"}));
+										break;
+									case 10:
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
+										break;
+									default: 
+										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
+										break;
 									}
-									
+
 									viewDeckOf.addActionListener(new ActionListener() 
 									{
 										public void actionPerformed(ActionEvent arg0) 
@@ -1174,9 +1180,9 @@ public class CardPool_GUI_1_Stable {
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
 										}
-										
+
 									});
-									
+
 									viewStats.addActionListener(new ActionListener() 
 									{
 										public void actionPerformed(ActionEvent arg0) 
@@ -1201,21 +1207,21 @@ public class CardPool_GUI_1_Stable {
 												deckScore += (card.getTierScore() * card.getQuantity());
 												switch (card.getRarity())
 												{
-													case "Ultimate Rare":
-														ultimates++; break;
-													case "Ultra Rare":
-														ultras++; break;
-													case "Super Rare":
-														supers++; break;
-													case "Rare":
-														rares++; break;
-													case "Common":
-														commons++; break;
-													default:
-														break;
+												case "Ultimate Rare":
+													ultimates++; break;
+												case "Ultra Rare":
+													ultras++; break;
+												case "Super Rare":
+													supers++; break;
+												case "Rare":
+													rares++; break;
+												case "Common":
+													commons++; break;
+												default:
+													break;
 												}
 											}
-											
+
 											for (Card card : allCardsNoDupes)
 											{
 												if (card.getTierScore() < highCard.getTierScore() && card.getTierScore() > highCard2.getTierScore())
@@ -1223,7 +1229,7 @@ public class CardPool_GUI_1_Stable {
 													highCard2 = card;
 												}
 											}
-											
+
 											for (Card card : allCardsNoDupes)
 											{
 												if (card.getTierScore() < highCard2.getTierScore() && card.getTierScore() > highCard3.getTierScore())
@@ -1231,7 +1237,7 @@ public class CardPool_GUI_1_Stable {
 													highCard3 = card;
 												}
 											}
-											
+
 											int avgCardScore = deckScore / cardsToDraftLocal;
 											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
@@ -1239,36 +1245,36 @@ public class CardPool_GUI_1_Stable {
 													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
 													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
 													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
-											
+
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
-											
+
 										}
 									});
-									
-									
-									
+
+
+
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
 									finalFrame.getContentPane().add(viewStats);
-									
+
 									finalFrame.pack();
 									finalFrame.setVisible(true);
 									DraftInit.setVisible(false);
-									
+
 								}
 							}
-							
+
 							DraftInit.revalidate(); DraftInit.repaint();
 						}
 					}
 				});	
-				
-				
-				
-				
-				
+
+
+
+
+
 				reroll.addActionListener(new ActionListener() 
 				{
 					public void actionPerformed(ActionEvent arg0) 
@@ -1279,34 +1285,34 @@ public class CardPool_GUI_1_Stable {
 							draftPools.remove(threeChoiceTemp.get(1));
 							draftPools.remove(threeChoiceTemp.get(2));
 							picksVoid(draftPools.get(playerDrafting), drafted, 3, threeChoiceTemp);
-							
+
 							ImageIcon coh2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 							else { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
 							cardPick1.setIcon(coh2);
-							
+
 							ImageIcon bewd2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd2 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 							else { bewd2 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
 							cardPick2.setIcon(bewd2);
-							
+
 							ImageIcon exodia2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 							else { exodia2 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
 							cardPick3.setIcon(exodia2);			
-							
+
 							pick1Rarity.setText(threeChoiceTemp.get(0).getRarity());
 							pick2Rarity.setText(threeChoiceTemp.get(1).getRarity());
 							pick3Rarity.setText(threeChoiceTemp.get(2).getRarity());
 							textColor(threeChoiceTemp.get(0), pick1Rarity);
 							textColor(threeChoiceTemp.get(1), pick2Rarity);
 							textColor(threeChoiceTemp.get(2), pick3Rarity);
-							
+
 							rerollsSoFar++;
 							if (canReroll(rerollsSoFar, rerollsLocal) == false) { reroll.setEnabled(false); }
-							
+
 							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
-							
+
 							DraftInit.revalidate(); DraftInit.repaint();
 						}
 						else
@@ -1388,15 +1394,15 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.setVisible(true);
 			}
 		});
-		
-		
+
+
 
 	}
 	// END MAIN
-	
-	
+
+
 	// METHODS
-	
+
 
 	// Feed yugiohdatabase.txt database into the program
 	// Second method does some updates to the text of cards missing text
@@ -1426,14 +1432,14 @@ public class CardPool_GUI_1_Stable {
 					lvl = Integer.parseInt(input[5]);	quantity = Integer.parseInt(input[6]);
 					limit = Integer.parseInt(input[15]);	crosslimit = input[16];
 					rarity = input[19];	text = input[20];	synergies = input[21];
-					if (input[8] == "true") { monster = true; }	else { monster = false; }
-					if (input[10] == "true") { contin = true; }	else { contin = false; }
-					if (input[11] == "true") { quickplay = true; }	else { quickplay = false; }
-					if (input[12] == "true") { counter = true; }	else { counter = false; }
-					if (input[13] == "true") { field = true; }	else { field = false; }
-					if (input[14] == "true") { equip = true; }	else { equip = false; }
-					if (input[17] == "true") { ritual = true; }	else { ritual = false; }
-					if (input[18] == "true") { normal = true; }	else { normal = false; }
+					if (input[8].equals("true")) { monster = true; }	else { monster = false; }
+					if (input[10].equals("true")) { contin = true; }	else { contin = false; }
+					if (input[11].equals("true")) { quickplay = true; }	else { quickplay = false; }
+					if (input[12].equals("true")) { counter = true; }	else { counter = false; }
+					if (input[13].equals("true")) { field = true; }	else { field = false; }
+					if (input[14].equals("true")) { equip = true; }	else { equip = false; }
+					if (input[17].equals("true")) { ritual = true; }	else { ritual = false; }
+					if (input[18].equals("true")) { normal = true; }	else { normal = false; }
 
 					Card newCard = new Card(name, attribute, type, cardType, text, crosslimit, rarity, synergies, atk, def, lvl, tierScore, limit, quantity, monster, contin, quickplay, counter, field, equip, ritual, normal);
 
@@ -1586,22 +1592,22 @@ public class CardPool_GUI_1_Stable {
 		{
 			checker = true;
 			if (temp.size() == 0) { Card tempCard2 = new Card("temp"); temp.add(tempCard2); }
-			
-				for (int i = 0; i < temp.size(); i++)
-				{
-					if (pool.get(k).getName().equals(temp.get(i).getName()))
-					{
-						checker = false; i = temp.size();
-					}
-				}
 
-				if (checker) 
-				{ 
-					int howMany = howManyCards(pool, pool.get(k));
-					Card newCard = new Card(pool.get(k), howMany); 
-					temp.add(newCard); 
+			for (int i = 0; i < temp.size(); i++)
+			{
+				if (pool.get(k).getName().equals(temp.get(i).getName()))
+				{
+					checker = false; i = temp.size();
 				}
-			
+			}
+
+			if (checker) 
+			{ 
+				int howMany = howManyCards(pool, pool.get(k));
+				Card newCard = new Card(pool.get(k), howMany); 
+				temp.add(newCard); 
+			}
+
 			for (Card card : temp) { if (card.getName().equals("temp")) { temp.remove(card); } }
 		}
 
@@ -1657,26 +1663,26 @@ public class CardPool_GUI_1_Stable {
 				Card dumbo = new Card("dumbo");
 				temp.add(dumbo);
 			}
-			
-			
-				for (int i = 0; i < temp.size(); i++)
-				{
-					if (pool.get(k).getName().equals(temp.get(i).getName()))
-					{
-						checker = false; i = temp.size();
-					}
-				}
 
-				if (checker) 
+
+			for (int i = 0; i < temp.size(); i++)
+			{
+				if (pool.get(k).getName().equals(temp.get(i).getName()))
 				{
-					int howMany = howManyCards(pool, pool.get(k));
-					Card newCard = new Card(pool.get(k), howMany); 
-					if (newCard.getRarity().equals(rarity))
-					{
-						temp.add(newCard); 
-					}
+					checker = false; i = temp.size();
 				}
-			
+			}
+
+			if (checker) 
+			{
+				int howMany = howManyCards(pool, pool.get(k));
+				Card newCard = new Card(pool.get(k), howMany); 
+				if (newCard.getRarity().equals(rarity))
+				{
+					temp.add(newCard); 
+				}
+			}
+
 		}
 
 
@@ -1818,36 +1824,36 @@ public class CardPool_GUI_1_Stable {
 	// Generates a list of 'random' picks from draftPool
 	// Makes sure those cards exist in the pool, are not duplicates of each other and picking any of them should not break deck limits
 	static void picksVoid(ArrayList<Card> draftPool, ArrayList<Card> deck, int choices, ArrayList<Card> threePicks)
-		{
-			ArrayList<Card> picks = new ArrayList<Card>();
-			Card temp = new Card();
-			boolean rolling = true;
-			String common = "Common";
-			String rare = "Rare";
-			String superR = "Super Rare";
-			String ultra = "Ultra Rare";
-			String ultimate = "Ultimate Rare";
-			String roll = "";
-			String seedValue = "";
+	{
+		ArrayList<Card> picks = new ArrayList<Card>();
+		Card temp = new Card();
+		boolean rolling = true;
+		String common = "Common";
+		String rare = "Rare";
+		String superR = "Super Rare";
+		String ultra = "Ultra Rare";
+		String ultimate = "Ultimate Rare";
+		String roll = "";
+		String seedValue = "";
 
-			for (int i = 0; i < choices; i++)
+		for (int i = 0; i < choices; i++)
+		{
+			rolling = true;
+			while (rolling)
 			{
-				rolling = true;
-				while (rolling)
-				{
-					int seed = oneKDie();
-					if ((seed < 850) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
-					else if ((seed >= 850 && seed < 925) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
-					else if ((seed >= 925 && seed < 980) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
-					else if ((seed >= 980 && seed < 995) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
-					else if ((seed >= 995 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
-					// Backup
-					else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
-				}
+				int seed = oneKDie();
+				if ((seed < 850) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
+				else if ((seed >= 850 && seed < 925) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
+				else if ((seed >= 925 && seed < 980) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
+				else if ((seed >= 980 && seed < 995) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
+				else if ((seed >= 995 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
+				// Backup
+				else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
 			}
-			copyPoolVoid(picks, threePicks);
 		}
-	
+		copyPoolVoid(picks, threePicks);
+	}
+
 
 	// Returns a number between 1-1000
 	static int oneKDie()
@@ -1957,7 +1963,7 @@ public class CardPool_GUI_1_Stable {
 			if (card.getName().equals(drafted.get(i).getName()))
 			{
 				if (drafted.get(i).getQuantity() >= drafted.get(i).getLimit())
-				//if (drafted.get(i).getQuantity() >= 3 || drafted.get(i).getQuantity() >= drafted.get(i).getLimit())
+					//if (drafted.get(i).getQuantity() >= 3 || drafted.get(i).getQuantity() >= drafted.get(i).getLimit())
 				{
 					checker = false;
 				}
@@ -1966,7 +1972,7 @@ public class CardPool_GUI_1_Stable {
 
 		return checker;
 	}
-	
+
 	// Checks to make sure all the choices presented are unique from one another
 	static boolean noDupes(ArrayList<Card> picks, Card card)
 	{
@@ -1982,21 +1988,926 @@ public class CardPool_GUI_1_Stable {
 
 		return checker;
 	}
-	
-	// All the listeners for the ban: attributes sub menu
-		static void banTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Aqua,
-				JMenuItem Beast, JMenuItem BeastWarrior, JMenuItem Dinosaur, JMenuItem Divine, JMenuItem Dragon, JMenuItem Fairy, JMenuItem Fiend, JMenuItem Fish, JMenuItem Insect,
-				JMenuItem Machine, JMenuItem Plant, JMenuItem Psychic, JMenuItem Pyro, JMenuItem Reptile, JMenuItem Rock, JMenuItem SeaSerpent, JMenuItem Spellcaster,
-				JMenuItem Thunder, JMenuItem Warrior, JMenuItem WingedBeast, JMenuItem Wyrm, JMenuItem Zombie)
+
+	// All the listeners for the ban: types sub menu
+	static void banTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Aqua,
+			JMenuItem Beast, JMenuItem BeastWarrior, JMenuItem Dinosaur, JMenuItem Divine, JMenuItem Dragon, JMenuItem Fairy, JMenuItem Fiend, JMenuItem Fish, JMenuItem Insect,
+			JMenuItem Machine, JMenuItem Plant, JMenuItem Psychic, JMenuItem Pyro, JMenuItem Reptile, JMenuItem Rock, JMenuItem SeaSerpent, JMenuItem Spellcaster,
+			JMenuItem Thunder, JMenuItem Warrior, JMenuItem WingedBeast, JMenuItem Wyrm, JMenuItem Zombie)
+	{
+		Aqua.addActionListener(new ActionListener() 
 		{
-			Aqua.addActionListener(new ActionListener() 
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Aqua")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Aqua.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Beast.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Beast")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Beast.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		BeastWarrior.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Beast-Warrior")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				BeastWarrior.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Dinosaur.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Dinosaur")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Dinosaur.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Divine.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Divine-Beast")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Divine.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Dragon.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Dragon")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Dragon.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Fairy.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Fairy")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Fairy.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Fiend.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Fiend")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Fiend.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Fish.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Fish")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Fish.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Insect.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Insect")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Insect.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Machine.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Machine")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Machine.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Plant.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Plant")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Plant.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Psychic.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Psychic")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Psychic.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Pyro.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Pyro")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Pyro.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Reptile.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Reptile")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Reptile.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Rock.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Rock")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Rock.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+
+		SeaSerpent.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Sea Serpent")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				SeaSerpent.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Spellcaster.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Spellcaster")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Spellcaster.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Thunder.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Thunder")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Thunder.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Warrior.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Warrior")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Warrior.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		WingedBeast.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Winged Beast")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				WingedBeast.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Wyrm.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Wyrm")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Wyrm.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+		Zombie.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getType().equals("Zombie")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Zombie.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+
+	}
+
+	
+	// All the listeners for the ban: card type sub menu
+		static void banCardTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Spell,
+				JMenuItem Trap, JMenuItem Contin, JMenuItem ContinSpell, JMenuItem ContinTrap, JMenuItem Field, JMenuItem Quickplay, JMenuItem Equip, JMenuItem Counter)
+		{
+			Spell.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Aqua")) 
+						if (allCards.get(a).getCardType().equals("Spell")) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2018,7 +2929,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					Aqua.setEnabled(false);
+					Spell.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2028,14 +2939,14 @@ public class CardPool_GUI_1_Stable {
 				}
 			});
 			
-			Beast.addActionListener(new ActionListener() 
+			Trap.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Beast")) 
+						if (allCards.get(a).getCardType().equals("Trap")) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2057,7 +2968,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					Beast.setEnabled(false);
+					Trap.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2067,14 +2978,14 @@ public class CardPool_GUI_1_Stable {
 				}
 			});
 			
-			BeastWarrior.addActionListener(new ActionListener() 
+			Contin.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Beast-Warrior")) 
+						if (allCards.get(a).isContin()) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2096,7 +3007,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					BeastWarrior.setEnabled(false);
+					Contin.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2106,14 +3017,14 @@ public class CardPool_GUI_1_Stable {
 				}
 			});
 			
-			Dinosaur.addActionListener(new ActionListener() 
+			ContinSpell.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Dinosaur")) 
+						if ((allCards.get(a).isContin()) && (allCards.get(a).getCardType().equals("Spell"))) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2135,7 +3046,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					Dinosaur.setEnabled(false);
+					ContinSpell.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2145,14 +3056,14 @@ public class CardPool_GUI_1_Stable {
 				}
 			});
 			
-			Divine.addActionListener(new ActionListener() 
+			ContinTrap.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Divine-Beast")) 
+						if (allCards.get(a).isContin() && allCards.get(a).getCardType().equals("Trap")) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2174,7 +3085,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					Divine.setEnabled(false);
+					ContinTrap.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2184,14 +3095,14 @@ public class CardPool_GUI_1_Stable {
 				}
 			});
 			
-			Dragon.addActionListener(new ActionListener() 
+			Field.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Dragon")) 
+						if (allCards.get(a).isField()) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2213,7 +3124,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					Dragon.setEnabled(false);
+					Field.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2223,14 +3134,14 @@ public class CardPool_GUI_1_Stable {
 				}
 			});
 			
-			Fairy.addActionListener(new ActionListener() 
+			Quickplay.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Fairy")) 
+						if (allCards.get(a).isQuickplay()) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2252,7 +3163,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					Fairy.setEnabled(false);
+					Quickplay.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2262,14 +3173,14 @@ public class CardPool_GUI_1_Stable {
 				}
 			});
 			
-			Fiend.addActionListener(new ActionListener() 
+			Equip.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Fiend")) 
+						if (allCards.get(a).isEquip()) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2291,7 +3202,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					Fiend.setEnabled(false);
+					Equip.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2301,14 +3212,14 @@ public class CardPool_GUI_1_Stable {
 				}
 			});
 			
-			Fish.addActionListener(new ActionListener() 
+			Counter.addActionListener(new ActionListener() 
 			{
 				public void actionPerformed(ActionEvent arg0) 
 				{
-					boolean checker = false;
+					boolean checker = false;                                                                                                                                                                                  
 					for (int a = 0; a < allCards.size(); a++)
 					{
-						if (allCards.get(a).getType().equals("Fish")) 
+						if (allCards.get(a).isCounter()) 
 						{				
 							for (int bm = 0; bm < banModel.getSize(); bm++)
 							{
@@ -2330,7 +3241,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 
-					Fish.setEnabled(false);
+					Counter.setEnabled(false);
 					int totalCards2 = cardCount(allCards);
 					lblCardCount.setText("Cards Available: " + totalCards2);
 					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -2339,557 +3250,10 @@ public class CardPool_GUI_1_Stable {
 					DraftInit.revalidate(); DraftInit.repaint(); 
 				}
 			});
-			
-			Insect.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Insect")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Insect.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Machine.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Machine")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Machine.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Plant.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Plant")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Plant.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Psychic.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Psychic")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Psychic.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Pyro.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Pyro")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Pyro.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Reptile.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Reptile")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Reptile.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Rock.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Rock")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Rock.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			
-			SeaSerpent.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Sea Serpent")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					SeaSerpent.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Spellcaster.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Spellcaster")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Spellcaster.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Thunder.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Thunder")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Thunder.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Warrior.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Warrior")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Warrior.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			WingedBeast.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Winged Beast")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					WingedBeast.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Wyrm.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Wyrm")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Wyrm.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
-			Zombie.addActionListener(new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent arg0) 
-				{
-					boolean checker = false;
-					for (int a = 0; a < allCards.size(); a++)
-					{
-						if (allCards.get(a).getType().equals("Zombie")) 
-						{				
-							for (int bm = 0; bm < banModel.getSize(); bm++)
-							{
-								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
-								{
-									checker = true; 
-								}
-							}
-
-							if (checker == false) 
-							{ 
-								int howMany = howManyCards(allCards, allCards.get(a));
-								Card temp = new Card(allCards.get(a), howMany); 
-								banModel.addElement(temp); 
-							}
-							allCards.remove(a);
-							a = 0;
-							checker = false;
-						}
-					}
-
-					Zombie.setEnabled(false);
-					int totalCards2 = cardCount(allCards);
-					lblCardCount.setText("Cards Available: " + totalCards2);
-					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
-					int totalUnique = allCardsNopeDupe.size();
-					lblUniqueCards.setText("Unique Cards: " + totalUnique);
-					DraftInit.revalidate(); DraftInit.repaint(); 
-				}
-			});
-			
 		}
 	
 	
+
 	// All the listeners for the ban: attributes sub menu
 	static void banAttributeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Water,
 			JMenuItem Fire, JMenuItem Wind, JMenuItem Light, JMenuItem Earth, JMenuItem Dark)
@@ -2898,7 +3262,7 @@ public class CardPool_GUI_1_Stable {
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				boolean checker = false;
+				boolean checker = false;                                                                                                                                                                                  
 				for (int a = 0; a < allCards.size(); a++)
 				{
 					if (allCards.get(a).getAttribute().equals("Water")) 
@@ -2932,7 +3296,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Wind.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -2971,7 +3335,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Light.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3010,7 +3374,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Dark.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3049,7 +3413,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Fire.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3088,7 +3452,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Earth.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3568,7 +3932,7 @@ public class CardPool_GUI_1_Stable {
 			}
 		});
 
-		
+
 
 		LowAtk.addActionListener(new ActionListener() 
 		{
@@ -3725,7 +4089,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		AncientGear.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3764,7 +4128,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Archfiend.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3803,7 +4167,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Crashbug.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3842,7 +4206,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Destiny.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3881,7 +4245,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Elemental.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3920,7 +4284,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Flip.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3959,7 +4323,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Gishki.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -3998,7 +4362,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		God.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4037,7 +4401,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Harpies.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4076,7 +4440,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Hazy.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4115,7 +4479,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		LV.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4154,7 +4518,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Lightsworn.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4193,7 +4557,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Magnet.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4232,7 +4596,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Ojama.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4271,7 +4635,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		SuperHeavy.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4310,7 +4674,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Creator.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4349,7 +4713,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Volcanic.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4388,7 +4752,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		Discard.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4427,7 +4791,7 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.revalidate(); DraftInit.repaint(); 
 			}
 		});
-		
+
 		EasySummon.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -4480,17 +4844,91 @@ public class CardPool_GUI_1_Stable {
 
 				JFrame cardView = new JFrame();	
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMaker(allCards);
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+								System.out.println("Added " + card.getName());
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				/*
+				search.addActionListener(new ActionListener() 
+				{
+					public void actionPerformed(ActionEvent arg0) 
+					{
+						if (searchBar.getText().isEmpty()) 
+						{ 
+							dynamicModel1.clear();
+							for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+							System.out.println("text is empty. Found size: " + found.size() + "\nallCardsNoDupes size: " + allCardsNoDupes.size());
+							//c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+							//c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+							//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
+							cardView.revalidate();
+							cardView.repaint();
+						}
+						else 
+						{
+							System.out.println("text has stuff. text: " + searchBar.getText() + "\nFound size: " + found.size() + "\nallCardsNoDupes size: " + allCardsNoDupes.size());
+							//c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+							//c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+							//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
+							cardView.revalidate();
+							cardView.repaint();
+						}
+					}
+				});
+				*/
+				
+				
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
+							Card selectedCard = (Card) dynamicList.getSelectedValue();
 							JFrame singleCardView = new JFrame();
 							JPanel panel = new JPanel();
 							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
@@ -4507,15 +4945,14 @@ public class CardPool_GUI_1_Stable {
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
+							Card selectedCard = (Card) dynamicList.getSelectedValue();
 							JFrame singleCardView = new JFrame();
 							JPanel panel = new JPanel();
 							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
@@ -4530,11 +4967,15 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
@@ -5415,7 +5856,7 @@ public class CardPool_GUI_1_Stable {
 			}
 		});
 		mnViewDatabase.add(cardViewer);
-		
+
 		cardViewer.setEnabled(false);
 		// End View Database 
 	}
@@ -5433,7 +5874,8 @@ public class CardPool_GUI_1_Stable {
 			JMenuItem Ojama, JMenuItem SuperHeavy, JMenuItem Creator, JMenuItem Volcanic, JMenuItem Discard, JMenuItem EasySummon, JMenuItem Aqua,
 			JMenuItem Beast, JMenuItem BeastWarrior, JMenuItem Dinosaur, JMenuItem Divine, JMenuItem Dragon, JMenuItem Fairy, JMenuItem Fiend, JMenuItem Fish, JMenuItem Insect,
 			JMenuItem Machine, JMenuItem Plant, JMenuItem Psychic, JMenuItem Pyro, JMenuItem Reptile, JMenuItem Rock, JMenuItem SeaSerpent, JMenuItem Spellcaster,
-			JMenuItem Thunder, JMenuItem Warrior, JMenuItem WingedBeast, JMenuItem Wyrm, JMenuItem Zombie)
+			JMenuItem Thunder, JMenuItem Warrior, JMenuItem WingedBeast, JMenuItem Wyrm, JMenuItem Zombie, JMenuItem Spell, JMenuItem Trap, JMenuItem Contin, JMenuItem ContinSpell,
+			JMenuItem ContinTrap, JMenuItem Field, JMenuItem Quickplay, JMenuItem Equip, JMenuItem Counter)
 	{
 		KeyListener keyListener2 = new KeyListener()
 		{
@@ -5464,13 +5906,13 @@ public class CardPool_GUI_1_Stable {
 			@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 		};
 		banned.addKeyListener(keyListener2);
-		
-		
+
+
 		blacklist.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				
+
 				banned.addKeyListener(keyListener2);
 				ArrayList<Card >allCardsNoDupes = listMaker(allCards);
 				DefaultListModel<Card> model = new DefaultListModel<Card>();
@@ -5524,8 +5966,8 @@ public class CardPool_GUI_1_Stable {
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
 				list.addKeyListener(keyListener);
-				
-				
+
+
 
 
 
@@ -5606,14 +6048,14 @@ public class CardPool_GUI_1_Stable {
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				
+
 				Card tempLady = new Card("7 Colored Fish");
 				for (int a = 0; a < allCards.size(); a++)
 				{
 					if (allCards.get(a).getName().equals(tempLady.getName())) { allCards.remove(allCards.get(a)); }
 				}
-				
-				
+
+
 				boolean checker = false;
 				for (int a = 0; a < allCards.size(); a++)
 				{
@@ -5661,8 +6103,8 @@ public class CardPool_GUI_1_Stable {
 				{
 					if (allCards.get(a).getName().equals(tempLady.getName())) { allCards.remove(allCards.get(a)); }
 				}
-				
-				
+
+
 				for (int a = 0; a < allCards.size(); a++)
 				{
 					if (allCards.get(a).getRarity().equals("Rare")) 
@@ -5686,7 +6128,7 @@ public class CardPool_GUI_1_Stable {
 						checker = false;
 					}
 				}
-			
+
 
 				mntmRares.setEnabled(false);
 				rareBanner.setEnabled(false);
@@ -5863,12 +6305,12 @@ public class CardPool_GUI_1_Stable {
 				Pyro.setEnabled(true); Reptile.setEnabled(true); Rock.setEnabled(true);
 				SeaSerpent.setEnabled(true); Spellcaster.setEnabled(true); Thunder.setEnabled(true);
 				Warrior.setEnabled(true); WingedBeast.setEnabled(true); Wyrm.setEnabled(true);
-				Zombie.setEnabled(true); /* Spell.setEnabled(true); Trap.setEnabled(true);
+				Zombie.setEnabled(true);  Spell.setEnabled(true); Trap.setEnabled(true);
 				ContinSpell.setEnabled(true); ContinTrap.setEnabled(true); Contin.setEnabled(true);
 				Quickplay.setEnabled(true); Field.setEnabled(true); Equip.setEnabled(true);
-				Counter.setEnabled(true); lowScore.setEnabled(true); medScore.setEnabled(true);
+				Counter.setEnabled(true); /*lowScore.setEnabled(true); medScore.setEnabled(true);
 				highScore.setEnabled(true); veryHighScore.setEnabled(true); OP.setEnabled(true);
-				*/
+				 */
 				int totalCards2 = cardCount(allCards); lblCardCount.setText("Cards Available: " + totalCards2);
 				int totalUnique = allCardsNopeDupe.size(); lblUniqueCards.setText("Unique Cards: " + totalUnique);
 				DraftInit.revalidate(); DraftInit.repaint();
@@ -5880,16 +6322,19 @@ public class CardPool_GUI_1_Stable {
 				Naturia,  Toon,  Draw, Ritual,  Fusion,  LowAtk,  Limited, SemiLimited,  HighAtk,  LowLvl,  HighLvl, AncientGear, 
 				Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, SuperHeavy,
 				Creator, Volcanic, Discard, EasySummon);	
-		
+
 		banAttributeListenerInit(allCards, banModel, lblCardCount, lblUniqueCards, DraftInit, Water, Fire, Wind, Light, Earth, Dark);
-		
+
 		banTypeListenerInit(allCards, banModel, lblCardCount, lblUniqueCards, DraftInit, Aqua, Beast, BeastWarrior, Dinosaur, Divine,
 				Dragon, Fairy, Fiend, Fish, Insect, Machine, Plant, Psychic, Pyro, Reptile, Rock, SeaSerpent, Spellcaster, Thunder, Warrior,
 				WingedBeast, Wyrm, Zombie);
 		
-		
+		banCardTypeListenerInit(allCards, banModel, lblCardCount, lblUniqueCards, DraftInit, Spell, Trap, Contin, ContinSpell, ContinTrap, Field,
+				Quickplay, Equip, Counter);
+
+
 	}
-	
+
 	// Returns true if an image exists at the given path
 	public static boolean isImage(String image_path)
 	{
@@ -5916,28 +6361,61 @@ public class CardPool_GUI_1_Stable {
 		rerollsAllowed++;
 	}
 	
+	public static ArrayList<Card> fakeQuickInit()
+	{
+		// Variable Initialization
+				ArrayList<Card> allCards = new ArrayList<Card>();
+				ArrayList<String> dumbThing = new ArrayList<String>();
+				ArrayList<ArrayList<Card>> draftDecks = new ArrayList<ArrayList<Card>>();
+				ArrayList<ArrayList<Card>> draftPools = new ArrayList<ArrayList<Card>>();
+				String[] input = null;
+				String line = null;	String name = null;	String attribute = null;	String type = null;
+				String cardType = null;	String text = null;	String crosslimit = null;	String rarity = null;
+				String synergies = null;
+				int atk = 0;	int def = 0;	int lvl = 0;	int tierScore = 0;	
+				int limit = 0;	int quantity = 0;	int noOfCards = 1; 
+				boolean monster = false;	boolean contin = false;	boolean quickplay = false;	boolean counter = false;
+				boolean field = false;	boolean equip = false;	boolean ritual = false;	boolean normal = false;
+				// END Variable Init
+
+				// Database Setup
+				readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards);		
+				ArrayList<Card> backupAllCards = copyPool(allCards);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				ArrayList<Card> blackListed = new ArrayList<Card>();
+				SortingListModel<Card> banModel = new SortingListModel<Card>();
+				JList<Card> banned = new JList<Card>(banModel);
+				int totalUnique = allCardsNopeDupe.size();
+				int totalCards = cardCount(allCards);
+				// Two copies of database - allCards which we edit and backupAllCards which we do not edit, third array is the database with 1 copy of each card
+				// totalCards initialized to the size of the database after read, totalUnique has the size equal to number of unique cards in the database
+				// banModel is the model that will contain all cards that are banned at any point, banned is the actual list of cards inside the model
+				
+				return allCards;
+	}
+
 	// Font color logic
 	public void textColor(Card card, JLabel tag)
 	{
 		switch (card.getRarity())
 		{
-			case "Ultimate Rare":
-				tag.setForeground(Color.ORANGE); break;
-				
-			case "Ultra Rare":
-				tag.setForeground(Color.GREEN); break;
-			
-			case "Super Rare":
-				tag.setForeground(Color.RED); break;
-			
-			case "Rare":
-				tag.setForeground(Color.BLUE); break;
-			
-			case "Common":
-				tag.setForeground(Color.GRAY); break;
-				
-			default:
-				tag.setForeground(Color.BLACK); break;
+		case "Ultimate Rare":
+			tag.setForeground(Color.ORANGE); break;
+
+		case "Ultra Rare":
+			tag.setForeground(Color.GREEN); break;
+
+		case "Super Rare":
+			tag.setForeground(Color.RED); break;
+
+		case "Rare":
+			tag.setForeground(Color.BLUE); break;
+
+		case "Common":
+			tag.setForeground(Color.GRAY); break;
+
+		default:
+			tag.setForeground(Color.BLACK); break;
 		}
 	}
 
