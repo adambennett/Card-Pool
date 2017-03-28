@@ -120,8 +120,8 @@ Dark Gray~Earth~Beast~800~900~3~1~Normal Monster~true~7~false~false~false~false~
 Dark Hole~none~none~0~0~0~21~Spell~false~66~false~false~false~false~false~1~none~false~false~Common~Destroy all monsters on the field.~board control
 Dark Horizon~none~none~0~0~0~1~Trap~false~45~false~false~false~false~false~1~none~false~true~Ultra Rare~When you take battle or effect damage: Special Summon 1 DARK Spellcaster-Type monster from your Deck with ATK less than or equal to the damage you took.~easy summon&dark&spellcaster
 Dark Magician~Dark~Spellcaster~2500~2100~7~6~Normal Monster~true~69~false~false~false~false~false~3~none~false~false~Rare~none~dark&spellcaster
-Dark Mimic LV1~Dark~Fiend~100~1000~1~2~Effect Monster~true~35~false~false~false~false~false~3~none~false~false~Common~(Text)~dark&fiend&draw&lv
-Dark Mimic LV3~Dark~Fiend~1000~1000~3~2~Effect Monster~true~45~false~false~false~false~false~3~none~false~false~Common~(Text)~dark&fiend&draw&lv
+Dark Mimic LV1~Dark~Fiend~100~1000~1~2~Effect Monster~true~35~false~false~false~false~false~3~none~false~false~Common~(Text)~dark&fiend&draw&LV
+Dark Mimic LV3~Dark~Fiend~1000~1000~3~2~Effect Monster~true~45~false~false~false~false~false~3~none~false~false~Common~(Text)~dark&fiend&draw&LV
 Dark Mirror Force~none~none~0~0~0~1~Trap~false~59~false~false~false~false~false~1~none~false~true~Rare~When an opponent's monster declares an attack: Banish all Defense Position monsters your opponent controls.~board control
 Dark Snake Syndrome~none~none~0~0~0~1~Spell~false~0~true~false~false~false~false~3~none~false~false~Common~Inflict Direct Damage to you and your opponent's Life Points during each of your Standby Phases. The first damage begins at 200 points and is doubled following each of your standby phases.~direct damage
 Darkfire Soldier #1~Fire~Pyro~1700~1150~4~9~Normal Monster~true~40~false~false~false~false~false~3~none~false~false~Common~none~fire&pyro
@@ -268,7 +268,7 @@ Left Leg of the Forbidden One~Dark~Spellcaster~200~300~1~1~Normal Monster~true~5
 Legendary Flame Lord~Fire~Pyro~2400~2000~7~1~Ritual Monster~true~55~false~false~false~false~false~1~none~false~false~Common~This card can only be Ritual Summoned with the Ritual Spell Card, "Incandescent Ordeal". You must also Tribute monsters whose total Levels equal 7 or more from the field or your hand. Each time you or your opponent activates 1 Spell Card, put 1 Spell Counter on this card. Remove 3 Spell Counters from this card to destroy all monsters on the field except this card.~ritual&flame lord&fire&spellcaster
 Legendary Sword~none~none~0~0~0~4~Spell~false~20~false~false~false~false~true~3~none~false~false~Common~(Text)~equip&warrior
 Leodrake's Mane~none~none~0~0~0~1~Spell~false~35~false~false~false~false~false~1~none~false~false~Common~Select 1 face-up "Naturia" monster you control. Its ATK becomes 3000, and its effects are negated, until the End Phase.~naturia
-Level Up!~none~none~0~0~0~1~Spell~false~50~false~false~false~false~false~3~none~false~false~Rare~(Text)~lv
+Level Up!~none~none~0~0~0~1~Spell~false~50~false~false~false~false~false~3~none~false~false~Rare~(Text)~LV
 Levia-Dragon - Daedalus~Water~Sea Serpent~2600~1500~7~1~Effect Monster~true~89~false~false~false~false~false~1~none~false~false~Ultra Rare~You can send 1 face-up "Umi" you control to the Graveyard; destroy all other cards on the field.~water&sea serpent&board control&umi
 Light and Darkness Dragon~Light~Dragon~2800~2400~8~1~Effect Monster~true~77~false~false~false~false~false~1~none~false~false~Super Rare~Cannot be Special Summoned. While face-up on the field, this card is also DARK-Attribute. Once per Chain, during either player's turn, when a Spell Card, Trap Card, or monster effect is activated: This card loses exactly 500 ATK and DEF and that activation is negated. When this card is destroyed and sent to the Graveyard: Target 1 monster in your Graveyard (if possible); destroy all cards you control, also Special Summon that monster (if any).~board control&light&dark&dragon
 Light of Intervention~none~none~0~0~0~3~Trap~false~12~true~false~false~false~false~3~none~false~false~Common~(Text)~board control
@@ -573,8 +573,8 @@ Two-Man Cell Battle~none~none~0~0~0~1~Spell~false~50~true~false~false~false~fals
 Two-Mouth Darkruler~Earth~Dragon~900~700~3~1~Normal Monster~true~13~false~false~false~false~false~3~none~false~false~Common~none~earth&dragon
 Type Zero Magic Crusher~none~none~0~0~0~1~Trap~false~13~true~false~false~false~false~3~none~false~false~Common~(Text)~direct damage&player discard
 Tyrant Dragon~Fire~Dragon~2900~2500~8~1~Effect Monster~true~83~false~false~false~false~false~2~none~false~false~Super Rare~(Text)~dragon&fire&board control
-Ultimate Insect LV5~Wind~Insect~2300~900~5~1~Effect Monster~true~49~false~false~false~false~false~3~none~false~false~Common~(Text)~ultimate insect&wind&insect&lv
-Ultimate Insect LV7~Wind~Insect~2600~1200~7~1~Effect Monster~true~53~false~false~false~false~false~1~none~false~false~Rare~If this card was Special Summoned by the effect of "Ultimate Insect LV5", while it remains on the field all of your opponent's monsters lose 700 ATK and DEF.~ultimate insect&wind&insect&lv
+Ultimate Insect LV5~Wind~Insect~2300~900~5~1~Effect Monster~true~49~false~false~false~false~false~3~none~false~false~Common~(Text)~ultimate insect&wind&insect&LV
+Ultimate Insect LV7~Wind~Insect~2600~1200~7~1~Effect Monster~true~53~false~false~false~false~false~1~none~false~false~Rare~If this card was Special Summoned by the effect of "Ultimate Insect LV5", while it remains on the field all of your opponent's monsters lose 700 ATK and DEF.~ultimate insect&wind&insect&LV
 Ultimate Offering~none~none~0~0~0~22~Trap~false~10~true~false~false~false~false~1~none~false~false~Common~During your Main Phase or your opponent's Battle Phase: You can pay 500 Life Points; immediately after this effect resolves, Normal Summon/Set 1 monster.~easy summon
 Umiiruka~none~none~0~0~0~4~Spell~false~68~false~false~false~true~false~3~none~false~false~Rare~(Text)~umi&water
 Uminotaurus~Water~Aqua~1700~1000~4~1~Effect Monster~true~58~false~false~false~false~false~3~none~false~false~Rare~(Text)~water&aqua&piercing
