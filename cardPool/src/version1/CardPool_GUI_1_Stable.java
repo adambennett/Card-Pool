@@ -1,6 +1,7 @@
 package version1;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -8,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -37,20 +39,25 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 public class CardPool_GUI_1_Stable {
 
 	private JFrame DraftInit;
-	private JFrame singleCardView;
+	private static JFrame singleCardView = null;
 	private JFrame cardView;
 	private JFrame banList;
 	private int rerollsSoFar = 0;
 	private int pickNumber = 1;
 	private int playerDrafting = 0;
+	private static int dynamicInt = -1;
+	private static Card dynamicCard = new Card("init");
 	private ArrayList<Card> drafted = new ArrayList<Card>();
 	private ArrayList<Card> threeChoiceTemp = new ArrayList<Card>();
 	private static JList<Card> dynamicList = new JList<Card>();
@@ -117,9 +124,15 @@ public class CardPool_GUI_1_Stable {
 		// GUI Setup
 		DraftInit = new JFrame();	
 		DraftInit.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-		DraftInit.setBounds(600, 600, 260, 200);
-		DraftInit.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		DraftInit.setBounds(600, 600, 275, 200);
+		DraftInit.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		DraftInit.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		DraftInit.setTitle("Draft Options");
+		
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		DraftInit.setLocation(dim.width/2-DraftInit.getSize().width/2, dim.height/2-DraftInit.getSize().height/2);
+		
+	
 		
 
 		// Draft Start window components
@@ -243,7 +256,7 @@ public class CardPool_GUI_1_Stable {
 		DraftInit.getContentPane().add(rerolls);
 		DraftInit.getContentPane().add(lblOfPool);
 		DraftInit.getContentPane().add(fillStyle); 
-			fillStyle.setModel(new DefaultComboBoxModel(new String[] {"Random", "Equal"})); 
+			fillStyle.setModel(new DefaultComboBoxModel(new String[] {"Random", "Equal (Rarity)", "Equal (Score)", "Harsh"})); 
 			fillStyle.setEditable(false);
 		DraftInit.getContentPane().add(draftStart); 
 		DraftInit.getContentPane().add(lblCardCount);
@@ -251,7 +264,7 @@ public class CardPool_GUI_1_Stable {
 		DraftInit.getContentPane().add(lblUniqueCards);
 		DraftInit.setJMenuBar(menuBar);
 		menuBar.add(mnViewDatabase); menuBar.add(mnBan);
-		viewDatabaseListenerInit(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, allCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon, cardViewer);
+		viewDatabaseListenerInit(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, allCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon);
 		mnBan.add(blacklist); mnBan.add(mnBanAll);
 		mnBan.add(mnBanGrouping); mnBan.add(mnBanAttribute);
 		mnBan.add(mnBanType); mnBan.add(mnBanCard); mnBan.add(mnBanScore);
@@ -299,8 +312,7 @@ public class CardPool_GUI_1_Stable {
 		mnBanScore.add(veryHighScore); mnBanScore.add(OP);
 
 		// Grey out buttons that don't work yet
-		mnBanScore.setEnabled(false); 
-		cardViewer.setEnabled(false); fillStyle.setEnabled(false);
+		//fillStyle.setEnabled(false);
 
 		// Grey out ban buttons that currently ban 0 cards
 		Divine.setEnabled(false); Psychic.setEnabled(false);
@@ -315,7 +327,8 @@ public class CardPool_GUI_1_Stable {
 				Toon, Draw, Ritual, Fusion, LowAtk, Limited, SemiLimited, HighAtk, LowLvl, HighLvl, reset, backupAllCards, allCardsNopeDupe, Light, Dark, Wind, Fire, Earth,
 				AncientGear, Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, SuperHeavy, Creator, Volcanic,
 				Discard, EasySummon, Aqua, Beast, BeastWarrior, Dinosaur, Divine, Dragon, Fairy, Fiend, Fish, Insect, Machine, Plant, Psychic, Pyro, Reptile, Rock, SeaSerpent, 
-				Spellcaster, Thunder, Warrior, WingedBeast, Wyrm, Zombie, Spell, Trap, Contin, ContinSpell, ContinTrap, Field, Quickplay, Equip, Counter);
+				Spellcaster, Thunder, Warrior, WingedBeast, Wyrm, Zombie, Spell, Trap, Contin, ContinSpell, ContinTrap, Field, Quickplay, Equip, Counter, lowScore, medScore,
+				highScore, veryHighScore, OP);
 
 		// End primary window components
 
@@ -325,6 +338,7 @@ public class CardPool_GUI_1_Stable {
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
+				DraftInit.setTitle("Draft");
 				DraftInit.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 				// Final Draft Variable Init
 				int playerCountLocal = (Integer) numberOfPlayers.getValue();
@@ -352,7 +366,9 @@ public class CardPool_GUI_1_Stable {
 				// Change pool fill based on selection made in primary window
 				String fillStyleString = fillStyle.getSelectedItem().toString();
 				if (fillStyleString == "Random") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
-				else if (fillStyleString == "Equal") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
+				else if (fillStyleString == "Equal (Rarity)") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPoolsEqual(allCards, draftPools, playerCountLocal);	}
+				else if (fillStyleString == "Equal (Score)") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPoolsScore(allCards, draftPools, playerCountLocal);	}
+				else if (fillStyleString == "Harsh") { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPoolsHarsh(allCards, draftPools, playerCountLocal);	}
 				else { poolDeckInit(draftPools, draftDecks, playerCountLocal); fillAllPools(allCards, draftPools, playerCountLocal);	}
 
 				int defPoolSize = draftPools.get(playerDrafting).size();
@@ -364,8 +380,8 @@ public class CardPool_GUI_1_Stable {
 				draftAllCards.sort(draftAllCards.get(0));
 
 				// Sets up the database view menu again after rechecking the database contents
+				//viewDatabaseListenerInit2(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, draftAllCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon, urItem, ulrItem, srItem, rItem, cItem);
 				viewDatabaseListenerReinit(mnViewDatabase, draftAllCards, urItem, ulrItem, srItem, rItem, cItem);
-
 				// Setup the arrays used for the draft - drafted holds the current players drafted cards, threeChoiceTemp holds the three picks at any given pick
 				drafted.clear();
 				removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
@@ -461,7 +477,7 @@ public class CardPool_GUI_1_Stable {
 							{
 
 								playerDrafting++;
-								playerDraftLbl.setText("Player: " + (playerDrafting + 1) + " drafting");
+								playerDraftLbl.setText("Player " + (playerDrafting + 1));
 								if (playerDrafting < playerCountLocal)
 								{
 									pickNumber = 1;
@@ -548,30 +564,110 @@ public class CardPool_GUI_1_Stable {
 										public void actionPerformed(ActionEvent arg0) 
 										{
 											JFrame cardViewLocal = new JFrame();	
+											cardViewLocal.setTitle("Player " + (playerDeck.getSelectedIndex() + 1) + "'s Deck");
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
+											ArrayList<Card>allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
 											allCardsNoDupes.sort(allCardsNoDupes.get(0));
 											JList list = new JList(allCardsNoDupes.toArray());
+											dynamicList = list;
 											KeyListener keyListener = new KeyListener()
 											{
 												public void keyPressed(KeyEvent e)
 												{
 													if (e.getKeyCode() == KeyEvent.VK_ENTER)
 													{
-														Card selectedCard = (Card) list.getSelectedValue();
-														JFrame singlecardViewLocal = new JFrame();
+														dynamicCard = (Card) dynamicList.getSelectedValue();
+														singleCardView = new JFrame();										
 														JPanel panel = new JPanel();
-														ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-														label.setLocation(29, 37);
-														panel.add(label);
-														singlecardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-														singlecardViewLocal.setBounds(100, 100, 496, 443);
-														singlecardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-														singlecardViewLocal.getContentPane().add(panel);
-														singlecardViewLocal.pack();
-														singlecardViewLocal.setVisible(true);
+														boolean smallImage = false;
+														JButton fullSize = new JButton("Full Resolution");
+														panel.setLayout(new GridBagLayout());
+														GridBagConstraints c = new GridBagConstraints();
+														c.fill = GridBagConstraints.HORIZONTAL;
+														ImageLabel label;
+														if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+														{ 
+															label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+															smallImage = true;
+														}
+														else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+														JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+														JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+														Integer tempInt = dynamicCard.getTierScore();
+														String scoreString = tempInt.toString();
+														JLabel score = new JLabel("Tier Score: " + scoreString);
+														JButton showText = new JButton("Card Text");
+														c.insets = new Insets(5, 5, 5, 5);
+														c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+														c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+														rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+														quantity.setHorizontalAlignment(SwingConstants.CENTER);
+														c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+														score.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+														showText.setHorizontalAlignment(SwingConstants.CENTER); 
+														showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+														{
+															c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+															fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+															fullSize.addActionListener(new ActionListener()
+															{
+																@Override
+																public void actionPerformed(ActionEvent e) 
+																{
+																	JFrame fullView = new JFrame();
+																	fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
+																	JPanel fullPanel = new JPanel();
+																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+																	fullPanel.add(bigImage);
+																	fullView.getContentPane().add(fullPanel);
+																	fullView.pack();
+																	fullView.setResizable(false);
+																	fullView.setVisible(true);
+																	
+																}
+																
+															});
+														}
+														singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+														singleCardView.setBounds(100, 100, 496, 443);
+														singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+														singleCardView.getContentPane().add(panel);
+														singleCardView.pack();						
+														singleCardView.setResizable(false);
+														singleCardView.setVisible(true);
+														
+														showText.addActionListener(new ActionListener()
+														{
+															@Override
+															public void actionPerformed(ActionEvent arg0) 
+															{
+																JFrame textFrame = new JFrame();
+																textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+																textFrame.setBounds(100, 100, 496, 443);
+																textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+																JPanel textPanel = new JPanel();
+																JTextArea textField = new JTextArea(6, 40);
+																textField.setEditable(false);
+																String temp = dynamicCard.getText();
+																String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+																textField.setText(newTemp);
+																textField.setWrapStyleWord(true);
+																JScrollPane vertScroll = new JScrollPane(textField);
+																textPanel.add(vertScroll);
+																textFrame.getContentPane().add(textPanel);
+																textFrame.pack();
+																textFrame.setResizable(false);
+																textFrame.setVisible(true);
+																
+																
+															}
+														});
+													
+													
 													}
 												}
 
@@ -584,18 +680,96 @@ public class CardPool_GUI_1_Stable {
 												{
 													if (e.getClickCount() == 2) 
 													{    		
-														Card selectedCard = (Card) list.getSelectedValue();
-														JFrame singlecardViewLocal = new JFrame();
+														dynamicCard = (Card) dynamicList.getSelectedValue();
+														singleCardView = new JFrame();										
 														JPanel panel = new JPanel();
-														ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-														label.setLocation(29, 37);
-														panel.add(label);
-														singlecardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-														singlecardViewLocal.setBounds(100, 100, 496, 443);
-														singlecardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-														singlecardViewLocal.getContentPane().add(panel);
-														singlecardViewLocal.pack();
-														singlecardViewLocal.setVisible(true);
+														boolean smallImage = false;
+														JButton fullSize = new JButton("Full Resolution");
+														panel.setLayout(new GridBagLayout());
+														GridBagConstraints c = new GridBagConstraints();
+														c.fill = GridBagConstraints.HORIZONTAL;
+														ImageLabel label;
+														if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+														{ 
+															label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+															smallImage = true;
+														}
+														else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+														JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+														JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+														Integer tempInt = dynamicCard.getTierScore();
+														String scoreString = tempInt.toString();
+														JLabel score = new JLabel("Tier Score: " + scoreString);
+														JButton showText = new JButton("Card Text");
+														c.insets = new Insets(5, 5, 5, 5);
+														c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+														c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+														rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+														quantity.setHorizontalAlignment(SwingConstants.CENTER);
+														c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+														score.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+														showText.setHorizontalAlignment(SwingConstants.CENTER); 
+														showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+														{
+															c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+															fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+															fullSize.addActionListener(new ActionListener()
+															{
+																@Override
+																public void actionPerformed(ActionEvent e) 
+																{
+																	JFrame fullView = new JFrame();
+																	fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
+																	JPanel fullPanel = new JPanel();
+																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+																	fullPanel.add(bigImage);
+																	fullView.getContentPane().add(fullPanel);
+																	fullView.pack();
+																	fullView.setResizable(false);
+																	fullView.setVisible(true);
+																	
+																}
+																
+															});
+														}
+														singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+														singleCardView.setBounds(100, 100, 496, 443);
+														singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+														singleCardView.getContentPane().add(panel);
+														singleCardView.pack();						
+														singleCardView.setResizable(false);
+														singleCardView.setVisible(true);
+														
+														showText.addActionListener(new ActionListener()
+														{
+															@Override
+															public void actionPerformed(ActionEvent arg0) 
+															{
+																JFrame textFrame = new JFrame();
+																textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+																textFrame.setBounds(100, 100, 496, 443);
+																textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+																JPanel textPanel = new JPanel();
+																JTextArea textField = new JTextArea(6, 40);
+																textField.setEditable(false);
+																String temp = dynamicCard.getText();
+																String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+																textField.setText(newTemp);
+																textField.setWrapStyleWord(true);
+																JScrollPane vertScroll = new JScrollPane(textField);
+																textPanel.add(vertScroll);
+																textFrame.getContentPane().add(textPanel);
+																textFrame.pack();
+																textFrame.setResizable(false);
+																textFrame.setVisible(true);
+																
+																
+															}
+														});
+													
+													
 													}
 												}
 											};
@@ -614,6 +788,7 @@ public class CardPool_GUI_1_Stable {
 										public void actionPerformed(ActionEvent arg0) 
 										{
 											JFrame cardViewLocal = new JFrame();	
+											cardViewLocal.setTitle("Player " + (playerDeck.getSelectedIndex() + 1) + "'s Stats");
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -665,7 +840,7 @@ public class CardPool_GUI_1_Stable {
 											}
 
 											int avgCardScore = deckScore / cardsToDraftLocal;
-											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\n\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
 													+ "\nCommons: " + commons + "\n\nTop 3 Cards:\n"
 													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
@@ -748,7 +923,7 @@ public class CardPool_GUI_1_Stable {
 							if (pickNumber > cardsToDraftLocal)
 							{
 								playerDrafting++;
-								playerDraftLbl.setText("Player: " + (playerDrafting + 1) + " drafting");
+								playerDraftLbl.setText("Player " + (playerDrafting + 1));
 								if (playerDrafting < playerCountLocal)
 								{
 									pickNumber = 1;
@@ -834,30 +1009,109 @@ public class CardPool_GUI_1_Stable {
 									{
 										public void actionPerformed(ActionEvent arg0) 
 										{
-											JFrame cardViewLocal = new JFrame();	
+											JFrame cardViewLocal = new JFrame();
+											cardViewLocal.setTitle("Player " + (playerDeck.getSelectedIndex() + 1) + "'s Deck");
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
 											JList list = new JList(allCardsNoDupes.toArray());
+											dynamicList = list;
 											KeyListener keyListener = new KeyListener()
 											{
 												public void keyPressed(KeyEvent e)
 												{
 													if (e.getKeyCode() == KeyEvent.VK_ENTER)
 													{
-														Card selectedCard = (Card) list.getSelectedValue();
-														JFrame singlecardViewLocal = new JFrame();
+														dynamicCard = (Card) dynamicList.getSelectedValue();
+														singleCardView = new JFrame();										
 														JPanel panel = new JPanel();
-														ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-														label.setLocation(29, 37);
-														panel.add(label);
-														singlecardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-														singlecardViewLocal.setBounds(100, 100, 496, 443);
-														singlecardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-														singlecardViewLocal.getContentPane().add(panel);
-														singlecardViewLocal.pack();
-														singlecardViewLocal.setVisible(true);
+														boolean smallImage = false;
+														JButton fullSize = new JButton("Full Resolution");
+														panel.setLayout(new GridBagLayout());
+														GridBagConstraints c = new GridBagConstraints();
+														c.fill = GridBagConstraints.HORIZONTAL;
+														ImageLabel label;
+														if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+														{ 
+															label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+															smallImage = true;
+														}
+														else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+														JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+														JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+														Integer tempInt = dynamicCard.getTierScore();
+														String scoreString = tempInt.toString();
+														JLabel score = new JLabel("Tier Score: " + scoreString);
+														JButton showText = new JButton("Card Text");
+														c.insets = new Insets(5, 5, 5, 5);
+														c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+														c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+														rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+														quantity.setHorizontalAlignment(SwingConstants.CENTER);
+														c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+														score.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+														showText.setHorizontalAlignment(SwingConstants.CENTER); 
+														showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+														{
+															c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+															fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+															fullSize.addActionListener(new ActionListener()
+															{
+																@Override
+																public void actionPerformed(ActionEvent e) 
+																{
+																	JFrame fullView = new JFrame();
+																	JPanel fullPanel = new JPanel();
+																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+																	fullPanel.add(bigImage);
+																	fullView.getContentPane().add(fullPanel);
+																	fullView.pack();
+																	fullView.setResizable(false);
+																	fullView.setVisible(true);
+																	
+																}
+																
+															});
+														}
+														singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+														singleCardView.setBounds(100, 100, 496, 443);
+														singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+														singleCardView.getContentPane().add(panel);
+														singleCardView.pack();						
+														singleCardView.setResizable(false);
+														singleCardView.setVisible(true);
+														
+														showText.addActionListener(new ActionListener()
+														{
+															@Override
+															public void actionPerformed(ActionEvent arg0) 
+															{
+																JFrame textFrame = new JFrame();
+																textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+																textFrame.setBounds(100, 100, 496, 443);
+																textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+																JPanel textPanel = new JPanel();
+																JTextArea textField = new JTextArea(6, 40);
+																textField.setEditable(false);
+																String temp = dynamicCard.getText();
+																String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+																textField.setText(newTemp);
+																textField.setWrapStyleWord(true);
+																JScrollPane vertScroll = new JScrollPane(textField);
+																textPanel.add(vertScroll);
+																textFrame.getContentPane().add(textPanel);
+																textFrame.pack();
+																textFrame.setResizable(false);
+																textFrame.setVisible(true);
+																
+																
+															}
+														});
+													
+													
 													}
 												}
 
@@ -870,19 +1124,95 @@ public class CardPool_GUI_1_Stable {
 												{
 													if (e.getClickCount() == 2) 
 													{    		
-														Card selectedCard = (Card) list.getSelectedValue();
-														//JFrame singlecardViewLocal;
-														JFrame singlecardViewLocal = new JFrame();
+														dynamicCard = (Card) dynamicList.getSelectedValue();
+														singleCardView = new JFrame();										
 														JPanel panel = new JPanel();
-														ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-														label.setLocation(29, 37);
-														panel.add(label);
-														singlecardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-														singlecardViewLocal.setBounds(100, 100, 496, 443);
-														singlecardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-														singlecardViewLocal.getContentPane().add(panel);
-														singlecardViewLocal.pack();
-														singlecardViewLocal.setVisible(true);
+														boolean smallImage = false;
+														JButton fullSize = new JButton("Full Resolution");
+														panel.setLayout(new GridBagLayout());
+														GridBagConstraints c = new GridBagConstraints();
+														c.fill = GridBagConstraints.HORIZONTAL;
+														ImageLabel label;
+														if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+														{ 
+															label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+															smallImage = true;
+														}
+														else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+														JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+														JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+														Integer tempInt = dynamicCard.getTierScore();
+														String scoreString = tempInt.toString();
+														JLabel score = new JLabel("Tier Score: " + scoreString);
+														JButton showText = new JButton("Card Text");
+														c.insets = new Insets(5, 5, 5, 5);
+														c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+														c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+														rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+														quantity.setHorizontalAlignment(SwingConstants.CENTER);
+														c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+														score.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+														showText.setHorizontalAlignment(SwingConstants.CENTER); 
+														showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+														{
+															c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+															fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+															fullSize.addActionListener(new ActionListener()
+															{
+																@Override
+																public void actionPerformed(ActionEvent e) 
+																{
+																	JFrame fullView = new JFrame();
+																	JPanel fullPanel = new JPanel();
+																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+																	fullPanel.add(bigImage);
+																	fullView.getContentPane().add(fullPanel);
+																	fullView.pack();
+																	fullView.setResizable(false);
+																	fullView.setVisible(true);
+																	
+																}
+																
+															});
+														}
+														singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+														singleCardView.setBounds(100, 100, 496, 443);
+														singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+														singleCardView.getContentPane().add(panel);
+														singleCardView.pack();						
+														singleCardView.setResizable(false);
+														singleCardView.setVisible(true);
+														
+														showText.addActionListener(new ActionListener()
+														{
+															@Override
+															public void actionPerformed(ActionEvent arg0) 
+															{
+																JFrame textFrame = new JFrame();
+																textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+																textFrame.setBounds(100, 100, 496, 443);
+																textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+																JPanel textPanel = new JPanel();
+																JTextArea textField = new JTextArea(6, 40);
+																textField.setEditable(false);
+																String temp = dynamicCard.getText();
+																String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+																textField.setText(newTemp);
+																textField.setWrapStyleWord(true);
+																JScrollPane vertScroll = new JScrollPane(textField);
+																textPanel.add(vertScroll);
+																textFrame.getContentPane().add(textPanel);
+																textFrame.pack();
+																textFrame.setResizable(false);
+																textFrame.setVisible(true);
+																
+																
+															}
+														});
+													
+													
 													}
 												}
 											};
@@ -901,6 +1231,7 @@ public class CardPool_GUI_1_Stable {
 										public void actionPerformed(ActionEvent arg0) 
 										{
 											JFrame cardViewLocal = new JFrame();	
+											cardViewLocal.setTitle("Player " + (playerDeck.getSelectedIndex() + 1) + "'s Stats");
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -952,7 +1283,7 @@ public class CardPool_GUI_1_Stable {
 											}
 
 											int avgCardScore = deckScore / cardsToDraftLocal;
-											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\n\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
 													+ "\nCommons: " + commons + "\n\nTop 3 Cards:\n"
 													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
@@ -1035,7 +1366,7 @@ public class CardPool_GUI_1_Stable {
 							if (pickNumber > cardsToDraftLocal)
 							{
 								playerDrafting++;
-								playerDraftLbl.setText("Player: " + (playerDrafting + 1) + " drafting");
+								playerDraftLbl.setText("Player " + (playerDrafting + 1));
 								if (playerDrafting < playerCountLocal)
 								{
 									pickNumber = 1;
@@ -1122,29 +1453,108 @@ public class CardPool_GUI_1_Stable {
 										public void actionPerformed(ActionEvent arg0) 
 										{
 											JFrame cardViewLocal = new JFrame();	
+											cardViewLocal.setTitle("Player " + (playerDeck.getSelectedIndex() + 1) + "'s Deck");
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
 											JList list = new JList(allCardsNoDupes.toArray());
+											dynamicList = list;
 											KeyListener keyListener = new KeyListener()
 											{
 												public void keyPressed(KeyEvent e)
 												{
 													if (e.getKeyCode() == KeyEvent.VK_ENTER)
 													{
-														Card selectedCard = (Card) list.getSelectedValue();
-														JFrame singlecardViewLocal = new JFrame();
+														dynamicCard = (Card) dynamicList.getSelectedValue();
+														singleCardView = new JFrame();										
 														JPanel panel = new JPanel();
-														ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-														label.setLocation(29, 37);
-														panel.add(label);
-														singlecardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-														singlecardViewLocal.setBounds(100, 100, 496, 443);
-														singlecardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-														singlecardViewLocal.getContentPane().add(panel);
-														singlecardViewLocal.pack();
-														singlecardViewLocal.setVisible(true);
+														boolean smallImage = false;
+														JButton fullSize = new JButton("Full Resolution");
+														panel.setLayout(new GridBagLayout());
+														GridBagConstraints c = new GridBagConstraints();
+														c.fill = GridBagConstraints.HORIZONTAL;
+														ImageLabel label;
+														if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+														{ 
+															label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+															smallImage = true;
+														}
+														else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+														JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+														JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+														Integer tempInt = dynamicCard.getTierScore();
+														String scoreString = tempInt.toString();
+														JLabel score = new JLabel("Tier Score: " + scoreString);
+														JButton showText = new JButton("Card Text");
+														c.insets = new Insets(5, 5, 5, 5);
+														c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+														c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+														rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+														quantity.setHorizontalAlignment(SwingConstants.CENTER);
+														c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+														score.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+														showText.setHorizontalAlignment(SwingConstants.CENTER); 
+														showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+														{
+															c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+															fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+															fullSize.addActionListener(new ActionListener()
+															{
+																@Override
+																public void actionPerformed(ActionEvent e) 
+																{
+																	JFrame fullView = new JFrame();
+																	JPanel fullPanel = new JPanel();
+																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+																	fullPanel.add(bigImage);
+																	fullView.getContentPane().add(fullPanel);
+																	fullView.pack();
+																	fullView.setResizable(false);
+																	fullView.setVisible(true);
+																	
+																}
+																
+															});
+														}
+														singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+														singleCardView.setBounds(100, 100, 496, 443);
+														singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+														singleCardView.getContentPane().add(panel);
+														singleCardView.pack();						
+														singleCardView.setResizable(false);
+														singleCardView.setVisible(true);
+														
+														showText.addActionListener(new ActionListener()
+														{
+															@Override
+															public void actionPerformed(ActionEvent arg0) 
+															{
+																JFrame textFrame = new JFrame();
+																textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+																textFrame.setBounds(100, 100, 496, 443);
+																textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+																JPanel textPanel = new JPanel();
+																JTextArea textField = new JTextArea(6, 40);
+																textField.setEditable(false);
+																String temp = dynamicCard.getText();
+																String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+																textField.setText(newTemp);
+																textField.setWrapStyleWord(true);
+																JScrollPane vertScroll = new JScrollPane(textField);
+																textPanel.add(vertScroll);
+																textFrame.getContentPane().add(textPanel);
+																textFrame.pack();
+																textFrame.setResizable(false);
+																textFrame.setVisible(true);
+																
+																
+															}
+														});
+													
+													
 													}
 												}
 
@@ -1157,19 +1567,95 @@ public class CardPool_GUI_1_Stable {
 												{
 													if (e.getClickCount() == 2) 
 													{    		
-														Card selectedCard = (Card) list.getSelectedValue();
-														//JFrame singlecardViewLocal;
-														JFrame singlecardViewLocal = new JFrame();
+														dynamicCard = (Card) dynamicList.getSelectedValue();
+														singleCardView = new JFrame();										
 														JPanel panel = new JPanel();
-														ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-														label.setLocation(29, 37);
-														panel.add(label);
-														singlecardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-														singlecardViewLocal.setBounds(100, 100, 496, 443);
-														singlecardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-														singlecardViewLocal.getContentPane().add(panel);
-														singlecardViewLocal.pack();
-														singlecardViewLocal.setVisible(true);
+														boolean smallImage = false;
+														JButton fullSize = new JButton("Full Resolution");
+														panel.setLayout(new GridBagLayout());
+														GridBagConstraints c = new GridBagConstraints();
+														c.fill = GridBagConstraints.HORIZONTAL;
+														ImageLabel label;
+														if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+														{ 
+															label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+															smallImage = true;
+														}
+														else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+														JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+														JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+														Integer tempInt = dynamicCard.getTierScore();
+														String scoreString = tempInt.toString();
+														JLabel score = new JLabel("Tier Score: " + scoreString);
+														JButton showText = new JButton("Card Text");
+														c.insets = new Insets(5, 5, 5, 5);
+														c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+														c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+														rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+														quantity.setHorizontalAlignment(SwingConstants.CENTER);
+														c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+														score.setHorizontalAlignment(SwingConstants.CENTER); 
+														c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+														showText.setHorizontalAlignment(SwingConstants.CENTER); 
+														showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+														{
+															c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+															fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+															fullSize.addActionListener(new ActionListener()
+															{
+																@Override
+																public void actionPerformed(ActionEvent e) 
+																{
+																	JFrame fullView = new JFrame();
+																	JPanel fullPanel = new JPanel();
+																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+																	fullPanel.add(bigImage);
+																	fullView.getContentPane().add(fullPanel);
+																	fullView.pack();
+																	fullView.setResizable(false);
+																	fullView.setVisible(true);
+																	
+																}
+																
+															});
+														}
+														singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+														singleCardView.setBounds(100, 100, 496, 443);
+														singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+														singleCardView.getContentPane().add(panel);
+														singleCardView.pack();						
+														singleCardView.setResizable(false);
+														singleCardView.setVisible(true);
+														
+														showText.addActionListener(new ActionListener()
+														{
+															@Override
+															public void actionPerformed(ActionEvent arg0) 
+															{
+																JFrame textFrame = new JFrame();
+																textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+																textFrame.setBounds(100, 100, 496, 443);
+																textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+																JPanel textPanel = new JPanel();
+																JTextArea textField = new JTextArea(6, 40);
+																textField.setEditable(false);
+																String temp = dynamicCard.getText();
+																String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+																textField.setText(newTemp);
+																textField.setWrapStyleWord(true);
+																JScrollPane vertScroll = new JScrollPane(textField);
+																textPanel.add(vertScroll);
+																textFrame.getContentPane().add(textPanel);
+																textFrame.pack();
+																textFrame.setResizable(false);
+																textFrame.setVisible(true);
+																
+																
+															}
+														});
+													
+													
 													}
 												}
 											};
@@ -1187,7 +1673,8 @@ public class CardPool_GUI_1_Stable {
 									{
 										public void actionPerformed(ActionEvent arg0) 
 										{
-											JFrame cardViewLocal = new JFrame();	
+											JFrame cardViewLocal = new JFrame();
+											cardViewLocal.setTitle("Player " + (playerDeck.getSelectedIndex() + 1) + "'s Stats");
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -1239,7 +1726,7 @@ public class CardPool_GUI_1_Stable {
 											}
 
 											int avgCardScore = deckScore / cardsToDraftLocal;
-											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\nUltimate Rares: " + ultimates 
+											JTextArea stats = new JTextArea("Deck Score: " + deckScore + "\nAverage Card Score: " + avgCardScore + "\n\nUltimate Rares: " + ultimates 
 													+ "\nUltra Rares: " + ultras + "\nSuper Rares: " + supers + "\nRares: " + rares
 													+ "\nCommons: " + commons + "\n\nTop 3 Cards:\n"
 													+ highCard.getName() + " (" + highCard.getTierScore() + ")\n"
@@ -1326,29 +1813,108 @@ public class CardPool_GUI_1_Stable {
 					public void actionPerformed(ActionEvent arg0) 
 					{
 						JFrame cardViewLocal = new JFrame();	
+						cardViewLocal.setTitle("Player " + (playerDrafting + 1) + "'s Deck");
 						cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 						cardViewLocal.setBounds(100, 100, 496, 443);
 						cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						ArrayList<Card >allCardsNoDupes = listMaker(drafted);
 						JList list = new JList(allCardsNoDupes.toArray());
+						dynamicList = list;
 						KeyListener keyListener = new KeyListener()
 						{
 							public void keyPressed(KeyEvent e)
 							{
 								if (e.getKeyCode() == KeyEvent.VK_ENTER)
 								{
-									Card selectedCard = (Card) list.getSelectedValue();
-									JFrame singlecardViewLocal = new JFrame();
+									dynamicCard = (Card) dynamicList.getSelectedValue();
+									singleCardView = new JFrame();										
 									JPanel panel = new JPanel();
-									ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-									label.setLocation(29, 37);
-									panel.add(label);
-									singlecardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-									singlecardViewLocal.setBounds(100, 100, 496, 443);
-									singlecardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-									singlecardViewLocal.getContentPane().add(panel);
-									singlecardViewLocal.pack();
-									singlecardViewLocal.setVisible(true);
+									boolean smallImage = false;
+									JButton fullSize = new JButton("Full Resolution");
+									panel.setLayout(new GridBagLayout());
+									GridBagConstraints c = new GridBagConstraints();
+									c.fill = GridBagConstraints.HORIZONTAL;
+									ImageLabel label;
+									if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+									{ 
+										label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+										smallImage = true;
+									}
+									else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+									JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+									JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+									Integer tempInt = dynamicCard.getTierScore();
+									String scoreString = tempInt.toString();
+									JLabel score = new JLabel("Tier Score: " + scoreString);
+									JButton showText = new JButton("Card Text");
+									c.insets = new Insets(5, 5, 5, 5);
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+									c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+									rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+									c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+									quantity.setHorizontalAlignment(SwingConstants.CENTER);
+									c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+									score.setHorizontalAlignment(SwingConstants.CENTER); 
+									c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+									showText.setHorizontalAlignment(SwingConstants.CENTER); 
+									showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+									{
+										c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+										fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+										fullSize.addActionListener(new ActionListener()
+										{
+											@Override
+											public void actionPerformed(ActionEvent e) 
+											{
+												JFrame fullView = new JFrame();
+												JPanel fullPanel = new JPanel();
+												ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+												fullPanel.add(bigImage);
+												fullView.getContentPane().add(fullPanel);
+												fullView.pack();
+												fullView.setResizable(false);
+												fullView.setVisible(true);
+												
+											}
+											
+										});
+									}
+									singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									singleCardView.setBounds(100, 100, 496, 443);
+									singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									singleCardView.getContentPane().add(panel);
+									singleCardView.pack();						
+									singleCardView.setResizable(false);
+									singleCardView.setVisible(true);
+									
+									showText.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent arg0) 
+										{
+											JFrame textFrame = new JFrame();
+											textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+											textFrame.setBounds(100, 100, 496, 443);
+											textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+											JPanel textPanel = new JPanel();
+											JTextArea textField = new JTextArea(6, 40);
+											textField.setEditable(false);
+											String temp = dynamicCard.getText();
+											String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+											textField.setText(newTemp);
+											textField.setWrapStyleWord(true);
+											JScrollPane vertScroll = new JScrollPane(textField);
+											textPanel.add(vertScroll);
+											textFrame.getContentPane().add(textPanel);
+											textFrame.pack();
+											textFrame.setResizable(false);
+											textFrame.setVisible(true);
+											
+											
+										}
+									});
+								
+								
 								}
 							}
 
@@ -1361,19 +1927,95 @@ public class CardPool_GUI_1_Stable {
 							{
 								if (e.getClickCount() == 2) 
 								{    		
-									Card selectedCard = (Card) list.getSelectedValue();
-									//JFrame singlecardViewLocal;
-									JFrame singlecardViewLocal = new JFrame();
+									dynamicCard = (Card) dynamicList.getSelectedValue();
+									singleCardView = new JFrame();										
 									JPanel panel = new JPanel();
-									ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-									label.setLocation(29, 37);
-									panel.add(label);
-									singlecardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-									singlecardViewLocal.setBounds(100, 100, 496, 443);
-									singlecardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-									singlecardViewLocal.getContentPane().add(panel);
-									singlecardViewLocal.pack();
-									singlecardViewLocal.setVisible(true);
+									boolean smallImage = false;
+									JButton fullSize = new JButton("Full Resolution");
+									panel.setLayout(new GridBagLayout());
+									GridBagConstraints c = new GridBagConstraints();
+									c.fill = GridBagConstraints.HORIZONTAL;
+									ImageLabel label;
+									if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+									{ 
+										label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+										smallImage = true;
+									}
+									else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+									JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+									JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+									Integer tempInt = dynamicCard.getTierScore();
+									String scoreString = tempInt.toString();
+									JLabel score = new JLabel("Tier Score: " + scoreString);
+									JButton showText = new JButton("Card Text");
+									c.insets = new Insets(5, 5, 5, 5);
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+									c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+									rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+									c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+									quantity.setHorizontalAlignment(SwingConstants.CENTER);
+									c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+									score.setHorizontalAlignment(SwingConstants.CENTER); 
+									c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+									showText.setHorizontalAlignment(SwingConstants.CENTER); 
+									showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+									{
+										c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+										fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+										fullSize.addActionListener(new ActionListener()
+										{
+											@Override
+											public void actionPerformed(ActionEvent e) 
+											{
+												JFrame fullView = new JFrame();
+												JPanel fullPanel = new JPanel();
+												ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+												fullPanel.add(bigImage);
+												fullView.getContentPane().add(fullPanel);
+												fullView.pack();
+												fullView.setResizable(false);
+												fullView.setVisible(true);
+												
+											}
+											
+										});
+									}
+									singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									singleCardView.setBounds(100, 100, 496, 443);
+									singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									singleCardView.getContentPane().add(panel);
+									singleCardView.pack();						
+									singleCardView.setResizable(false);
+									singleCardView.setVisible(true);
+									
+									showText.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent arg0) 
+										{
+											JFrame textFrame = new JFrame();
+											textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+											textFrame.setBounds(100, 100, 496, 443);
+											textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+											JPanel textPanel = new JPanel();
+											JTextArea textField = new JTextArea(6, 40);
+											textField.setEditable(false);
+											String temp = dynamicCard.getText();
+											String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+											textField.setText(newTemp);
+											textField.setWrapStyleWord(true);
+											JScrollPane vertScroll = new JScrollPane(textField);
+											textPanel.add(vertScroll);
+											textFrame.getContentPane().add(textPanel);
+											textFrame.pack();
+											textFrame.setResizable(false);
+											textFrame.setVisible(true);
+											
+											
+										}
+									});
+								
+								
 								}
 							}
 						};
@@ -1531,6 +2173,12 @@ public class CardPool_GUI_1_Stable {
 			Card tempCard = new Card(card);
 			copyOver.add(tempCard);
 		}
+	}
+	
+	// Card copy void return
+	static void copyCardVoid(Card copyFrom, Card copyOver)
+	{
+		copyOver = new Card(copyFrom);
 	}
 
 	// After you have drafted all your cards runs through and totals up how many of each card for nice output
@@ -1702,7 +2350,7 @@ public class CardPool_GUI_1_Stable {
 		}
 		return playerCount;
 	}
-	static int fillAllPools(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
+	public static int fillAllPools(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
 	{
 		ArrayList<Card> sizeCheck = copyPool(allCards);
 		for (int i = 0, j = 0; i < sizeCheck.size(); i++)
@@ -1726,6 +2374,235 @@ public class CardPool_GUI_1_Stable {
 		return smallestDeck;
 
 	}
+	
+	public static void fillAllPoolsEqual(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
+	{
+		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
+		for (Card card : allCards)
+		{
+			switch (card.getRarity())
+			{
+				case "Ultimate Rare":
+					ultimates++;
+					break;
+				case "Ultra Rare":
+					ultras++;
+					break;
+				case "Super Rare":
+					supers++;
+					break;
+				case "Rare":
+					rares++;
+					break;
+				case "Common":
+					commons++;
+					break;
+				default: break;
+			}
+		}
+				
+		double ultimatesAllowed = Math.floor((ultimates / noOfPlayers) - (noOfPlayers));
+		double ultrasAllowed = Math.floor((ultras / noOfPlayers) - (noOfPlayers - 2));
+		double supersAllowed = Math.floor((supers / noOfPlayers) - (noOfPlayers - 6));
+		double raresAllowed = Math.floor((rares / noOfPlayers) - ((noOfPlayers * 2)));
+		double commonsAllowed = Math.floor((commons / noOfPlayers) - (noOfPlayers * 4) + 24);
+		
+		if (ultimatesAllowed < 0 ) { ultimatesAllowed = 1; }
+		if (ultrasAllowed < 0 ) { ultrasAllowed = 2; }
+		if (supersAllowed < 0) { supersAllowed = 8; }
+		
+	
+		for (int i = 0, j = 0; i < (ultimatesAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Ultimate Rare"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (ultrasAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Ultra Rare"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (supersAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Super Rare"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+
+		for (int i = 0, j = 0; i < (raresAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Rare"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (commonsAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Common"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+	
+	}
+	
+	public static void fillAllPoolsHarsh(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
+	{		
+		double ultimatesAllowed = 2;
+		double ultrasAllowed = 8; if (noOfPlayers > 2) { ultrasAllowed = 4; }
+		double supersAllowed = 20; if (noOfPlayers > 2 && noOfPlayers < 8) { supersAllowed = 10; } else if (noOfPlayers > 8) { supersAllowed = 5; }
+		double raresAllowed = 60; if (noOfPlayers > 2 && noOfPlayers < 8) { raresAllowed = 35; } else if (noOfPlayers > 8) { raresAllowed = 15; } 
+		double commonsAllowed = 400; if (noOfPlayers > 2 && noOfPlayers < 8) { commonsAllowed = 250; } else if (noOfPlayers > 8) { commonsAllowed = 100; }
+
+	
+		for (int i = 0, j = 0; i < (ultimatesAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Ultimate Rare"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (ultrasAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Ultra Rare"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (supersAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Super Rare"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+
+		for (int i = 0, j = 0; i < (raresAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Rare"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (commonsAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveRarity(allCards, "Common"));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+	
+	}
+	
+	public static void fillAllPoolsScore(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
+	{
+		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
+		for (Card card : allCards)
+		{
+			int score = card.getTierScore();
+			if (score < 30) { commons++; }
+			else if (score > 30 && score < 50) { rares++; }
+			else if (score > 50 && score < 70) { supers++; }
+			else if (score > 70 && score < 85) { ultras++; }
+			else if (score > 85) { ultimates++; }
+			else {}
+		}
+				
+		double ultimatesAllowed = Math.floor((ultimates / noOfPlayers) - (noOfPlayers));
+		ultimatesAllowed -= 0;
+		double ultrasAllowed = Math.floor((ultras / noOfPlayers) - (noOfPlayers - 2));
+		ultrasAllowed -= (110 / noOfPlayers);
+		double supersAllowed = Math.floor((supers / noOfPlayers) - (noOfPlayers - 6));
+		supersAllowed -= (130 / noOfPlayers);
+		double raresAllowed = Math.floor((rares / noOfPlayers) - ((noOfPlayers * 2)));
+		raresAllowed += (90 / noOfPlayers);
+		double commonsAllowed = Math.floor((commons / noOfPlayers) - (noOfPlayers * 4) + 24);
+		commonsAllowed += (120 / noOfPlayers);
+		
+		if (ultimatesAllowed < 0 ) { ultimatesAllowed = 1; }
+		if (ultrasAllowed < 0 ) { ultrasAllowed = 2; }
+		if (supersAllowed < 0) { supersAllowed = 8; }
+		
+	
+		for (int i = 0, j = 0; i < (ultimatesAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveScore(allCards, 85, 100));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (ultrasAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveScore(allCards, 70, 85));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (supersAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveScore(allCards, 50, 70));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+
+		for (int i = 0, j = 0; i < (raresAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveScore(allCards, 30, 50));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		for (int i = 0, j = 0; i < (commonsAllowed * noOfPlayers); i++)
+		{
+			decks.get(j%noOfPlayers).add(randomCardRemoveScore(allCards, -1, 30));
+			decks.get(j%noOfPlayers).get(decks.get(j%noOfPlayers).size() - 1).setQuantity(1);
+			j++;
+			if ((j + 1) > noOfPlayers) { j = 0; }
+		}
+		
+		int aUltimates = 0; int aUltras = 0; int aSupers = 0; int aRares = 0; int aCommons = 0;
+		for (ArrayList<Card> deck : decks)
+		{
+			for (Card card : deck)
+			{
+				int score = card.getTierScore();
+				if (score < 30) { aCommons++; }
+				else if (score > 30 && score < 50) { aRares++; }
+				else if (score > 50 && score < 70) { aSupers++; }
+				else if (score > 70 && score < 85) { aUltras++; }
+				else if (score > 85) { aUltimates++; }
+				else {}
+			}
+		}
+		
+		System.out.println("Cards over 85 score per player: " + ultimatesAllowed);
+		System.out.println("Cards between 70-85 per player: " + ultrasAllowed);
+		System.out.println("Cards between 50-70 per player: " + supersAllowed);
+		System.out.println("Cards between 30-50 per player: " + raresAllowed);
+		System.out.println("Cards under 30 score per player: " + commonsAllowed);
+		
+		System.out.println("Cards over 85 score in pool: " + aUltimates);
+		System.out.println("Cards between 70-85 in pool: " + aUltras);
+		System.out.println("Cards between 50-70 in pool: " + aSupers);
+		System.out.println("Cards between 30-50 in pool: " + aRares);
+		System.out.println("Cards under 35 score in pool: " + aCommons);
+	
+	}
 
 	// Pulls a random card from a given pool and removes one from that pool (equal weight to all cards)
 	static Card randomCardRemove(ArrayList<Card> allCards)
@@ -1736,6 +2613,46 @@ public class CardPool_GUI_1_Stable {
 		int cardIndex = allCards.indexOf(selected);
 		allCards.get(cardIndex).setQuantity(allCards.get(cardIndex).getQuantity() - 1);
 		if (allCards.get(cardIndex).getQuantity() <= 0) { allCards.remove(cardIndex); }
+		return selected;
+	}
+	
+	// Pulls a random card from a given pool and removes one from that pool (equal weight to all cards)
+	static Card randomCardRemoveRarity(ArrayList<Card> allCards, String rarity)
+	{
+		ArrayList<Card> allOfRarity = new ArrayList<Card>();
+		for (Card card : allCards)
+		{
+			if (card.getRarity().equals(rarity))
+			{
+				allOfRarity.add(card);
+			}
+		}
+		Random seed = new Random();
+		int seedValue = seed.nextInt(allOfRarity.size());
+		Card selected = allOfRarity.get(seedValue);
+		int cardIndex = allOfRarity.indexOf(selected);
+		allOfRarity.get(cardIndex).setQuantity(allOfRarity.get(cardIndex).getQuantity() - 1);
+		if (allOfRarity.get(cardIndex).getQuantity() <= 0) { allOfRarity.remove(cardIndex); }
+		return selected;
+	}
+	
+	// Pulls a random card from a given pool and removes one from that pool (equal weight to all cards)
+	static Card randomCardRemoveScore(ArrayList<Card> allCards, int lowerBound, int upperBound)
+	{
+		ArrayList<Card> allOfRarity = new ArrayList<Card>();
+		for (Card card : allCards)
+		{
+			if (card.getTierScore() > lowerBound && card.getTierScore() < upperBound)
+			{
+				allOfRarity.add(card);
+			}
+		}
+		Random seed = new Random();
+		int seedValue = seed.nextInt(allOfRarity.size());
+		Card selected = allOfRarity.get(seedValue);
+		int cardIndex = allOfRarity.indexOf(selected);
+		allOfRarity.get(cardIndex).setQuantity(allOfRarity.get(cardIndex).getQuantity() - 1);
+		if (allOfRarity.get(cardIndex).getQuantity() <= 0) { allOfRarity.remove(cardIndex); }
 		return selected;
 	}
 
@@ -1989,6 +2906,208 @@ public class CardPool_GUI_1_Stable {
 		return checker;
 	}
 
+	// All the listeners for the ban: scores sub menu
+	static void banScoreListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem lowScore,
+			JMenuItem medScore, JMenuItem highScore, JMenuItem veryHighScore, JMenuItem OP)
+		{
+			lowScore.addActionListener(new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent arg0) 
+				{
+					boolean checker = false;
+					for (int a = 0; a < allCards.size(); a++)
+					{
+						if (allCards.get(a).getTierScore() < 30) 
+						{				
+							for (int bm = 0; bm < banModel.getSize(); bm++)
+							{
+								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+								{
+									checker = true; 
+								}
+							}
+
+							if (checker == false) 
+							{ 
+								int howMany = howManyCards(allCards, allCards.get(a));
+								Card temp = new Card(allCards.get(a), howMany); 
+								banModel.addElement(temp); 
+							}
+							allCards.remove(a);
+							a = 0;
+							checker = false;
+						}
+					}
+
+					lowScore.setEnabled(false);
+					int totalCards2 = cardCount(allCards);
+					lblCardCount.setText("Cards Available: " + totalCards2);
+					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+					int totalUnique = allCardsNopeDupe.size();
+					lblUniqueCards.setText("Unique Cards: " + totalUnique);
+					DraftInit.revalidate(); DraftInit.repaint(); 
+				}
+			});
+			
+			medScore.addActionListener(new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent arg0) 
+				{
+					boolean checker = false;
+					for (int a = 0; a < allCards.size(); a++)
+					{
+						if (allCards.get(a).getTierScore() > 30 && allCards.get(a).getTierScore() < 60) 
+						{				
+							for (int bm = 0; bm < banModel.getSize(); bm++)
+							{
+								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+								{
+									checker = true; 
+								}
+							}
+
+							if (checker == false) 
+							{ 
+								int howMany = howManyCards(allCards, allCards.get(a));
+								Card temp = new Card(allCards.get(a), howMany); 
+								banModel.addElement(temp); 
+							}
+							allCards.remove(a);
+							a = 0;
+							checker = false;
+						}
+					}
+
+					medScore.setEnabled(false);
+					int totalCards2 = cardCount(allCards);
+					lblCardCount.setText("Cards Available: " + totalCards2);
+					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+					int totalUnique = allCardsNopeDupe.size();
+					lblUniqueCards.setText("Unique Cards: " + totalUnique);
+					DraftInit.revalidate(); DraftInit.repaint(); 
+				}
+			});
+			
+			highScore.addActionListener(new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent arg0) 
+				{
+					boolean checker = false;
+					for (int a = 0; a < allCards.size(); a++)
+					{
+						if (allCards.get(a).getTierScore() > 60) 
+						{				
+							for (int bm = 0; bm < banModel.getSize(); bm++)
+							{
+								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+								{
+									checker = true; 
+								}
+							}
+
+							if (checker == false) 
+							{ 
+								int howMany = howManyCards(allCards, allCards.get(a));
+								Card temp = new Card(allCards.get(a), howMany); 
+								banModel.addElement(temp); 
+							}
+							allCards.remove(a);
+							a = 0;
+							checker = false;
+						}
+					}
+
+					highScore.setEnabled(false);
+					int totalCards2 = cardCount(allCards);
+					lblCardCount.setText("Cards Available: " + totalCards2);
+					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+					int totalUnique = allCardsNopeDupe.size();
+					lblUniqueCards.setText("Unique Cards: " + totalUnique);
+					DraftInit.revalidate(); DraftInit.repaint(); 
+				}
+			});
+			
+			veryHighScore.addActionListener(new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent arg0) 
+				{
+					boolean checker = false;
+					for (int a = 0; a < allCards.size(); a++)
+					{
+						if (allCards.get(a).getTierScore() > 75) 
+						{				
+							for (int bm = 0; bm < banModel.getSize(); bm++)
+							{
+								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+								{
+									checker = true; 
+								}
+							}
+
+							if (checker == false) 
+							{ 
+								int howMany = howManyCards(allCards, allCards.get(a));
+								Card temp = new Card(allCards.get(a), howMany); 
+								banModel.addElement(temp); 
+							}
+							allCards.remove(a);
+							a = 0;
+							checker = false;
+						}
+					}
+
+					veryHighScore.setEnabled(false);
+					int totalCards2 = cardCount(allCards);
+					lblCardCount.setText("Cards Available: " + totalCards2);
+					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+					int totalUnique = allCardsNopeDupe.size();
+					lblUniqueCards.setText("Unique Cards: " + totalUnique);
+					DraftInit.revalidate(); DraftInit.repaint(); 
+				}
+			});
+			
+			OP.addActionListener(new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent arg0) 
+				{
+					boolean checker = false;
+					for (int a = 0; a < allCards.size(); a++)
+					{
+						if (allCards.get(a).getTierScore() > 85) 
+						{				
+							for (int bm = 0; bm < banModel.getSize(); bm++)
+							{
+								if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+								{
+									checker = true; 
+								}
+							}
+
+							if (checker == false) 
+							{ 
+								int howMany = howManyCards(allCards, allCards.get(a));
+								Card temp = new Card(allCards.get(a), howMany); 
+								banModel.addElement(temp); 
+							}
+							allCards.remove(a);
+							a = 0;
+							checker = false;
+						}
+					}
+
+					OP.setEnabled(false);
+					int totalCards2 = cardCount(allCards);
+					lblCardCount.setText("Cards Available: " + totalCards2);
+					ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+					int totalUnique = allCardsNopeDupe.size();
+					lblUniqueCards.setText("Unique Cards: " + totalUnique);
+					DraftInit.revalidate(); DraftInit.repaint(); 
+				}
+			});
+
+		}
+	
+	
 	// All the listeners for the ban: types sub menu
 	static void banTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Aqua,
 			JMenuItem Beast, JMenuItem BeastWarrior, JMenuItem Dinosaur, JMenuItem Divine, JMenuItem Dragon, JMenuItem Fairy, JMenuItem Fiend, JMenuItem Fish, JMenuItem Insect,
@@ -4834,7 +5953,7 @@ public class CardPool_GUI_1_Stable {
 
 	// Setup the view database listeners the first time when the program opens
 	public static void viewDatabaseListenerInit(JMenu mnViewDatabase, JMenuItem mntmViewAllCards, JMenuItem mntmNewMenuItem, ArrayList<Card> allCards, 
-			JMenuItem mntmUltraRares, JMenuItem mntmSuperRares, JMenuItem mntmRares, JMenuItem mntmCommon, JMenuItem cardViewer)
+			JMenuItem mntmUltraRares, JMenuItem mntmSuperRares, JMenuItem mntmRares, JMenuItem mntmCommon)
 	{
 		mntmViewAllCards.addActionListener(new ActionListener() 
 		{
@@ -4843,6 +5962,7 @@ public class CardPool_GUI_1_Stable {
 			{
 
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("All Cards");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -4877,7 +5997,7 @@ public class CardPool_GUI_1_Stable {
 							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
 							{
 								dynamicModel1.addElement(card);
-								System.out.println("Added " + card.getName());
+								
 							} 
  						}
 						
@@ -4891,36 +6011,6 @@ public class CardPool_GUI_1_Stable {
 						dynamicModel1.clear();
 					}
 				});
-				/*
-				search.addActionListener(new ActionListener() 
-				{
-					public void actionPerformed(ActionEvent arg0) 
-					{
-						if (searchBar.getText().isEmpty()) 
-						{ 
-							dynamicModel1.clear();
-							for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
-							System.out.println("text is empty. Found size: " + found.size() + "\nallCardsNoDupes size: " + allCardsNoDupes.size());
-							//c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
-							//c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
-							//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
-							cardView.revalidate();
-							cardView.repaint();
-						}
-						else 
-						{
-							System.out.println("text has stuff. text: " + searchBar.getText() + "\nFound size: " + found.size() + "\nallCardsNoDupes size: " + allCardsNoDupes.size());
-							//c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
-							//c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
-							//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
-							cardView.revalidate();
-							cardView.repaint();
-						}
-					}
-				});
-				*/
-				
-				
 				
 				KeyListener keyListener = new KeyListener()
 				{
@@ -4928,19 +6018,98 @@ public class CardPool_GUI_1_Stable {
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) dynamicList.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
+						
+						
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
@@ -4952,18 +6121,96 @@ public class CardPool_GUI_1_Stable {
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) dynamicList.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
@@ -4981,77 +6228,275 @@ public class CardPool_GUI_1_Stable {
 		});
 		mnViewDatabase.add(mntmViewAllCards);
 
-
 		mntmNewMenuItem.addActionListener(new ActionListener() 
 		{
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				//JFrame cardView;
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Ultimate Rares");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(allCards, "Ultimate Rare");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
 		mnViewDatabase.add(mntmNewMenuItem);
-
-
 
 
 		mntmUltraRares.addActionListener(new ActionListener() 
@@ -5059,65 +6504,266 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				//JFrame cardView;
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Ultra Rares");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(allCards, "Ultra Rare");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+								
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
@@ -5129,66 +6775,267 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				//	JFrame cardView;
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Super Rares");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(allCards, "Super Rare");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+								
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
-				cardView.setVisible(true);				
+				cardView.setResizable(false);
+				cardView.setVisible(true);
 			}
 		});
 		mnViewDatabase.add(mntmSuperRares);
@@ -5200,65 +7047,266 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				//JFrame cardView;
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Rares");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(allCards, "Rare");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+								
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
@@ -5270,123 +7318,1909 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				//JFrame cardView;
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Commons");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(allCards, "Common");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+								
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
 		mnViewDatabase.add(mntmCommon);
-
-
-		cardViewer.addActionListener(new ActionListener() 
-		{
-			@SuppressWarnings("rawtypes")
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				//JFrame cardView;
-				JFrame cardView = new JFrame();	
-				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
-				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				ArrayList<Card >allCardsNoDupes = listMakerRarity(allCards, "Common");
-				JList list = new JList(allCardsNoDupes.toArray());
-				Card selectedCard = allCardsNoDupes.get(0);
-				JFrame singleCardView = new JFrame();
-				JPanel panel = new JPanel();
-				JButton last = new JButton("Previous");
-				JButton next = new JButton("Next");
-
-				last.addActionListener(new ActionListener() 
-				{
-					public void actionPerformed(ActionEvent arg0) 
-					{
-
-					}
-
-				});
-
-				next.addActionListener(new ActionListener() 
-				{
-					public void actionPerformed(ActionEvent arg0) 
-					{
-
-					}
-
-				});
-
-				ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-				label.setLocation(29, 37);
-				panel.add(last);
-				panel.add(label);
-				panel.add(next);
-				last.setEnabled(false);
-				singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				singleCardView.setBounds(100, 100, 496, 443);
-				singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				singleCardView.getContentPane().add(panel);
-				singleCardView.pack();
-				singleCardView.setVisible(true);
-			}
-		});
-		mnViewDatabase.add(cardViewer);
 	}
+	
+	// Setup the view database listeners the first time when the program opens
+		public static void viewDatabaseListenerInit2(JMenu mnViewDatabase, JMenuItem mntmViewAllCards, JMenuItem mntmNewMenuItem, ArrayList<Card> draftAllCards, 
+				JMenuItem mntmUltraRares, JMenuItem mntmSuperRares, JMenuItem mntmRares, JMenuItem mntmCommon, boolean urItem, boolean ulrItem, boolean srItem, 
+				boolean rItem, boolean cItem)
+		{
+			
+			mnViewDatabase.removeAll();
+			
+			
+			
+			mntmViewAllCards.addActionListener(new ActionListener() 
+			{
+				@SuppressWarnings("rawtypes")
+				public void actionPerformed(ActionEvent arg0) 
+				{
+
+					JFrame cardView = new JFrame();	
+					cardView.setTitle("All Cards");
+					cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+					cardView.setBounds(100, 100, 600, 600);
+					cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					cardView.getContentPane().setLayout(new GridBagLayout());
+					GridBagConstraints c = new GridBagConstraints();
+					c.fill = GridBagConstraints.HORIZONTAL;
+
+					ArrayList<Card >allCardsNoDupes = listMaker(draftAllCards);
+					dynamicModel1.clear();
+					for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+					dynamicList = new JList(dynamicModel1);
+					JTextArea searchBar = new JTextArea(1, 15);
+					JScrollPane scrollPane = new JScrollPane(dynamicList);
+					JScrollPane scrollPane2 = new JScrollPane(searchBar);
+					//JButton search = new JButton("Search");
+					searchBar.addKeyListener(new KeyListener() 
+					{
+						@Override
+						public void keyPressed(KeyEvent arg0) 
+						{
+							
+							
+						}
+
+						@Override
+						public void keyReleased(KeyEvent e) 
+						{
+							for (Card card : allCardsNoDupes)
+							{
+								//if (card.getName().indexOf(e.toString()) > 0) 
+								if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+								{
+									dynamicModel1.addElement(card);
+									
+								} 
+	 						}
+							
+							
+							
+						}
+
+						@Override
+						public void keyTyped(KeyEvent arg0) 
+						{
+							dynamicModel1.clear();
+						}
+					});
+					
+					KeyListener keyListener = new KeyListener()
+					{
+						public void keyPressed(KeyEvent e)
+						{
+							if (e.getKeyCode() == KeyEvent.VK_ENTER)
+							{
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();		
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+							
+							
+						}
+
+						@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
+					};
+					
+					MouseListener mouseListener = new MouseAdapter() 
+					{
+						public void mouseClicked(MouseEvent e) 
+						{
+							if (e.getClickCount() == 2) 
+							{    		
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+					};
+					
+					
+					dynamicList.addKeyListener(keyListener);
+					dynamicList.addMouseListener(mouseListener);
+					c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+					c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+					//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
+					cardView.pack();
+					cardView.setResizable(false);
+					cardView.setVisible(true);
+				}
+			});
+			mnViewDatabase.add(mntmViewAllCards);
+
+			mntmNewMenuItem.addActionListener(new ActionListener() 
+			{
+				@SuppressWarnings("rawtypes")
+				public void actionPerformed(ActionEvent arg0) 
+				{
+
+					JFrame cardView = new JFrame();	
+					cardView.setTitle("Ultimate Rares");
+					cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+					cardView.setBounds(100, 100, 600, 600);
+					cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					
+					cardView.getContentPane().setLayout(new GridBagLayout());
+					GridBagConstraints c = new GridBagConstraints();
+					c.fill = GridBagConstraints.HORIZONTAL;
+
+					ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Ultimate Rare");
+					dynamicModel1.clear();
+					for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+					dynamicList = new JList(dynamicModel1);
+					JTextArea searchBar = new JTextArea(1, 15);
+					JScrollPane scrollPane = new JScrollPane(dynamicList);
+					JScrollPane scrollPane2 = new JScrollPane(searchBar);
+					//JButton search = new JButton("Search");
+					searchBar.addKeyListener(new KeyListener() 
+					{
+						@Override
+						public void keyPressed(KeyEvent arg0) 
+						{
+							
+							
+						}
+
+						@Override
+						public void keyReleased(KeyEvent e) 
+						{
+							for (Card card : allCardsNoDupes)
+							{
+								//if (card.getName().indexOf(e.toString()) > 0) 
+								if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+								{
+									dynamicModel1.addElement(card);
+								} 
+	 						}
+							
+							
+							
+						}
+
+						@Override
+						public void keyTyped(KeyEvent arg0) 
+						{
+							dynamicModel1.clear();
+						}
+					});
+					
+					KeyListener keyListener = new KeyListener()
+					{
+						public void keyPressed(KeyEvent e)
+						{
+							if (e.getKeyCode() == KeyEvent.VK_ENTER)
+							{
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+
+						@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
+					};
+					
+					MouseListener mouseListener = new MouseAdapter() 
+					{
+						public void mouseClicked(MouseEvent e) 
+						{
+							if (e.getClickCount() == 2) 
+							{    		
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+					};
+					
+					
+					dynamicList.addKeyListener(keyListener);
+					dynamicList.addMouseListener(mouseListener);
+					c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+					c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+					//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
+					cardView.pack();
+					cardView.setResizable(false);
+					cardView.setVisible(true);
+				}
+			});
+			mnViewDatabase.add(mntmNewMenuItem);
+
+
+			mntmUltraRares.addActionListener(new ActionListener() 
+			{
+				@SuppressWarnings("rawtypes")
+				public void actionPerformed(ActionEvent arg0) 
+				{
+
+					JFrame cardView = new JFrame();	
+					cardView.setTitle("Ultra Rares");
+					cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+					cardView.setBounds(100, 100, 600, 600);
+					cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					
+					cardView.getContentPane().setLayout(new GridBagLayout());
+					GridBagConstraints c = new GridBagConstraints();
+					c.fill = GridBagConstraints.HORIZONTAL;
+
+					ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Ultra Rare");
+					dynamicModel1.clear();
+					for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+					dynamicList = new JList(dynamicModel1);
+					JTextArea searchBar = new JTextArea(1, 15);
+					JScrollPane scrollPane = new JScrollPane(dynamicList);
+					JScrollPane scrollPane2 = new JScrollPane(searchBar);
+					//JButton search = new JButton("Search");
+					searchBar.addKeyListener(new KeyListener() 
+					{
+						@Override
+						public void keyPressed(KeyEvent arg0) 
+						{
+							
+							
+						}
+
+						@Override
+						public void keyReleased(KeyEvent e) 
+						{
+							for (Card card : allCardsNoDupes)
+							{
+								//if (card.getName().indexOf(e.toString()) > 0) 
+								if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+								{
+									dynamicModel1.addElement(card);
+									
+								} 
+	 						}
+							
+							
+							
+						}
+
+						@Override
+						public void keyTyped(KeyEvent arg0) 
+						{
+							dynamicModel1.clear();
+						}
+					});
+					
+					KeyListener keyListener = new KeyListener()
+					{
+						public void keyPressed(KeyEvent e)
+						{
+							if (e.getKeyCode() == KeyEvent.VK_ENTER)
+							{
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+
+						@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
+					};
+					
+					MouseListener mouseListener = new MouseAdapter() 
+					{
+						public void mouseClicked(MouseEvent e) 
+						{
+							if (e.getClickCount() == 2) 
+							{    		
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+					};
+					
+					
+					dynamicList.addKeyListener(keyListener);
+					dynamicList.addMouseListener(mouseListener);
+					c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+					c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+					//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
+					cardView.pack();
+					cardView.setResizable(false);
+					cardView.setVisible(true);
+				}
+			});
+			mnViewDatabase.add(mntmUltraRares);
+
+
+			mntmSuperRares.addActionListener(new ActionListener() 
+			{
+				@SuppressWarnings("rawtypes")
+				public void actionPerformed(ActionEvent arg0) 
+				{
+
+					JFrame cardView = new JFrame();	
+					cardView.setTitle("Super Rares");
+					cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+					cardView.setBounds(100, 100, 600, 600);
+					cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					
+					cardView.getContentPane().setLayout(new GridBagLayout());
+					GridBagConstraints c = new GridBagConstraints();
+					c.fill = GridBagConstraints.HORIZONTAL;
+
+					ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Super Rare");
+					dynamicModel1.clear();
+					for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+					dynamicList = new JList(dynamicModel1);
+					JTextArea searchBar = new JTextArea(1, 15);
+					JScrollPane scrollPane = new JScrollPane(dynamicList);
+					JScrollPane scrollPane2 = new JScrollPane(searchBar);
+					//JButton search = new JButton("Search");
+					searchBar.addKeyListener(new KeyListener() 
+					{
+						@Override
+						public void keyPressed(KeyEvent arg0) 
+						{
+							
+							
+						}
+
+						@Override
+						public void keyReleased(KeyEvent e) 
+						{
+							for (Card card : allCardsNoDupes)
+							{
+								//if (card.getName().indexOf(e.toString()) > 0) 
+								if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+								{
+									dynamicModel1.addElement(card);
+									
+								} 
+	 						}
+							
+							
+							
+						}
+
+						@Override
+						public void keyTyped(KeyEvent arg0) 
+						{
+							dynamicModel1.clear();
+						}
+					});
+					
+					KeyListener keyListener = new KeyListener()
+					{
+						public void keyPressed(KeyEvent e)
+						{
+							if (e.getKeyCode() == KeyEvent.VK_ENTER)
+							{
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+
+						@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
+					};
+					
+					MouseListener mouseListener = new MouseAdapter() 
+					{
+						public void mouseClicked(MouseEvent e) 
+						{
+							if (e.getClickCount() == 2) 
+							{    		
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+					};
+					
+					
+					dynamicList.addKeyListener(keyListener);
+					dynamicList.addMouseListener(mouseListener);
+					c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+					c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+					//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
+					cardView.pack();
+					cardView.setResizable(false);
+					cardView.setVisible(true);
+				}
+			});
+			mnViewDatabase.add(mntmSuperRares);
+
+
+
+			mntmRares.addActionListener(new ActionListener() 
+			{
+				@SuppressWarnings("rawtypes")
+				public void actionPerformed(ActionEvent arg0) 
+				{
+
+					JFrame cardView = new JFrame();	
+					cardView.setTitle("Rares");
+					cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+					cardView.setBounds(100, 100, 600, 600);
+					cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					
+					cardView.getContentPane().setLayout(new GridBagLayout());
+					GridBagConstraints c = new GridBagConstraints();
+					c.fill = GridBagConstraints.HORIZONTAL;
+
+					ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Rare");
+					dynamicModel1.clear();
+					for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+					dynamicList = new JList(dynamicModel1);
+					JTextArea searchBar = new JTextArea(1, 15);
+					JScrollPane scrollPane = new JScrollPane(dynamicList);
+					JScrollPane scrollPane2 = new JScrollPane(searchBar);
+					//JButton search = new JButton("Search");
+					searchBar.addKeyListener(new KeyListener() 
+					{
+						@Override
+						public void keyPressed(KeyEvent arg0) 
+						{
+							
+							
+						}
+
+						@Override
+						public void keyReleased(KeyEvent e) 
+						{
+							for (Card card : allCardsNoDupes)
+							{
+								//if (card.getName().indexOf(e.toString()) > 0) 
+								if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+								{
+									dynamicModel1.addElement(card);
+									
+								} 
+	 						}
+							
+							
+							
+						}
+
+						@Override
+						public void keyTyped(KeyEvent arg0) 
+						{
+							dynamicModel1.clear();
+						}
+					});
+					
+					KeyListener keyListener = new KeyListener()
+					{
+						public void keyPressed(KeyEvent e)
+						{
+							if (e.getKeyCode() == KeyEvent.VK_ENTER)
+							{
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+
+						@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
+					};
+					
+					MouseListener mouseListener = new MouseAdapter() 
+					{
+						public void mouseClicked(MouseEvent e) 
+						{
+							if (e.getClickCount() == 2) 
+							{    		
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+					};
+					
+					
+					dynamicList.addKeyListener(keyListener);
+					dynamicList.addMouseListener(mouseListener);
+					c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+					c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+					//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
+					cardView.pack();
+					cardView.setResizable(false);
+					cardView.setVisible(true);
+				}
+			});
+			mnViewDatabase.add(mntmRares);
+
+
+			mntmCommon.addActionListener(new ActionListener() 
+			{
+				@SuppressWarnings("rawtypes")
+				public void actionPerformed(ActionEvent arg0) 
+				{
+
+					JFrame cardView = new JFrame();	
+					cardView.setTitle("Commons");
+					cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+					cardView.setBounds(100, 100, 600, 600);
+					cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					
+					cardView.getContentPane().setLayout(new GridBagLayout());
+					GridBagConstraints c = new GridBagConstraints();
+					c.fill = GridBagConstraints.HORIZONTAL;
+
+					ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Common");
+					dynamicModel1.clear();
+					for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+					dynamicList = new JList(dynamicModel1);
+					JTextArea searchBar = new JTextArea(1, 15);
+					JScrollPane scrollPane = new JScrollPane(dynamicList);
+					JScrollPane scrollPane2 = new JScrollPane(searchBar);
+					//JButton search = new JButton("Search");
+					searchBar.addKeyListener(new KeyListener() 
+					{
+						@Override
+						public void keyPressed(KeyEvent arg0) 
+						{
+							
+							
+						}
+
+						@Override
+						public void keyReleased(KeyEvent e) 
+						{
+							for (Card card : allCardsNoDupes)
+							{
+								//if (card.getName().indexOf(e.toString()) > 0) 
+								if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+								{
+									dynamicModel1.addElement(card);
+									
+								} 
+	 						}
+							
+							
+							
+						}
+
+						@Override
+						public void keyTyped(KeyEvent arg0) 
+						{
+							dynamicModel1.clear();
+						}
+					});
+					
+					KeyListener keyListener = new KeyListener()
+					{
+						public void keyPressed(KeyEvent e)
+						{
+							if (e.getKeyCode() == KeyEvent.VK_ENTER)
+							{
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+
+						@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
+					};
+					
+					MouseListener mouseListener = new MouseAdapter() 
+					{
+						public void mouseClicked(MouseEvent e) 
+						{
+							if (e.getClickCount() == 2) 
+							{    		
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();										
+								JPanel panel = new JPanel();
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
+								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								singleCardView.setBounds(100, 100, 496, 443);
+								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								singleCardView.getContentPane().add(panel);
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
+								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
+							}
+						}
+					};
+					
+					
+					dynamicList.addKeyListener(keyListener);
+					dynamicList.addMouseListener(mouseListener);
+					c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+					c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+					//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
+					cardView.pack();
+					cardView.setResizable(false);
+					cardView.setVisible(true);
+				}
+			});
+			mnViewDatabase.add(mntmCommon);
+		}
 
 	// Setup the view database listeners the second time once the draft starts
 	public static void viewDatabaseListenerReinit(JMenu mnViewDatabase, ArrayList<Card> draftAllCards, boolean urItem, boolean ulrItem, boolean srItem, boolean rItem, boolean cItem)
@@ -5400,61 +9234,271 @@ public class CardPool_GUI_1_Stable {
 			{
 
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("All Cards");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMaker(draftAllCards);
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+								
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();		
+							singleCardView.setTitle(dynamicList.getSelectedValue().getName());
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.setTitle(dynamicList.getSelectedValue().getName() + " - Text");
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
+						
+						
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();			
+							singleCardView.setTitle(dynamicList.getSelectedValue().getName());
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.setTitle(dynamicList.getSelectedValue().getName() + " - Text");
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
@@ -5466,64 +9510,266 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				//JFrame cardView;
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Ultimate Rares");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Ultimate Rare");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							//JFrame singleCardView;
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
@@ -5538,62 +9784,266 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Ultra Rares");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Ultra Rare");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
@@ -5606,63 +10056,267 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Super Rares");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Super Rare");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
-				cardView.setVisible(true);				
+				cardView.setResizable(false);
+				cardView.setVisible(true);
 			}
 		});
 		mnViewDatabase.add(mntmSuperRares);
@@ -5674,62 +10328,266 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Rares");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Rare");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
@@ -5742,122 +10600,271 @@ public class CardPool_GUI_1_Stable {
 			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent arg0) 
 			{
+
 				JFrame cardView = new JFrame();	
+				cardView.setTitle("Commons");
 				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
+				cardView.setBounds(100, 100, 600, 600);
 				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+				cardView.getContentPane().setLayout(new GridBagLayout());
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.HORIZONTAL;
+
 				ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Common");
-				JList list = new JList(allCardsNoDupes.toArray());
+				dynamicModel1.clear();
+				for (Card card : allCardsNoDupes) { dynamicModel1.addElement(card); }
+				dynamicList = new JList(dynamicModel1);
+				JTextArea searchBar = new JTextArea(1, 15);
+				JScrollPane scrollPane = new JScrollPane(dynamicList);
+				JScrollPane scrollPane2 = new JScrollPane(searchBar);
+				//JButton search = new JButton("Search");
+				searchBar.addKeyListener(new KeyListener() 
+				{
+					@Override
+					public void keyPressed(KeyEvent arg0) 
+					{
+						
+						
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+						for (Card card : allCardsNoDupes)
+						{
+							//if (card.getName().indexOf(e.toString()) > 0) 
+							if (card.getName().toLowerCase().contains(searchBar.getText().toLowerCase()))
+							{
+								dynamicModel1.addElement(card);
+							} 
+ 						}
+						
+						
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) 
+					{
+						dynamicModel1.clear();
+					}
+				});
+				
 				KeyListener keyListener = new KeyListener()
 				{
 					public void keyPressed(KeyEvent e)
 					{
 						if (e.getKeyCode() == KeyEvent.VK_ENTER)
 						{
-							Card selectedCard = (Card) list.getSelectedValue();
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 
 					@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 				};
-				list.addKeyListener(keyListener);
+				
 				MouseListener mouseListener = new MouseAdapter() 
 				{
 					public void mouseClicked(MouseEvent e) 
 					{
 						if (e.getClickCount() == 2) 
 						{    		
-							Card selectedCard = (Card) list.getSelectedValue();
-
-							JFrame singleCardView = new JFrame();
+							dynamicCard = (Card) dynamicList.getSelectedValue();
+							singleCardView = new JFrame();										
 							JPanel panel = new JPanel();
-							ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-							label.setLocation(29, 37);
-							panel.add(label);
+							boolean smallImage = false;
+							JButton fullSize = new JButton("Full Resolution");
+							panel.setLayout(new GridBagLayout());
+							GridBagConstraints c = new GridBagConstraints();
+							c.fill = GridBagConstraints.HORIZONTAL;
+							ImageLabel label;
+							if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+							{ 
+								label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+								smallImage = true;
+							}
+							else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+							JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+							JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+							Integer tempInt = dynamicCard.getTierScore();
+							String scoreString = tempInt.toString();
+							JLabel score = new JLabel("Tier Score: " + scoreString);
+							JButton showText = new JButton("Card Text");
+							c.insets = new Insets(5, 5, 5, 5);
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+							c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+							rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+							quantity.setHorizontalAlignment(SwingConstants.CENTER);
+							c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+							score.setHorizontalAlignment(SwingConstants.CENTER); 
+							c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+							showText.setHorizontalAlignment(SwingConstants.CENTER); 
+							showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+							{
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+								fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+								fullSize.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent e) 
+									{
+										JFrame fullView = new JFrame();
+										JPanel fullPanel = new JPanel();
+										ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+										fullPanel.add(bigImage);
+										fullView.getContentPane().add(fullPanel);
+										fullView.pack();
+										fullView.setResizable(false);
+										fullView.setVisible(true);
+										
+									}
+									
+								});
+							}
 							singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 							singleCardView.setBounds(100, 100, 496, 443);
 							singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 							singleCardView.getContentPane().add(panel);
-							singleCardView.pack();
+							singleCardView.pack();						
+							singleCardView.setResizable(false);
 							singleCardView.setVisible(true);
+							
+							showText.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent arg0) 
+								{
+									JFrame textFrame = new JFrame();
+									textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									textFrame.setBounds(100, 100, 496, 443);
+									textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									JPanel textPanel = new JPanel();
+									JTextArea textField = new JTextArea(6, 40);
+									textField.setEditable(false);
+									String temp = dynamicCard.getText();
+									String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+									textField.setText(newTemp);
+									textField.setWrapStyleWord(true);
+									JScrollPane vertScroll = new JScrollPane(textField);
+									textPanel.add(vertScroll);
+									textFrame.getContentPane().add(textPanel);
+									textFrame.pack();
+									textFrame.setResizable(false);
+									textFrame.setVisible(true);
+									
+									
+								}
+							});
+						
+						
 						}
 					}
 				};
-				list.addMouseListener(mouseListener);
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setViewportView(list);
-				cardView.getContentPane().add(scrollPane);
+				
+				
+				dynamicList.addKeyListener(keyListener);
+				dynamicList.addMouseListener(mouseListener);
+				c.weightx = 1.0; c.gridwidth = 2; c.weighty = 1.0; c.gridx = 0; c.gridy = 0; cardView.getContentPane().add(scrollPane, c);
+				c.insets = new Insets(0, 5, 0, 5); c.gridwidth = 1; c.gridheight = 4; c.gridx = 0; c.gridy = 2; cardView.getContentPane().add(scrollPane2, c);
+				//c.gridx = 1; c.gridy = 2; cardView.getContentPane().add(search, c);
 				cardView.pack();
+				cardView.setResizable(false);
 				cardView.setVisible(true);
 			}
 		});
 		mnViewDatabase.add(mntmCommon);
 		mntmCommon.setEnabled(cItem);
-
-		JMenuItem cardViewer = new JMenuItem("Card Viewer");
-		cardViewer.addActionListener(new ActionListener() 
-		{
-			@SuppressWarnings("rawtypes")
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				JFrame cardView = new JFrame();	
-				cardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				cardView.setBounds(100, 100, 496, 443);
-				cardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				ArrayList<Card >allCardsNoDupes = listMakerRarity(draftAllCards, "Common");
-				JList list = new JList(allCardsNoDupes.toArray());
-				Card selectedCard = allCardsNoDupes.get(0);
-				JFrame singleCardView = new JFrame();
-				JPanel panel = new JPanel();
-				JButton last = new JButton("Previous");
-				JButton next = new JButton("Next");
-
-				last.addActionListener(new ActionListener() 
-				{
-					public void actionPerformed(ActionEvent arg0) 
-					{
-
-					}
-
-				});
-
-				next.addActionListener(new ActionListener() 
-				{
-					public void actionPerformed(ActionEvent arg0) 
-					{
-
-					}
-
-				});
-
-				ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-				label.setLocation(29, 37);
-				panel.add(last);
-				panel.add(label);
-				panel.add(next);
-				last.setEnabled(false);
-				singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				singleCardView.setBounds(100, 100, 496, 443);
-				singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				singleCardView.getContentPane().add(panel);
-				singleCardView.pack();
-				singleCardView.setVisible(true);
-			}
-		});
-		mnViewDatabase.add(cardViewer);
-
-		cardViewer.setEnabled(false);
 		// End View Database 
 	}
 
@@ -5875,7 +10882,8 @@ public class CardPool_GUI_1_Stable {
 			JMenuItem Beast, JMenuItem BeastWarrior, JMenuItem Dinosaur, JMenuItem Divine, JMenuItem Dragon, JMenuItem Fairy, JMenuItem Fiend, JMenuItem Fish, JMenuItem Insect,
 			JMenuItem Machine, JMenuItem Plant, JMenuItem Psychic, JMenuItem Pyro, JMenuItem Reptile, JMenuItem Rock, JMenuItem SeaSerpent, JMenuItem Spellcaster,
 			JMenuItem Thunder, JMenuItem Warrior, JMenuItem WingedBeast, JMenuItem Wyrm, JMenuItem Zombie, JMenuItem Spell, JMenuItem Trap, JMenuItem Contin, JMenuItem ContinSpell,
-			JMenuItem ContinTrap, JMenuItem Field, JMenuItem Quickplay, JMenuItem Equip, JMenuItem Counter)
+			JMenuItem ContinTrap, JMenuItem Field, JMenuItem Quickplay, JMenuItem Equip, JMenuItem Counter, JMenuItem lowScore, JMenuItem medScore, JMenuItem highScore,
+			JMenuItem veryHighScore, JMenuItem OP)
 	{
 		KeyListener keyListener2 = new KeyListener()
 		{
@@ -5885,22 +10893,103 @@ public class CardPool_GUI_1_Stable {
 				{
 					if (banned.isSelectionEmpty() == false)
 					{
-						Card selectedCard = (Card) banned.getSelectedValue();
-						JFrame singleCardView = new JFrame();
+						dynamicList = banned;
+						dynamicCard = (Card) dynamicList.getSelectedValue();
+						singleCardView = new JFrame();		
+						singleCardView.setTitle(dynamicCard.getName());
 						JPanel panel = new JPanel();
-						ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-						label.setLocation(29, 37);
-						panel.add(label);
+						boolean smallImage = false;
+						JButton fullSize = new JButton("Full Resolution");
+						panel.setLayout(new GridBagLayout());
+						GridBagConstraints c = new GridBagConstraints();
+						c.fill = GridBagConstraints.HORIZONTAL;
+						ImageLabel label;
+						if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+						{ 
+							label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+							smallImage = true;
+						}
+						else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+						JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+						JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+						Integer tempInt = dynamicCard.getTierScore();
+						String scoreString = tempInt.toString();
+						JLabel score = new JLabel("Tier Score: " + scoreString);
+						JButton showText = new JButton("Card Text");
+						c.insets = new Insets(5, 5, 5, 5);
+						c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+						c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+						rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+						c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+						quantity.setHorizontalAlignment(SwingConstants.CENTER);
+						c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+						score.setHorizontalAlignment(SwingConstants.CENTER); 
+						c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+						showText.setHorizontalAlignment(SwingConstants.CENTER); 
+						showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+						{
+							c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+							fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+							fullSize.addActionListener(new ActionListener()
+							{
+								@Override
+								public void actionPerformed(ActionEvent e) 
+								{
+									JFrame fullView = new JFrame();
+									fullView.setTitle(dynamicCard.getName() + " - Zoomed");
+									JPanel fullPanel = new JPanel();
+									ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+									fullPanel.add(bigImage);
+									fullView.getContentPane().add(fullPanel);
+									fullView.pack();
+									fullView.setResizable(false);
+									fullView.setVisible(true);
+									
+								}
+								
+							});
+						}
 						singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 						singleCardView.setBounds(100, 100, 496, 443);
 						singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						singleCardView.getContentPane().add(panel);
-						singleCardView.pack();
+						singleCardView.pack();						
+						singleCardView.setResizable(false);
 						singleCardView.setVisible(true);
+						
+						showText.addActionListener(new ActionListener()
+						{
+							@Override
+							public void actionPerformed(ActionEvent arg0) 
+							{
+								JFrame textFrame = new JFrame();
+								textFrame.setTitle(dynamicCard.getName() + " - Text");
+								textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+								textFrame.setBounds(100, 100, 496, 443);
+								textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+								JPanel textPanel = new JPanel();
+								JTextArea textField = new JTextArea(6, 40);
+								textField.setEditable(false);
+								String temp = dynamicCard.getText();
+								String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+								textField.setText(newTemp);
+								textField.setWrapStyleWord(true);
+								JScrollPane vertScroll = new JScrollPane(textField);
+								textPanel.add(vertScroll);
+								textFrame.getContentPane().add(textPanel);
+								textFrame.pack();
+								textFrame.setResizable(false);
+								textFrame.setVisible(true);
+								
+								
+							}
+						});
+					
+					
 					}
 					else {}
 				}
-				else {}
+				
 			}
 
 			@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
@@ -5912,14 +11001,16 @@ public class CardPool_GUI_1_Stable {
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
-
+				
 				banned.addKeyListener(keyListener2);
 				ArrayList<Card >allCardsNoDupes = listMaker(allCards);
 				DefaultListModel<Card> model = new DefaultListModel<Card>();
 				for(Card s:allCardsNoDupes) { model.addElement(s); }
 				JList<Card> list = new JList<Card>(model);
+				dynamicList = list;
 				Insets EMPTY_INSETS = new Insets(0, 0, 0, 0);
 				JFrame banList = new JFrame();
+				banList.setTitle("Ban List");
 				banList.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 				banList.setBounds(100, 100, 496, 443);
 				banList.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -5947,18 +11038,98 @@ public class CardPool_GUI_1_Stable {
 						{
 							if (list.isSelectionEmpty() == false)
 							{
-								Card selectedCard = (Card) list.getSelectedValue();
-								JFrame singleCardView = new JFrame();
+								dynamicCard = (Card) dynamicList.getSelectedValue();
+								singleCardView = new JFrame();		
+								singleCardView.setTitle(dynamicCard.getName());
 								JPanel panel = new JPanel();
-								ImageLabel label = new ImageLabel(new ImageIcon("src/images/" + selectedCard.getName() + ".png"));
-								label.setLocation(29, 37);
-								panel.add(label);
+								boolean smallImage = false;
+								JButton fullSize = new JButton("Full Resolution");
+								panel.setLayout(new GridBagLayout());
+								GridBagConstraints c = new GridBagConstraints();
+								c.fill = GridBagConstraints.HORIZONTAL;
+								ImageLabel label;
+								if (isImage("src/images/" + dynamicCard.getName() + "Small.png")) 
+								{ 
+									label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + "Small.png"));
+									smallImage = true;
+								}
+								else { label = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png")); }
+								JLabel rarity = new JLabel(dynamicCard.getRarity()); textColor(dynamicCard, rarity);
+								JLabel quantity = new JLabel("Quantity: " + dynamicCard.getQuantity());
+								Integer tempInt = dynamicCard.getTierScore();
+								String scoreString = tempInt.toString();
+								JLabel score = new JLabel("Tier Score: " + scoreString);
+								JButton showText = new JButton("Card Text");
+								c.insets = new Insets(5, 5, 5, 5);
+								c.weightx = 0.5; c.gridx = 0; c.gridy = 0; c.gridheight = 3; panel.add(label, c);
+								c.gridheight = 1; c.gridx = 0; c.gridy = 6; panel.add(rarity, c);
+								rarity.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 7;  panel.add(quantity, c);
+								quantity.setHorizontalAlignment(SwingConstants.CENTER);
+								c.gridx = 0; c.gridy = 8;  panel.add(score, c);
+								score.setHorizontalAlignment(SwingConstants.CENTER); 
+								c.gridx = 0; c.gridy = 4;  panel.add(showText, c);
+								showText.setHorizontalAlignment(SwingConstants.CENTER); 
+								showText.setMargin( new Insets(0,0,0,0) );if (smallImage)
+								{
+									c.weightx = 0.5; c.gridx = 0; c.gridy = 5; panel.add(fullSize, c); 
+									fullSize.setHorizontalAlignment(SwingConstants.CENTER);
+									fullSize.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											JFrame fullView = new JFrame();
+											fullView.setTitle(dynamicCard.getName() + " - Zoomed");
+											JPanel fullPanel = new JPanel();
+											ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
+											fullPanel.add(bigImage);
+											fullView.getContentPane().add(fullPanel);
+											fullView.pack();
+											fullView.setResizable(false);
+											fullView.setVisible(true);
+											
+										}
+										
+									});
+								}
 								singleCardView.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 								singleCardView.setBounds(100, 100, 496, 443);
 								singleCardView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 								singleCardView.getContentPane().add(panel);
-								singleCardView.pack();
+								singleCardView.pack();						
+								singleCardView.setResizable(false);
 								singleCardView.setVisible(true);
+								
+								showText.addActionListener(new ActionListener()
+								{
+									@Override
+									public void actionPerformed(ActionEvent arg0) 
+									{
+										JFrame textFrame = new JFrame();
+										textFrame.setTitle(dynamicCard.getName() + " - Text");
+										textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+										textFrame.setBounds(100, 100, 496, 443);
+										textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+										JPanel textPanel = new JPanel();
+										JTextArea textField = new JTextArea(6, 40);
+										textField.setEditable(false);
+										String temp = dynamicCard.getText();
+										String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+										textField.setText(newTemp);
+										textField.setWrapStyleWord(true);
+										JScrollPane vertScroll = new JScrollPane(textField);
+										textPanel.add(vertScroll);
+										textFrame.getContentPane().add(textPanel);
+										textFrame.pack();
+										textFrame.setResizable(false);
+										textFrame.setVisible(true);
+										
+										
+									}
+								});
+							
+							
 							}
 						}
 					}
@@ -6331,6 +11502,8 @@ public class CardPool_GUI_1_Stable {
 		
 		banCardTypeListenerInit(allCards, banModel, lblCardCount, lblUniqueCards, DraftInit, Spell, Trap, Contin, ContinSpell, ContinTrap, Field,
 				Quickplay, Equip, Counter);
+		
+		banScoreListenerInit(allCards, banModel, lblCardCount, lblUniqueCards, DraftInit, lowScore, medScore, highScore, veryHighScore, OP);
 
 
 	}
@@ -6395,7 +11568,7 @@ public class CardPool_GUI_1_Stable {
 	}
 
 	// Font color logic
-	public void textColor(Card card, JLabel tag)
+	public static void textColor(Card card, JLabel tag)
 	{
 		switch (card.getRarity())
 		{

@@ -79,12 +79,14 @@ Bottomless Shifting Sand~none~none~0~0~0~2~Trap~false~30~true~false~false~false~
 Brain Control~none~none~0~0~0~1~Spell~false~87~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~easy summon&board control
 Butterfly Dagger - Elma~none~none~0~0~0~2~Spell~false~79~false~false~false~false~true~1~none~false~false~Super Rare~(Text)~equip
 Caius the Shadow Monarch~Dark~Fiend~2400~1000~6~1~Effect Monster~true~95~false~false~false~false~false~1~monarch~false~false~Ultra Rare~If this card is Tribute Summoned: Target 1 card on the field; banish that target, and if you do, inflict 1000 damage to your opponent if it is a DARK monster.~board control&fiend&dark&direct damage&banish
+Cannon Soldier~Dark~Machine~1400~1300~4~3~Effect Monster~true~24~false~false~false~false~false~3~none~false~false~Common~(Text)~machine&dark&direct damage
 Card Destruction~none~none~0~0~0~6~Spell~false~11~false~false~false~false~false~1~none~false~false~Common~Each player discards their entire hand, then draws the same number of cards they discarded.~opponent discard&player discard
 Card Shuffle~none~none~0~0~0~1~Spell~false~10~false~false~false~false~false~3~none~false~false~Common~Pay 300 Life Points to use this card's effect. Shuffle either your or your opponent's Deck. You can only use this effect during your turn, once per turn.~none
 Card Trader~none~none~0~0~0~1~Spell~false~55~true~false~false~false~false~1~none~false~false~Super Rare~Once per turn, during your Standby Phase: You can shuffle 1 card from your hand into the Deck; draw 1 card.~draw
 Card of Sacrifice~none~none~0~0~0~1~Trap~false~60~false~false~false~false~false~1~none~false~false~Common~Draw 2 cards, if the combined ATK of all your face-up Attack Position monsters (minimum 2) is less than the ATK of your opponent's face-up monster with the lowest ATK. You cannot Summon or change battle position the turn you activate this card.~draw
 Cardcar D~Earth~Machine~800~400~2~1~Effect Monster~true~40~false~false~false~false~false~2~none~false~false~Common~(Text)~draw&earth&machine
 Castle Walls~none~none~0~0~0~4~Trap~false~12~false~false~false~false~false~3~none~false~false~Common~Increase a selected monster's DEF by 500 points during the turn this card is activated.~defense&board control
+Castle of Dark Illusions~Dark~Fiend~920~1930~4~5~Effect Monster~true~58~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&fiend&flip&defense&zombie
 Celtic Guardian~Earth~Warrior~1400~1200~4~1~Normal Monster~true~20~false~false~false~false~false~3~none~false~false~Common~none~earth&warrior
 Cestus of Dagla~none~none~0~0~0~1~Spell~false~27~false~false~false~false~true~3~none~false~false~Rare~(Text)~equip&fairy&life gain
 Change of Heart~none~none~0~0~0~17~Spell~false~89~false~false~false~false~false~1~none~false~false~Ultimate Rare~(Text)~easy summon&board control
@@ -96,12 +98,14 @@ Clock Tower Prison~none~none~0~0~0~2~Spell~false~66~false~false~false~false~fals
 Closed Forest~none~none~0~0~0~1~Spell~false~25~false~false~false~true~false~3~none~false~false~Ultra Rare~All Beast-Type monsters you control gain 100 ATK for each monster in your Graveyard. Field Spell Cards cannot be activated. Field Spell Cards cannot be activated during the turn this card is destroyed.~beast&field
 Coach Goblin~Earth~Fiend~1200~1500~4~6~Effect Monster~true~10~false~false~false~false~false~3~none~false~false~Common~While this card is face-up on your side of the field, you can return 1 Normal Monster Card in your hand to the bottom of your Deck during your End Phase to draw 1 card from your Deck. You can only use this effect once per turn.~search&earth&fiend
 Codarus~Water~Sea Serpent~1400~1200~4~2~Effect Monster~true~60~false~false~false~false~false~3~none~false~false~Common~(Text)~water&sea serpent
+Cold Enchanter~Water~Aqua~1600~1200~4~1~Effect Monster~true~63~false~false~false~false~false~3~none~false~false~Rare~(Text)~water&aqua
 Comic Hand~none~none~0~0~0~1~Spell~false~53~false~false~false~false~true~3~none~false~false~Super Rare~If you control "Toon World", equip to an opponent's monster. Take control of it. It is treated as a Toon monster. If your opponent controls no Toon monsters, it can attack your opponent directly. If "Toon World" is not on the field, destroy this card.~toon
 Commencement Dance~none~none~0~0~0~3~Spell~false~10~false~false~false~false~false~3~none~true~false~Common~This card is used to Ritual Summon "Performance of Sword". You must also offer monsters whose total Level Stars equal 6 or more as a Tribute from the field or your hand.~performance of sword&ritual&earth&warrior
 Contract With Exodia~none~none~0~0~0~2~Spell~false~10~false~false~false~false~false~2~none~false~false~Rare~If you have all 5 of "Exodia the Forbidden One", "Right Arm of the Forbidden One", "Left Arm of the Forbidden One", "Right Leg of the Forbidden One", and "Left Leg of the Forbidden One" in your Graveyard: Special Summon 1 "Exodia Necross" from your hand.~exodia
 Contract With the Abyss~none~none~0~0~0~3~Spell~false~53~false~false~false~false~false~3~none~true~false~Common~This card can be used to Ritual Summon any DARK Ritual Monster. You must also Tribute monsters from your hand or field whose total Levels exactly equal the Level of the Ritual Monster you Ritual Summon.~relinquished&ritual&dark&spellcaster&board control
 Cost Down~none~none~0~0~0~1~Spell~false~80~false~false~false~false~false~1~none~false~false~Rare~Discard 1 card. Reduce the Level of all Monster Cards in your hand by 2 until the End Phase of this turn.~easy tribute
 Crab Turtle~Water~Aqua~2550~2500~8~5~Ritual Monster~true~55~false~false~false~false~false~3~none~false~false~Common~This monster can only be Ritual Summoned with the Ritual Spell Card, "Turtle Oath". You must also offer monsters whose total Level Stars equal 8 or more as a Tribute from the field or your hand.~ritual&crab turtle&aqua&water
+Crashbug Road~none~none~0~0~0~4~Spell~false~49~false~true~false~false~false~3~none~false~false~Common~(Text)~easy summon&crashbug
 Crashbug X~Dark~Fiend~0~2000~3~4~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Common~When this card is Normal Summoned: You can Special Summon 1 "Crashbug Z" from your Deck. You must control a face-up "Crashbug Y" to activate and to resolve this effect.~crashbug
 Crashbug Y~Dark~Fiend~1400~1600~3~4~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Common~When this card is Normal Summoned: You can Special Summon 1 "Crashbug X" from your Deck. You must control a face-up "Crashbug Z" to activate and to resolve this effect.~crashbug
 Crashbug Z~Dark~Fiend~0~1500~3~4~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Common~When this card is Normal Summoned: You can Special Summon 1 "Crashbug Y" from your Deck. You must control a face-up "Crashbug X" to activate and to resolve this effect.~crashbug
@@ -126,8 +130,10 @@ Dark Mirror Force~none~none~0~0~0~1~Trap~false~59~false~false~false~false~false~
 Dark Snake Syndrome~none~none~0~0~0~1~Spell~false~0~true~false~false~false~false~3~none~false~false~Common~Inflict Direct Damage to you and your opponent's Life Points during each of your Standby Phases. The first damage begins at 200 points and is doubled following each of your standby phases.~direct damage
 Darkfire Soldier #1~Fire~Pyro~1700~1150~4~9~Normal Monster~true~40~false~false~false~false~false~3~none~false~false~Common~none~fire&pyro
 Darkfire Soldier #2~Fire~Pyro~1700~1100~4~3~Normal Monster~true~40~false~false~false~false~false~3~none~false~false~Common~none~none
+Darkworld Thorns~Earth~Plant~1200~900~3~1~Normal Monster~true~18~false~false~false~false~false~3~none~false~false~Common~none~earth&plant
 De-spell~none~none~0~0~0~22~Spell~false~50~false~false~false~false~false~3~none~false~false~Common~Select 1 Spell Card on the field and destroy it. If the selected card is Set, pick up and see the card. If it is a Spell Card, it is destroyed. If it is a Trap Card, return it to its original position.~st removal
 Des Feral Imp~Dark~Reptile~1600~1800~4~1~Effect Monster~true~60~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&reptile&flip&graveyard
+Desertapir~Earth~Beast~900~300~3~1~Effect Monster~true~62~false~false~false~false~false~2~none~false~false~Rare~(Text)~flip&earth&beast
 Destiny Draw~none~none~0~0~0~1~Spell~false~25~false~false~false~false~false~1~none~false~false~Rare~Discard 1 "Destiny HERO" card; draw 2 cards.~draw&destiny hero
 Destiny Hero - Dasher~Dark~Warrior~2100~1000~6~1~Effect Monster~true~65~false~false~false~false~false~1~none~false~false~Super Rare~Once per turn: You can Tribute 1 other monster; this card gains 1000 ATK until the End Phase. If this card attacks, change it to Defense Position at the end of the Battle Phase. One time only, when you draw a Monster Card during your Draw Phase while this card is in your Graveyard: You can reveal it; Special Summon it. This card must be in the Graveyard to activate and to resolve this effect.~destiny hero&dark&warrior
 Destiny Hero - Defender~Dark~Warrior~100~2700~4~1~Effect Monster~true~68~false~false~false~false~false~3~none~false~false~Super Rare~During each of your opponent's Standby Phases: Your opponent draws 1 card. This card must be in face-up Defense Position to activate and to resolve this effect.~destiny hero&warrior&dark&defense
@@ -142,11 +148,13 @@ Double Shark~Water~Fish~1200~1600~4~3~Effect Monster~true~30~false~false~false~f
 Dragon Capture Jar~none~none~0~0~0~2~Trap~false~20~true~false~false~false~false~3~none~false~false~Common~(Text)~board control
 Dragon Treasure~none~none~0~0~0~1~Spell~false~20~false~false~false~false~true~3~none~false~false~Common~(Text)~equip&dragon
 Dragonic Attack~none~none~0~0~0~1~Spell~false~27~false~false~false~false~true~3~none~false~false~Common~(Text)~equip&warrior&dragon
+Draining Shield~none~none~0~0~0~1~Trap~false~79~false~false~false~false~false~3~none~false~false~Rare~(Text)~damage mitigation&life gain&defense
 Drooling Lizard~Earth~Reptile~900~800~3~1~Normal Monster~true~4~false~false~false~false~false~3~none~false~false~Common~none~earth&reptile
 Drop Off~none~none~0~0~0~1~Trap~false~40~false~false~false~false~false~3~none~false~false~Rare~(Text)~opponent discard
 Earthbound Spirit~Earth~Fiend~500~2000~4~3~Normal Monster~true~40~false~false~false~false~false~3~none~false~false~Common~none~earth&fiend&defense
 Eisbahn~none~none~0~0~0~1~Trap~false~19~true~false~false~false~false~3~none~false~false~Rare~(Text)~water&defense&board control
 Ekibyo Drakmord~none~none~0~0~0~1~Spell~false~10~false~false~false~false~true~3~none~false~false~Common~(Text)~equip&board control
+Elegant Egotist~none~none~0~0~0~2~Spell~false~30~false~false~false~false~false~3~none~false~false~Common~(Text)~harpie&easy summon
 Elemental Hero Bladedge~Earth~Warrior~2600~1800~7~1~Effect Monster~true~69~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~earth&warrior&elemental hero
 Elemental Hero Burstinatrix~Fire~Warrior~1200~800~3~2~Normal Monster~true~12~false~false~false~false~false~3~none~false~false~Common~none~fire&warrior&elemental hero
 Elemental Hero Clayman~Earth~Warrior~800~2000~4~1~Normal Monster~true~43~false~false~false~false~false~3~none~false~false~Common~none~earth&warrior&elemental hero
@@ -164,6 +172,7 @@ Fire Kraken~Fire~Aqua~1600~1500~4~1~Normal Monster~true~30~false~false~false~fal
 Firegrass~Earth~Plant~700~600~2~1~Normal Monster~true~6~false~false~false~false~false~3~none~false~false~Common~none~earth&plant
 Fissure~none~none~0~0~0~23~Spell~false~79~false~false~false~false~false~2~none~false~false~Rare~Destroy the 1 face-up monster your opponent controls that has the lowest ATK (your choice, if tied).~none
 Flame Dancer~Fire~Pyro~550~450~2~2~Normal Monster~true~6~false~false~false~false~false~3~none~false~false~Common~none~fire&pyro
+Flame Manipulator~Fire~Spellcaster~900~1000~3~3~Normal Monster~true~13~false~false~false~false~false~3~none~false~false~Common~none~fire&spellcaster
 Flying Fish~Wind~Fish~800~500~4~1~Normal Monster~true~6~false~false~false~false~false~3~none~false~false~Rare~none~wind&fish
 Forced Requisition~none~none~0~0~0~2~Trap~false~39~true~false~false~false~false~3~none~false~false~Common~(Text)~player discard
 Forest~none~none~0~0~0~1~Spell~false~60~false~false~false~true~false~3~none~false~false~Common~(Text)~insect&beast&plant
@@ -196,7 +205,9 @@ Gravi-Crush Dragon~Dark~Dragon~2400~1200~6~2~Effect Monster~true~71~false~false~
 Gravity Axe - Grarl~none~none~0~0~0~11~Spell~false~75~false~false~false~false~true~3~none~false~false~Common~The equipped monster gains 500 ATK. Monsters your opponent controls cannot change their battle positions.~equip&board control
 Gravity Bind~none~none~0~0~0~1~Trap~false~3~false~false~false~false~false~1~none~false~false~Rare~(Text)~board control
 Great Dezard~Dark~Spellcaster~1900~2300~6~1~Effect Monster~true~60~false~false~false~false~false~3~none~false~false~Rare~When this monster destroys the following number of monsters as a result of battle, the following effects are activated in order: One: As long as this card remains face-up on the field, negate the activation and effects of all Spell and Trap Cards that target this card and destroy them. Two: You can Special Summon 1 "Fushioh Richie" from your hand or your Deck by Tributing this card during your Main Phase.~fushioh richie&board control&dark&spellcaster
+Great White~Water~Fish~1600~800~4~4~Normal Monster~true~60~false~false~false~false~false~3~none~false~false~Common~none~water&fish
 Ground Collapse~none~none~0~0~0~1~Spell~false~37~true~false~false~false~false~3~none~false~false~Common~(Text)~board control
+Gryphon Wing~none~none~0~0~0~4~Trap~false~22~false~false~false~false~false~3~none~false~false~Common~(Text)~board control
 Guardian Elma~Wind~Fairy~1300~1200~3~5~Effect Monster~true~30~false~false~false~false~false~3~none~false~false~Common~Cannot be Summoned unless you control a face-up "Butterfly Dagger - Elma". When this card is Normal or Special Summoned: You can target 1 appropriate Equip Spell Card in your Graveyard; equip that target to this card.~elma&wind&fairy
 Guardian Kay'est~Water~Sea Serpent~1000~1800~4~6~Effect Monster~true~45~false~false~false~false~false~3~none~false~false~Common~Cannot be Summoned unless you control a face-up "Rod of Silence - Kay'est". This card is unaffected by Spell effects and cannot be targeted for attacks, but does not prevent your opponent from attacking you directly.~kayest&sea serpent&water
 Guardian Sphinx~Earth~Rock~1700~2400~5~2~Effect Monster~true~72~false~false~false~false~false~2~none~false~false~Super Rare~(Text)~earth&rock&sphinx&flip&return to hand
@@ -206,6 +217,7 @@ Hammer Shark~Water~Fish~1700~1500~4~2~Effect Monster~true~50~false~false~false~f
 Hammer Shot~none~none~0~0~0~2~Spell~false~84~false~false~false~false~false~1~fissure~false~false~Super Rare~Destroy the 1 face-up Attack Position monster that has the highest ATK. (If it's a tie, you get to choose.)~none
 Hane-Hane~Earth~Beast~450~500~2~8~Effect Monster~true~35~false~false~false~false~false~3~none~false~false~Rare~FLIP: Select 1 monster on the field and return it to its owner's hand.~return to hand&earth&beast&flip
 Harpie Lady Phoenix Formation~none~none~0~0~0~1~Spell~false~35~false~false~false~false~false~1~none~false~false~Ultra Rare~If you control 3 or more "Harpie Lady" and/or "Harpie Lady Sisters": Target as many monsters your opponent controls as possible, but not more than the total number of "Harpie Lady" and "Harpie Lady Sisters" you control; destroy those targets, and if you do, inflict damage to your opponent equal to the highest original ATK among those destroyed monsters (your choice, if tied). You cannot Special Summon monsters from the Main Deck or Extra Deck, nor conduct your Battle Phase, the turn you activate this card.~harpie
+Harpie Lady Sisters~Wind~Winged Beast~1950~2100~6~4~Effect Monster~true~~false~false~false~false~false~3~none~false~false~Common~(Text)~wind&winged beast&harpie
 Harpie Lady~Wind~Winged Beast~1300~1400~4~8~Normal Monster~true~10~false~false~false~false~false~3~none~false~false~Common~none~wind&winged beast&harpie
 Harpie's Brother~Wind~Winged Beast~1800~600~4~10~Normal Monster~true~50~false~false~false~false~false~3~none~false~false~Common~none~wind&winged beast
 Harpie's Feather Duster~none~none~0~0~0~1~Spell~false~95~false~false~false~false~false~1~none~false~false~Ultimate Rare~Destroy all Spell and Trap Cards your opponent controls.~st removal
@@ -214,6 +226,7 @@ Heart of the Clear Water~none~none~0~0~0~1~Spell~false~10~false~false~false~fals
 Heart of the Underdog~none~none~0~0~0~3~Spell~false~58~true~false~false~false~false~3~none~false~false~Rare~During your Draw Phase, when you draw a Normal Monster(s): You can reveal it; draw 1 more card.~draw
 Heavy Storm~none~none~0~0~0~2~Spell~false~70~false~false~false~false~false~1~none~false~false~Rare~(Text)~st removal&board control
 High Tide Gyojin~Water~Aqua~1650~1300~4~3~Normal Monster~true~39~false~false~false~false~false~3~none~false~false~Common~none~none
+Honest~Light~Fairy~1100~1900~4~1~Effect Monster~true~54~false~false~false~false~false~3~none~false~false~Common~(Text)~light&fairy&defense&damage mitigation
 Horn of Heaven~none~none~0~0~0~1~Trap~false~85~false~false~true~false~false~1~none~false~true~Ultra Rare~When a monster(s) would be Summoned: Tribute 1 monster; negate the Summon, and if you do, destroy that monster(s).~board control
 Horn of the Unicorn~none~none~0~0~0~2~Spell~false~49~false~false~false~false~true~3~none~false~false~Rare~(Text)~equip
 Humanoid Slime~Water~Aqua~800~2000~4~3~Normal Monster~true~40~false~false~false~false~false~3~none~false~false~Rare~none~water&aqua
@@ -249,6 +262,7 @@ Kojikocy~Earth~Warrior~1500~1200~4~2~Normal Monster~true~40~false~false~false~fa
 Kurama~Wind~Winged Beast~800~800~3~1~Normal Monster~true~6~false~false~false~false~false~3~none~false~false~Common~none~wind&winged beast
 Kuriboh~Dark~Fiend~300~200~1~1~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Rare~(Text)~damage mitigation&dark&fiend
 La Jinn the Mystical Genie of the Lamp~Dark~Fiend~1800~1000~4~3~Normal Monster~true~50~false~false~false~false~false~3~none~false~false~Common~none~none
+Labyrinth Tank~Dark~Machine~2400~2400~7~1~Fusion Monster~true~30~false~false~false~false~false~3~none~false~false~Rare~(Text)~fusion&machine&dark
 Labyrinth Wall~Earth~Rock~0~3000~5~6~Normal Monster~true~60~false~false~false~false~false~3~none~false~false~Common~none~defense&earth&rock
 Landoise's Luminous Mass~none~none~0~0~0~1~Spell~false~45~false~false~false~false~false~3~none~false~false~Rare~Activate only if you control a face-up "Naturia" monster. The opponent's Effect Monsters cannot activate their effects this turn.~naturia&board control
 Larvas~Earth~Beast~800~1000~3~3~Normal Monster~true~8~false~false~false~false~false~3~none~false~false~Common~none~earth&beast
@@ -300,10 +314,13 @@ Meklord Emperor Wisel~Dark~Machine~2500~2500~1~1~Effect Monster~true~53~false~fa
 Metabo-Shark~Water~Fish~1800~500~4~3~Effect Monster~true~70~false~false~false~false~false~3~none~false~false~Rare~(Text)~water&fish&graveyard&shuffle
 Metalmorph~none~none~0~0~0~2~Trap~false~82~false~false~false~false~false~2~none~false~false~Super Rare~(Text)~board control&red eyes
 Metalsilver Armor~none~none~0~0~0~1~Spell~false~67~false~false~false~false~true~3~none~false~false~Rare~(Text)~equip&board control
+Michizure~none~none~0~0~0~5~Trap~false~86~false~false~false~false~false~2~none~false~false~Super Rare~(Text)~board control
 Mirror Force~none~none~0~0~0~2~Trap~false~89~false~false~false~false~false~1~none~false~true~Super Rare~When an opponent's monster declares an attack: Destroy all Attack Position monsters your opponent controls.~board control
 Mist Valley Baby Roc~Wind~Winged Beast~400~600~2~2~Effect Monster~true~37~false~false~false~false~false~3~none~false~false~Common~(Text)~player discard&easy summon
 Mist Valley Executor~Wind~Thunder~2100~1600~5~2~Effect Monster~true~68~false~false~false~false~false~2~none~false~false~Super Rare~(Text)~mist valley&wind&thunder&st removal&return to hand
 Mist Valley Falcon~Wind~Winged Beast~2000~1200~4~1~Effect Monster~true~68~false~false~false~false~false~3~none~false~false~Rare~(Text)~wind&winged beast&mist valley
+Mist Valley Thunderbird~Wind~Thunder~1100~700~3~1~Effect Monster~true~32~false~false~false~false~false~3~none~false~false~Common~(Text)~mist valley&wind&thunder
+Mist Valley Watcher~Wind~Spellcaster~1500~1900~4~1~Normal Monster~true~58~false~false~false~false~false~3~none~false~false~Common~none~mist valley&wind&spellcaster
 Mobius the Frost Monarch~Water~Aqua~2400~1000~6~1~Effect Monster~true~88~false~false~false~false~false~1~monarch~false~false~Super Rare~(Text)~water&aqua&board control
 Mobius the Mega Monarch~Water~Aqua~2800~1000~8~1~Effect Monster~true~75~false~false~false~false~false~1~monarch~false~false~Ultra Rare~You can Tribute Summon this card by Tributing 1 Tribute Summoned monster. When this card is Tribute Summoned: You can target up to 3 Spell/Trap Cards on the field; destroy those targets. If this card was Tribute Summoned by Tributing a WATER monster, add this additional effect: Your opponent cannot activate the targeted cards in response to this effect's activation.~water&aqua&board control
 Molten Destruction~none~none~0~0~0~1~Spell~false~62~false~false~false~true~false~3~none~false~false~Rare~(Text)~fire
@@ -357,6 +374,7 @@ Parasite Paracide~Earth~Insect~500~300~2~1~Effect Monster~true~40~false~false~fa
 Penguin Soldier~Water~Aqua~750~500~2~2~Effect Monster~true~86~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~water&aqua&return to hand&flip
 Performance of Sword~Earth~Warrior~1950~1850~6~1~Ritual Monster~true~10~false~false~false~false~false~3~none~false~false~Common~This monster can only be Ritual Summoned with the Ritual Spell Card, "Commencement Dance". You must also offer monsters whose total Level Stars equal 6 or more as a Tribute from the field or your hand.~performance of sword&ritual&earth&warrior
 Petit Dragon~Wind~Dragon~600~700~2~1~Normal Monster~true~6~false~false~false~false~false~3~none~false~false~Common~none~wind&dragon
+Photon Chargeman~Light~Warrior~1000~1000~4~1~Effect Monster~true~74~false~false~false~false~false~2~none~false~false~Rare~(Text)~defense&board control&light&warrior&galaxy
 Piercing Moray~Water~Fish~1500~500~4~4~Effect Monster~true~83~false~false~false~false~false~2~none~false~false~Ultra Rare~Once per turn: You can Tribute 1 Fish, Sea Serpent, or Aqua-Type monster; this card gains 600 ATK. If this card attacks a Defense Position monster, inflict piercing Battle Damage to your opponent.~fish&water
 Pitch-Black Power Stone~none~none~0~0~0~3~Trap~false~29~true~false~false~false~false~3~none~false~false~Common~(Text)~spell counter
 Polymerization~none~none~0~0~0~2~Spell~false~25~false~false~false~false~false~3~none~false~false~Common~Fusion Summon 1 Fusion Monster from your Extra Deck, using monsters from your hand or field as Fusion Materials.~fusion
@@ -381,6 +399,7 @@ Quantum Cat~none~none~0~0~0~1~Trap~false~70~true~false~false~false~false~3~none~
 Quarantine~none~none~0~0~0~3~Spell~false~78~true~false~false~false~false~2~none~false~false~Rare~(Text)~board control
 Radiant Mirror Force~none~none~0~0~0~1~Trap~false~49~false~false~false~false~false~1~none~false~true~Rare~When an opponent's monster declares an attack while they control 3 or more Attack Position monsters: Destroy all Attack Position monsters your opponent controls.~board control
 Raigeki Bottle~none~none~0~0~0~3~Trap~false~63~true~false~false~false~false~2~none~false~false~Rare~(Text)~board control
+Raigeki Break~none~none~0~0~0~3~Trap~false~77~false~false~false~false~false~2~none~false~false~Rare~(Text)~board control&player discard
 Raigeki~none~none~0~0~0~1~Spell~false~95~false~false~false~false~false~1~none~false~false~Ultimate Rare~Destroy all monsters your opponent controls.~board control
 Rainbow Dark Dragon~Dark~Dragon~4000~0~10~1~Effect Monster~true~35~false~false~false~false~false~1~none~false~false~Rare~Cannot be Normal Summoned or Set. Must be Special Summoned (from your hand) by banishing 7 DARK monsters with different names from your Graveyard, and cannot be Special Summoned by other ways. You can banish all other DARK monsters you control and from your Graveyard; this card gains 500 ATK for each card banished this way.~banish&dragon&dark
 Raise Body Heat~none~none~0~0~0~1~Spell~false~20~false~false~false~false~true~3~none~false~false~Common~(Text)~equip&dinosaur
@@ -396,11 +415,13 @@ Red-Eyes Black Metal Dragon~Dark~Machine~2800~2400~8~1~Effect Monster~true~35~fa
 Red-Eyes Spirit~none~none~0~0~0~1~Trap~false~49~false~false~false~false~false~1~none~false~true~Common~Target 1 "Red-Eyes" monster in your Graveyard, except "Red-Eyes B. Chick"; Special Summon it.~easy summon&graveyard
 Red-Eyes Zombie Dragon~Dark~Zombie~2400~2000~7~1~Effect Monster~true~67~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&zombie&red eyes
 Reflect Bounder~Light~Machine~1700~1000~4~1~Effect Monster~true~49~false~false~false~false~false~3~none~false~false~Rare~(Text)~direct damage&board control
+Regenerating Mummy~Dark~Zombie~1800~1500~4~2~Effect Monster~true~88~false~false~false~false~false~2~none~false~false~Rare~(Text)~zombie&dark&graveyard
 Relinquished~Dark~Spellcaster~0~0~1~2~Ritual Monster~true~60~false~false~false~false~false~2~none~false~false~Super Rare~You can Ritual Summon this card with "Black Illusion Ritual". Once per turn: You can target 1 monster your opponent controls; equip that target to this card. (You can only equip 1 monster at a time to this card with this effect.) This card's ATK and DEF become equal to that equipped monster's. If this card would be destroyed by battle, destroy that equipped monster instead. While equipped with that monster, any battle damage you take from battles involving this card inflicts equal effect damage to your opponent.~ritual&relinquished&ritual&dark&spellcaster&board control
 Reload~none~none~0~0~0~2~Spell~false~66~false~true~false~false~false~3~none~false~false~Common~(Text)~draw&shuffle
 Remove Brainwashing~none~none~0~0~0~1~Trap~false~9~true~false~false~false~false~3~none~false~false~Common~(Text)~none
 Remove Trap~none~none~0~0~0~13~Spell~false~13~false~false~false~false~false~3~none~false~false~Common~Select 1 face-up Trap Card on the field and destroy it.~st removal
 Reverse trap~none~none~0~0~0~1~Trap~false~0~false~false~false~false~false~3~none~false~true~Common~All increases and decreases to ATK and DEF are reversed for the turn in which this card is activated.~board control
+Revival Golem~Earth~Rock~100~2100~4~1~Effect Monster~true~73~false~false~false~false~false~2~none~false~false~Rare~(Text)~earth&defense&rock&graveyard
 Right Arm of the Forbidden One~Dark~Spellcaster~200~300~1~1~Normal Monster~true~5~false~false~false~false~false~3~none~false~false~Common~none~exodia&dark&spellcaster
 Right Leg of the Forbidden One~Dark~Spellcaster~200~300~1~1~Normal Monster~true~5~false~false~false~false~false~3~none~false~false~Common~none~exodia&dark&spellcaster
 Ring of Magnetism~none~none~0~0~0~2~Spell~false~17~false~false~false~false~true~3~none~false~false~Common~(Text)~equip&board control
@@ -438,6 +459,8 @@ Shining Abyss~Light~Fairy~1600~1800~4~4~Normal Monster~true~40~false~false~false
 Shocktopus~Water~Fish~1600~800~4~1~Effect Monster~true~68~false~false~false~false~false~3~none~false~false~Rare~(Text)~water&fish
 Shooting Star Bow - Ceal~none~none~0~0~0~1~Spell~false~19~false~false~false~false~true~3~none~false~false~Common~(Text)~equip&direct damage
 Shrine of Mist Valley~none~none~0~0~0~1~Spell~false~30~false~false~false~true~false~3~none~false~false~Rare~(Text)~wind&easy summon&mist valley
+Skull Archfiend of Lightning~Dark~Fiend~2500~1200~6~2~Effect Monster~true~75~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~dark&fiend&archfiend&board control
+Skull Dog Marron~Earth~Beast~1350~2000~4~1~Normal Monster~true~40~false~false~false~false~false~3~none~false~false~Common~none~earth&beast&defense
 Skull Invitation~none~none~0~0~0~2~Trap~false~40~true~false~false~false~false~2~none~false~false~Common~(Text)~direct damage&graveyard
 Skull Lair~none~none~0~0~0~3~Trap~false~55~true~false~false~false~false~2~none~false~false~Common~(Text)~board control&banish&graveyard
 Skull Mariner~Water~Warrior~1600~900~4~5~Normal Monster~true~30~false~false~false~false~false~3~none~false~false~Common~none~water&warrior
@@ -445,13 +468,16 @@ Skull Red Bird~Wind~Winged Beast~1550~1200~4~2~Normal Monster~true~19~false~fals
 Smashing Ground~none~none~0~0~0~2~Spell~false~80~false~false~false~false~false~1~fissure~false~false~Super Rare~Destroy the 1 face-up monster your opponent controls that has the highest DEF (your choice, if tied).~none
 Smoke Grenade of the Thief~none~none~0~0~0~1~Spell~false~6~false~false~false~false~true~3~none~false~false~Common~(Text)~equip&opponent discard
 Snatch Steal~none~none~0~0~0~1~Spell~false~84~false~false~false~false~true~1~none~false~false~Ultra Rare~(Text)~equip&board control
+Snow Dragon~Water~Dragon~1400~900~4~2~Effect Monster~true~44~false~false~false~false~false~3~none~false~false~Common~(Text)~water&dragon&ice counter
 Snowdust Dragon~Water~Dragon~2800~1800~8~1~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Rare~(Text)~water&dragon&ice counter
+Snowman Creator~Water~Machine~1600~1000~4~1~Effect Monster~true~59~false~false~false~false~false~3~none~false~false~Common~(Text)~water&machine&ice counter&board control
 Sogen~none~none~0~0~0~4~Spell~false~58~false~false~false~true~false~3~none~false~false~Common~(Text)~beast&beast warrior
 Solemn Judgment~none~none~0~0~0~1~Trap~false~89~false~false~true~false~false~1~none~false~false~Ultimate Rare~When a monster would be Summoned, OR a Spell/Trap Card is activated: Pay half your Life Points; negate the Summon or activation, and if you do, destroy that card.~board control
 Sonic Bird~Wind~Winged Beast~1400~1000~4~4~Effect Monster~true~69~false~false~false~false~false~3~none~false~false~Rare~(Text)~ritual&wind&winged beast
 Sorcerous Spell Wall~none~none~0~0~0~1~Spell~false~68~false~false~false~true~false~3~none~false~false~Rare~(Text)~board control
 Soul Exchange~none~none~0~0~0~2~Spell~false~99~false~false~false~false~false~1~none~false~false~Ultimate Rare~Target 1 monster your opponent controls; this turn, if you Tribute a monster, you must Tribute that monster, as if you controlled it. You cannot conduct your Battle Phase the turn you activate this card.~easy summon&board control
 Soul Tiger~Earth~Beast~0~2100~4~2~Normal Monster~true~67~false~false~false~false~false~3~none~false~false~Rare~none~defense&beast&earth
+Souleater~Earth~Fish~1200~0~4~1~Normal Monster~true~16~false~false~false~false~false~3~none~false~false~Common~none~earth&fish
 Spacegate~none~none~0~0~0~2~Trap~false~38~true~false~false~false~false~3~none~false~false~Rare~(Text)~easy summon
 Spatial Collapse~none~none~0~0~0~1~Trap~false~19~true~false~false~false~false~3~none~false~false~Common~(Text)~board control
 Spear Cretin~Dark~Fiend~500~500~2~3~Effect Monster~true~24~false~false~false~false~false~1~none~false~false~Rare~(Text)~dark&fiend&flip&easy summon&graveyard
@@ -471,6 +497,7 @@ Summon Breaker~none~none~0~0~0~1~Spell~false~19~false~false~false~true~false~3~n
 Summoned Skull~Dark~Fiend~2500~1200~6~5~Normal Monster~true~74~false~false~false~false~false~3~none~false~false~Rare~none~archfiend&dark&fiend
 Super Conductor Tyranno~Light~Dinosaur~3300~1400~8~4~Effect Monster~true~84~false~false~false~false~false~2~none~false~false~Super Rare~(Text)~light&dinosaur&direct damage
 Super Crashbug~Dark~Fiend~0~3000~4~4~Effect Monster~true~45~false~false~false~false~false~3~none~false~false~Rare~Cannot be Normal Summoned or Set. Must first be Special Summoned (from your hand) in face-up Defense Position, by banishing "Crashbug X", "Crashbug Y", and "Crashbug Z" from your Graveyard. Switch the ATK and DEF of all face-up Attack Position monsters on the field. There can only be 1 face-up "Super Crashbug" on the field.~crashbug
+Super Heavy Samurai Big Waraji~Earth~Machine~800~1800~5~2~Effect Monster~true~76~false~false~false~false~false~1~none~false~false~Rare~(Text)~superheavy samurai&earth&machine&easy summon
 Super Soldier Shield~none~none~0~0~0~1~Trap~false~20~false~false~true~false~false~3~none~false~true~Rare~When a Spell/Trap Card, or monster effect, is activated that targets a monster(s) on the field, while you control a "Black Luster Soldier" monster: Negate the activation, and if you do, destroy that card. If this card is in your Graveyard: You can remove 1 Spell Counter from your side of the field; Set this card, but banish it when it leaves the field.~ritual&earth&warrior&black luster soldier
 Superancient Deepsea King Coelacanth~Water~Fish~2800~2200~7~1~Effect Monster~true~92~false~false~false~false~false~2~none~false~false~Ultra Rare~Once per turn: You can discard 1 card; Special Summon as many Level 4 or lower Fish-Type monsters as possible from your Deck, but they cannot declare an attack and their effects are negated. During either player's turn, when this face-up card on the field is targeted by a card effect: You can Tribute 1 other Fish-Type monster; negate the activation, and if you do, destroy that card.~fish&water&easy summon&board control
 Superheavy Samurai Big Benkei~Earth~Machine~1000~3500~8~2~Effect Monster~true~88~false~false~false~false~false~2~none~false~false~Super Rare~(Text)~superheavy samurai&earth&machine
@@ -512,6 +539,7 @@ The Portrait's Secret~Earth~Fiend~1200~1500~4~1~Normal Monster~true~22~false~fal
 The Reliable Guardian~none~none~0~0~0~4~Spell~false~23~false~true~false~false~false~3~none~false~false~Common~(Text)~defense&board control
 The Rock Spirit~Earth~Rock~1700~1000~4~1~Effect Monster~true~6~false~false~false~false~false~3~none~false~false~Common~This monster can only be Special Summoned by removing 1 EARTH monster in your Graveyard from play. Increase the ATK of this monster by 300 points during your opponent's Battle Phase.~earth&rock&graveyard
 The Seal of Orichalcos~none~none~0~0~0~1~Spell~false~20~false~false~false~true~false~1~none~false~false~Ultra Rare~All monsters you control gain 500 ATK. Once per turn, this card cannot be destroyed by card effects. While you control 2 or more face-up Attack Position monsters, your opponent cannot target your monster(s) with the lowest ATK for an attack. If this card is activated: Destroy all Special Summoned monsters you control. You cannot Special Summon monsters from the Extra Deck. You can only activate "The Seal of Orichalcos" once per Duel.~board control
+The Trojan Horse~Earth~Beast~1600~1200~4~2~Effect Monster~true~57~false~false~false~false~false~3~none~false~false~Common~(Text)~earth&beast&easy summon
 The White Stone of Legend~Light~Dragon~300~250~1~1~Effect Monster~true~35~false~false~false~false~false~3~none~false~false~Common~If this card is sent to the Graveyard: Add 1 "Blue-Eyes White Dragon" from your Deck to your hand.~light&dragon&blue eyes&easy summon
 The Wicked Worm Beast~Earth~Beast~1400~700~3~4~Effect Monster~true~20~false~false~false~false~false~3~none~false~false~Common~(Text)~return to hand&earth&beast
 Thestalos the Firestorm Monarch~Fire~Pyro~2400~1000~6~2~Effect Monster~true~63~false~false~false~false~false~2~monarch~false~false~Rare~(Text)~opponent discard&direct damage&fire&pyro
@@ -540,11 +568,13 @@ Triple Star Trion~Light~Warrior~100~100~1~1~Effect Monster~true~15~false~false~f
 Turtle Oath~none~none~0~0~0~5~Spell~false~45~false~false~false~false~false~3~none~true~false~Common~This card is used to Ritual Summon "Crab Turtle". You must also offer monsters whose total Level Stars equal 8 or more as a Tribute from the field or your hand.~crab turtle&aqua&water&ritual
 Turtle Tiger~Water~Aqua~1000~1500~4~2~Normal Monster~true~15~false~false~false~false~false~3~none~false~false~Common~none~water&aqua
 Tutan Mask~none~none~0~0~0~1~Trap~false~33~false~false~true~false~false~3~none~false~false~Common~(Text)~zombie&anti trap
+Twin Long Rods #2~Water~Aqua~850~700~3~2~Normal Monster~true~12~false~false~false~false~false~3~none~false~false~Common~none~water&aqua
 Twin Swords of Flashing Light - Tryce~none~none~0~0~0~1~Spell~false~20~false~false~false~false~true~3~none~false~false~Common~(Text)~equip
 Twin-Barrel Dragon~Dark~Machine~1700~200~4~1~Effect Monster~true~52~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~dark&machine&board control&coin toss
 Twin-Headed Thunder Dragon~Light~Thunder~2800~2100~7~1~Fusion Monster~true~40~false~false~false~false~false~3~none~false~false~Rare~Thunder Dragon plus Thunder Dragon~fusion
 Twister~none~none~0~0~0~1~Spell~false~64~false~true~false~false~false~2~none~false~false~Rare~(Text)~st removal
 Two-Man Cell Battle~none~none~0~0~0~1~Spell~false~50~true~false~false~false~false~3~none~false~false~Common~(Text)~easy summon
+Two-Mouth Darkruler~Earth~Dragon~900~700~3~1~Normal Monster~true~13~false~false~false~false~false~3~none~false~false~Common~none~earth&dragon
 Type Zero Magic Crusher~none~none~0~0~0~1~Trap~false~13~true~false~false~false~false~3~none~false~false~Common~(Text)~direct damage&player discard
 Tyrant Dragon~Fire~Dragon~2900~2500~8~1~Effect Monster~true~83~false~false~false~false~false~2~none~false~false~Super Rare~(Text)~dragon&fire&board control
 Ultimate Insect LV5~Wind~Insect~2300~900~5~1~Effect Monster~true~49~false~false~false~false~false~3~none~false~false~Common~(Text)~ultimate insect&wind&insect&lv
@@ -581,6 +611,7 @@ Wiretap~none~none~0~0~0~3~Trap~false~76~false~false~true~false~false~3~none~fals
 Witch of the Black Forest~Dark~Spellcaster~1100~1200~4~11~Effect Monster~true~79~false~false~false~false~false~3~none~false~false~Rare~(Text)~search&spellcaster&dark
 Witty Phantom~Dark~Fiend~1400~1300~4~4~Normal Monster~true~20~false~false~false~false~false~3~none~false~false~Common~none~dark&fiend
 Worm Apocalypse~Light~Reptile~300~200~1~1~Effect Monster~true~70~false~false~false~false~false~1~none~false~false~Super Rare~FLIP: Target 1 Spell/Trap Card on the field; destroy that target.~st removal&light&reptile
+Worm Drake~Earth~Reptile~1400~1500~4~3~Normal Monster~true~33~false~false~false~false~false~3~none~false~false~Common~none~earth&reptile
 Yami~none~none~0~0~0~14~Spell~false~63~false~false~false~true~false~3~none~false~false~Common~(Text)~spellcaster&fiend
 Yomi Ship~Water~Aqua~800~1400~3~2~Effect Monster~true~79~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~water&aqua&board control
 Zaborg the Thunder Monarch~Light~Thunder~2400~1000~5~1~Effect Monster~true~70~false~false~false~false~false~1~monarch~false~false~Rare~(Text)~light&thunder&board control
@@ -590,11 +621,6 @@ Zure, Knight of Dark World~Dark~Fiend~1800~1500~4~1~Normal Monster~true~50~false
 
 
 
-
-
-\\
-Labyrinth Tank~Dark~Machine~2400~2400~7~1~Fusion Monster~true~30~false~false~false~false~false~3~none~false~false~Rare~(Text)~fusion&machine&dark
-\\
 (Spell)~none~none~0~0~0~(quantity)~Spell~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
 (Trap)~none~none~0~0~0~(quantity)~Trap~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
 (Effect)~(Attr)~(Type)~ATK~DEF~Lvl~quantity~Effect Monster~true~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
