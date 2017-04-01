@@ -67,6 +67,21 @@ public class main
 		System.out.println("\nCards w/o text: " + textlessCounter);
 		*/
 		
+		
+		Card dummy = new Card("dummy");
+		int textlessCounter = 0;
+		for (Card card : allCards)
+		{
+			if (card.getText().equals("(Text)"))
+			{
+				if (card.getName().equals(dummy.getName())) {}
+				else { textlessCounter++; dummy = card; System.out.println(card.getName()); }
+			}
+		}
+		
+		System.out.println("\nCards w/o text: " + textlessCounter);
+		
+		
 		/*
 		for (Card card : allCards)
 		{
@@ -76,7 +91,7 @@ public class main
 		}
 		*/
 		
-		
+		/*
 		int uniqueCardCount = 0;
 		ArrayList<Card> allCardsNoDupes = listMaker(allCards);
 		System.out.print("'");
@@ -87,7 +102,44 @@ public class main
 		}
 		System.out.print("]\n" + uniqueCardCount);
 		
+		/*
+		ArrayList<Card> allCardsNoDupes = listMaker(allCards);
+		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
+		for (Card card : allCardsNoDupes)
+		{
+			/*
+			if (card.getLvl() == 5)
+			{
+				System.out.println("5: " + card.getName()  + " - " + card.getRarity());
+			}
+			else if (card.getLvl() == 6)
+			{
+				System.out.println("6: " + card.getName() + " - " + card.getRarity());
+			}
+			
+			switch (card.getRarity())
+			{
+				case "Ultimate Rare":
+					ultimates++; break;
+				case "Ultra Rare":
+					ultras++; break;
+				case "Super Rare":
+					supers++; break;
+				case "Rare":
+					rares++; break;
+				case "Common":
+					commons++; break;
+				default:
+					System.out.println("Default on rarity check. Card: " + card.getName());	break;
+			}
+			
+		}
 		
+		System.out.println("Ultimate Rare: " + ultimates);
+		System.out.println("Ultra Rare: " + ultras);
+		System.out.println("Super Rare: " + supers);
+		System.out.println("Rares " + rares);
+		System.out.println("Commons: " + commons);
 		
 		/*
 		int totalCards = cardCount(allCards);	

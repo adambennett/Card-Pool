@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -36,6 +37,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -51,18 +53,15 @@ public class CardPool_GUI_1_Stable {
 
 	private JFrame DraftInit;
 	private static JFrame singleCardView = null;
-	private JFrame cardView;
-	private JFrame banList;
 	private int rerollsSoFar = 0;
 	private int pickNumber = 1;
 	private int playerDrafting = 0;
-	private static int dynamicInt = -1;
+	private static int avgScore = 0;
 	private static Card dynamicCard = new Card("init");
 	private ArrayList<Card> drafted = new ArrayList<Card>();
 	private ArrayList<Card> threeChoiceTemp = new ArrayList<Card>();
 	private static JList<Card> dynamicList = new JList<Card>();
 	private static DefaultListModel<Card> dynamicModel1 = new DefaultListModel<Card>();
-	private static DefaultListModel<Card> dynamicModel2 = new DefaultListModel<Card>();
 
 	// GUI Init Stuff
 	public static void main(String[] args) 
@@ -73,11 +72,16 @@ public class CardPool_GUI_1_Stable {
 				try {
 					CardPool_GUI_1_Stable window = new CardPool_GUI_1_Stable();
 					window.DraftInit.setVisible(true);
+					
+					if (window.DraftInit.isVisible() == false) { System.exit(0); }
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+
+		
+		
 	}
 	public CardPool_GUI_1_Stable() {
 		initialize();
@@ -256,11 +260,11 @@ public class CardPool_GUI_1_Stable {
 		DraftInit.getContentPane().add(rerolls);
 		DraftInit.getContentPane().add(lblOfPool);
 		DraftInit.getContentPane().add(fillStyle); 
-			fillStyle.setModel(new DefaultComboBoxModel(new String[] {"Random", "Equal (Rarity)", "Equal (Score)", "Harsh"})); 
-			fillStyle.setEditable(false);
+		fillStyle.setModel(new DefaultComboBoxModel(new String[] {"Random", "Equal (Rarity)", "Equal (Score)", "Harsh"})); 
+		fillStyle.setEditable(false);
 		DraftInit.getContentPane().add(draftStart); 
 		DraftInit.getContentPane().add(lblCardCount);
-			lblCardCount.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCardCount.setHorizontalAlignment(SwingConstants.CENTER);
 		DraftInit.getContentPane().add(lblUniqueCards);
 		DraftInit.setJMenuBar(menuBar);
 		menuBar.add(mnViewDatabase); menuBar.add(mnBan);
@@ -311,9 +315,6 @@ public class CardPool_GUI_1_Stable {
 		mnBanScore.add(lowScore); mnBanScore.add(medScore); mnBanScore.add(highScore);
 		mnBanScore.add(veryHighScore); mnBanScore.add(OP);
 
-		// Grey out buttons that don't work yet
-		//fillStyle.setEnabled(false);
-
 		// Grey out ban buttons that currently ban 0 cards
 		Divine.setEnabled(false); Psychic.setEnabled(false);
 		Wyrm.setEnabled(false); Creator.setEnabled(false);
@@ -356,12 +357,12 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.getContentPane().setLayout(new GridBagLayout());
 				GridBagConstraints c = new GridBagConstraints();
 				c.fill = GridBagConstraints.HORIZONTAL;
-
-
-
-
+				
+				
+				
+				
 				JButton viewDeck = new JButton("View Deck");
-				JButton reroll = new JButton("Reroll"); if (rerollsLocal == 0) { reroll.setEnabled(false); }
+				JButton reroll = new JButton("Reroll " + "(" + rerollsLocal + ")"); if (rerollsLocal == 0) { reroll.setEnabled(false); }
 
 				// Change pool fill based on selection made in primary window
 				String fillStyleString = fillStyle.getSelectedItem().toString();
@@ -380,8 +381,8 @@ public class CardPool_GUI_1_Stable {
 				draftAllCards.sort(draftAllCards.get(0));
 
 				// Sets up the database view menu again after rechecking the database contents
-				//viewDatabaseListenerInit2(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, draftAllCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon, urItem, ulrItem, srItem, rItem, cItem);
 				viewDatabaseListenerReinit(mnViewDatabase, draftAllCards, urItem, ulrItem, srItem, rItem, cItem);
+				
 				// Setup the arrays used for the draft - drafted holds the current players drafted cards, threeChoiceTemp holds the three picks at any given pick
 				drafted.clear();
 				removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
@@ -392,12 +393,12 @@ public class CardPool_GUI_1_Stable {
 				JButton cardPick2 = new JButton(); ImageIcon bewd = null;
 				JButton cardPick3 = new JButton(); ImageIcon exodia = null;
 				if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
-				else { coh = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); } cardPick1.setIcon(coh);
+				else { coh = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); } cardPick1.setIcon(coh); 
 				if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 				else { bewd = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); } cardPick2.setIcon(bewd);
 				if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 				else { exodia = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); } cardPick3.setIcon(exodia);
-
+				
 				// Setup the labels on the draft window
 				JLabel pickCounter = new JLabel("Pick " + pickNumber + "/" + cardsToDraftLocal);
 				JLabel poolCardCount = new JLabel("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
@@ -405,6 +406,13 @@ public class CardPool_GUI_1_Stable {
 				JLabel pick1Rarity = new JLabel(threeChoiceTemp.get(0).getRarity()); textColor(threeChoiceTemp.get(0), pick1Rarity);
 				JLabel pick2Rarity = new JLabel(threeChoiceTemp.get(1).getRarity()); textColor(threeChoiceTemp.get(1), pick2Rarity);
 				JLabel pick3Rarity = new JLabel(threeChoiceTemp.get(2).getRarity()); textColor(threeChoiceTemp.get(2), pick3Rarity);
+				JLabel pick1Score = new JLabel(String.valueOf(threeChoiceTemp.get(0).getTierScore())); 
+				JLabel pick2Score = new JLabel(String.valueOf(threeChoiceTemp.get(1).getTierScore())); 
+				JLabel pick3Score = new JLabel(String.valueOf(threeChoiceTemp.get(2).getTierScore())); 
+				JProgressBar avgDeckScore = new JProgressBar(0, 100);
+				avgDeckScore.setToolTipText("Average Card Score");
+				avgDeckScore.setStringPainted(true);
+				avgDeckScore.setString(String.valueOf(avgScore));
 
 				// Adding everything to the draft window
 				c.insets = new Insets(0,10,10,10); 
@@ -412,13 +420,17 @@ public class CardPool_GUI_1_Stable {
 				c.gridx = 0; c.gridy = 1; DraftInit.getContentPane().add(cardPick1, c); 
 				c.gridx = 1; c.gridy = 1; DraftInit.getContentPane().add(cardPick2, c); 
 				c.gridx = 2; c.gridy = 1; DraftInit.getContentPane().add(cardPick3, c);
-				c.gridx = 0; c.gridy = 3; DraftInit.getContentPane().add(viewDeck, c);
-				c.gridx = 1; c.gridy = 3; pickCounter.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pickCounter, c);
-				c.gridx = 2; c.gridy = 3; DraftInit.getContentPane().add(reroll, c);
+				c.gridx = 0; c.gridy = 4; DraftInit.getContentPane().add(viewDeck, c);
+				c.gridx = 1; c.gridy = 4; pickCounter.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pickCounter, c);
+				c.gridx = 2; c.gridy = 4; DraftInit.getContentPane().add(reroll, c);
 				c.gridx = 0; c.gridy = 2; pick1Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Rarity, c);
 				c.gridx = 1; c.gridy = 2; pick2Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Rarity, c); 
 				c.gridx = 2; c.gridy = 2; pick3Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Rarity, c);
-				c.gridx = 1; c.gridy = 4; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolCardCount, c);
+				c.gridx = 0; c.gridy = 3; pick1Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Score, c);
+				c.gridx = 1; c.gridy = 3; pick2Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Score, c);
+				c.gridx = 2; c.gridy = 3; pick3Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Score, c);
+				c.gridx = 1; c.gridy = 5; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolCardCount, c);
+				c.gridx = 0; c.gridy = 6; c.gridwidth = 3; DraftInit.getContentPane().add(avgDeckScore, c);
 
 
 
@@ -458,6 +470,14 @@ public class CardPool_GUI_1_Stable {
 							textColor(threeChoiceTemp.get(0), pick1Rarity);
 							textColor(threeChoiceTemp.get(1), pick2Rarity);
 							textColor(threeChoiceTemp.get(2), pick3Rarity);
+							
+							pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
+							pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
+							pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+							
+							avgScore = avgScoreCards(drafted, (pickNumber));
+							avgDeckScore.setString(String.valueOf(avgScore));
+							avgDeckScore.setValue(avgScore);
 
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
@@ -470,6 +490,24 @@ public class CardPool_GUI_1_Stable {
 								draftDecks.get(playerDrafting).addAll(drafted);
 								cardCounter(draftDecks.get(playerDrafting));
 								draftDecks.get(playerDrafting).sort(drafted.get(0));
+								if (playerDrafting + 1 < playerCountLocal)
+								{
+									JFrame tempConfirmBox = new JFrame();
+									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									tempConfirmBox.setBounds(250, 250, 250, 250);
+									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+									tempConfirmBox.setLocation(dim.width/2-tempConfirmBox.getSize().width/2, dim.height/2-tempConfirmBox.getSize().height/2);
+									JLabel endTurn = new JLabel("You have finished drafting");
+									JButton confirm = new JButton("Next Player");
+									confirm.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) { tempConfirmBox.setVisible(false); DraftInit.setVisible(true); } });
+									tempConfirmBox.add(endTurn);
+									tempConfirmBox.add(confirm);
+									tempConfirmBox.setResizable(false);
+									tempConfirmBox.setVisible(true);
+									DraftInit.setVisible(false);
+								}
+								
 							}
 
 
@@ -509,6 +547,15 @@ public class CardPool_GUI_1_Stable {
 									textColor(threeChoiceTemp.get(0), pick1Rarity);
 									textColor(threeChoiceTemp.get(1), pick2Rarity);
 									textColor(threeChoiceTemp.get(2), pick3Rarity);
+									
+									pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
+									pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
+									pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+									
+									avgScore = avgScoreCards(drafted, (pickNumber));
+									avgDeckScore.setString(String.valueOf(avgScore));
+									avgDeckScore.setValue(avgScore);
+									
 								}
 								else
 								{
@@ -663,7 +710,6 @@ public class CardPool_GUI_1_Stable {
 																textFrame.setResizable(false);
 																textFrame.setVisible(true);
 																
-																
 															}
 														});
 													
@@ -782,6 +828,8 @@ public class CardPool_GUI_1_Stable {
 										}
 
 									});
+									
+									
 
 									viewStats.addActionListener(new ActionListener() 
 									{
@@ -906,6 +954,15 @@ public class CardPool_GUI_1_Stable {
 							textColor(threeChoiceTemp.get(0), pick1Rarity);
 							textColor(threeChoiceTemp.get(1), pick2Rarity);
 							textColor(threeChoiceTemp.get(2), pick3Rarity);
+							
+							pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
+							pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
+							pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+							
+							avgScore = avgScoreCards(drafted, (pickNumber));
+							avgDeckScore.setString(String.valueOf(avgScore));
+							avgDeckScore.setValue(avgScore);
+							
 
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
@@ -918,6 +975,23 @@ public class CardPool_GUI_1_Stable {
 								draftDecks.get(playerDrafting).addAll(drafted);
 								cardCounter(draftDecks.get(playerDrafting));
 								draftDecks.get(playerDrafting).sort(drafted.get(0));
+								if (playerDrafting + 1 < playerCountLocal)
+								{
+									JFrame tempConfirmBox = new JFrame();
+									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									tempConfirmBox.setBounds(250, 250, 250, 250);
+									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+									tempConfirmBox.setLocation(dim.width/2-tempConfirmBox.getSize().width/2, dim.height/2-tempConfirmBox.getSize().height/2);
+									JLabel endTurn = new JLabel("You have finished drafting");
+									JButton confirm = new JButton("Next Player");
+									confirm.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) { tempConfirmBox.setVisible(false); DraftInit.setVisible(true); } });
+									tempConfirmBox.add(endTurn);
+									tempConfirmBox.add(confirm);
+									tempConfirmBox.setResizable(false);
+									tempConfirmBox.setVisible(true);
+									DraftInit.setVisible(false);
+								}
 							}
 
 							if (pickNumber > cardsToDraftLocal)
@@ -955,6 +1029,15 @@ public class CardPool_GUI_1_Stable {
 									textColor(threeChoiceTemp.get(0), pick1Rarity);
 									textColor(threeChoiceTemp.get(1), pick2Rarity);
 									textColor(threeChoiceTemp.get(2), pick3Rarity);
+									
+									pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
+									pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
+									pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+									
+									avgScore = avgScoreCards(drafted, (pickNumber));
+									avgDeckScore.setString(String.valueOf(avgScore));
+									avgDeckScore.setValue(avgScore);
+									
 								}
 								else
 								{
@@ -1349,6 +1432,15 @@ public class CardPool_GUI_1_Stable {
 							textColor(threeChoiceTemp.get(0), pick1Rarity);
 							textColor(threeChoiceTemp.get(1), pick2Rarity);
 							textColor(threeChoiceTemp.get(2), pick3Rarity);
+							
+							pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
+							pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
+							pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+							
+							avgScore = avgScoreCards(drafted, (pickNumber));
+							avgDeckScore.setString(String.valueOf(avgScore));
+							avgDeckScore.setValue(avgScore);
+							
 
 							pickNumber++;
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
@@ -1361,6 +1453,23 @@ public class CardPool_GUI_1_Stable {
 								draftDecks.get(playerDrafting).addAll(drafted);
 								cardCounter(draftDecks.get(playerDrafting));
 								draftDecks.get(playerDrafting).sort(drafted.get(0));
+								if (playerDrafting + 1 < playerCountLocal)
+								{
+									JFrame tempConfirmBox = new JFrame();
+									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									tempConfirmBox.setBounds(250, 250, 250, 250);
+									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+									tempConfirmBox.setLocation(dim.width/2-tempConfirmBox.getSize().width/2, dim.height/2-tempConfirmBox.getSize().height/2);
+									JLabel endTurn = new JLabel("You have finished drafting");
+									JButton confirm = new JButton("Next Player");
+									confirm.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) { tempConfirmBox.setVisible(false); DraftInit.setVisible(true); } });
+									tempConfirmBox.add(endTurn);
+									tempConfirmBox.add(confirm);
+									tempConfirmBox.setResizable(false);
+									tempConfirmBox.setVisible(true);
+									DraftInit.setVisible(false);
+								}
 							}
 
 							if (pickNumber > cardsToDraftLocal)
@@ -1398,6 +1507,15 @@ public class CardPool_GUI_1_Stable {
 									textColor(threeChoiceTemp.get(0), pick1Rarity);
 									textColor(threeChoiceTemp.get(1), pick2Rarity);
 									textColor(threeChoiceTemp.get(2), pick3Rarity);
+									
+									pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
+									pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
+									pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+									
+									avgScore = avgScoreCards(drafted, (pickNumber));
+									avgDeckScore.setString(String.valueOf(avgScore));
+									avgDeckScore.setValue(avgScore);
+									
 								}
 								else
 								{
@@ -1794,9 +1912,19 @@ public class CardPool_GUI_1_Stable {
 							textColor(threeChoiceTemp.get(0), pick1Rarity);
 							textColor(threeChoiceTemp.get(1), pick2Rarity);
 							textColor(threeChoiceTemp.get(2), pick3Rarity);
+							
+							pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
+							pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
+							pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+							
+							avgScore = avgScoreCards(drafted, (pickNumber));
+							avgDeckScore.setString(String.valueOf(avgScore));
+							avgDeckScore.setValue(avgScore);
+							
 
 							rerollsSoFar++;
 							if (canReroll(rerollsSoFar, rerollsLocal) == false) { reroll.setEnabled(false); }
+							reroll.setText("Reroll " + "(" + (rerollsLocal - rerollsSoFar) + ")");
 
 							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 
@@ -1808,6 +1936,7 @@ public class CardPool_GUI_1_Stable {
 						}
 					}
 				});
+
 				viewDeck.addActionListener(new ActionListener() 
 				{
 					public void actionPerformed(ActionEvent arg0) 
@@ -1817,9 +1946,312 @@ public class CardPool_GUI_1_Stable {
 						cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 						cardViewLocal.setBounds(100, 100, 496, 443);
 						cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						cardViewLocal.setResizable(false);
 						ArrayList<Card >allCardsNoDupes = listMaker(drafted);
 						JList list = new JList(allCardsNoDupes.toArray());
 						dynamicList = list;
+						
+						ArrayList<Card> AquaCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Aqua")) { AquaCards.add(card); } }
+						
+						ArrayList<Card> BeastCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Beast")) { BeastCards.add(card); } }
+						
+						ArrayList<Card> BeastWarriorCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Beast-Warrior")) { BeastWarriorCards.add(card); } }
+						
+						ArrayList<Card> DinosaurCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Dinosaur")) { DinosaurCards.add(card); } }
+						
+						ArrayList<Card> DivineCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Divine-Beast")) { DivineCards.add(card); } }
+						
+						ArrayList<Card> DragonCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Dragon")) { DragonCards.add(card); } }
+						
+						ArrayList<Card> FairyCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Fairy")) { FairyCards.add(card); } }
+						
+						ArrayList<Card> FiendCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Fiend")) { FiendCards.add(card); } }
+						
+						ArrayList<Card> FishCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Fish")) { FishCards.add(card); } }
+						
+						ArrayList<Card> InsectCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Insect")) { InsectCards.add(card); } }
+						
+						ArrayList<Card> MachineCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Machine")) { MachineCards.add(card); } }
+					
+						ArrayList<Card> PlantCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Plant")) { PlantCards.add(card); } }
+						
+						ArrayList<Card> PsychicCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Psychic")) { PsychicCards.add(card); } }
+						
+						ArrayList<Card> PyroCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Pyro")) { PyroCards.add(card); } }
+						
+						ArrayList<Card> ReptileCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Reptile")) { ReptileCards.add(card); } }
+						
+						ArrayList<Card> RockCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Rock")) { RockCards.add(card); } }
+						
+						ArrayList<Card> SeaSerpentCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Sea Serpent")) { SeaSerpentCards.add(card); } }
+						
+						ArrayList<Card> SpellcasterCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Spellcaster")) { SpellcasterCards.add(card); } }
+						
+						ArrayList<Card> ThunderCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Thunder")) { ThunderCards.add(card); } }
+						
+						ArrayList<Card> WarriorCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Warrior")) { WarriorCards.add(card); } }
+						
+						ArrayList<Card> ZombieCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Zombie")) { ZombieCards.add(card); } }
+						
+						ArrayList<Card> WingedBeastCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getType().equals("Winged Beast")) { WingedBeastCards.add(card); } }
+						
+						ArrayList<Card> DarkCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getAttribute().equals("Dark")) { DarkCards.add(card); } }
+						
+						ArrayList<Card> FireCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getAttribute().equals("Fire")) { FireCards.add(card); } }
+						
+						ArrayList<Card> EarthCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getAttribute().equals("Earth")) { EarthCards.add(card); } }
+
+						ArrayList<Card> LightCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getAttribute().equals("Light")) { LightCards.add(card); } }
+						
+						ArrayList<Card> WaterCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getAttribute().equals("Water")) { WaterCards.add(card); } }
+						
+						ArrayList<Card> WindCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getAttribute().equals("Wind")) { WindCards.add(card); } }
+						
+						ArrayList<Card> lowLvlCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getLvl() < 5) { lowLvlCards.add(card); } }
+						
+						ArrayList<Card> highLvlCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getLvl() > 6) { highLvlCards.add(card); } }
+						
+						ArrayList<Card> medLvlCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getLvl() > 4 && card.getLvl() < 7) { medLvlCards.add(card); } }
+						
+						
+						
+						int aqua = typeCount(drafted, "Aqua"); 
+						int beast = typeCount(drafted, "Beast");
+						int beastWarrior = typeCount(drafted, "Beast-Warrior"); 
+						int dinosaur = typeCount(drafted, "Dinosaur");
+						int divine = typeCount(drafted, "Divine-Beast"); 
+						int dragon = typeCount(drafted, "Dragon");
+						int fairy = typeCount(drafted, "Fairy"); 
+						int fiend = typeCount(drafted, "Fiend");
+						int fish = typeCount(drafted, "Fish");
+						int insect = typeCount(drafted, "Insect");
+						int machine = typeCount(drafted, "Machine"); 
+						int plant = typeCount(drafted, "Plant");
+						int psychic = typeCount(drafted, "Psychic"); 
+						int pyro = typeCount(drafted, "Pyro");
+						int reptile = typeCount(drafted, "Reptile"); 
+						int rock = typeCount(drafted, "Rock");
+						int seaSerpent = typeCount(drafted, "Sea Serpent"); 
+						int thunder = typeCount(drafted, "Thunder");
+						int warrior = typeCount(drafted, "Warrior"); 
+						int zombie = typeCount(drafted, "Zombie"); 
+						int wingedBeast = typeCount(drafted, "Winged Beast");
+						int dark = attributeCount(drafted, "Dark"); 
+						int earth = attributeCount(drafted, "Earth");
+						int fire = attributeCount(drafted, "Fire");
+						int light = attributeCount(drafted, "Light");
+						int water = attributeCount(drafted, "Water");
+						int wind = attributeCount(drafted, "Wind");
+						int spells = spellCount(drafted);
+						int traps = trapCount(drafted); 
+						int spellcaster = typeCount(drafted, "Spellcaster");
+						int lowLvlCount = lvlLessCount(drafted, 5); 
+						int highLvlCount = lvlMoreCount(drafted, 6);
+						int medLvlCount = lvlBetweenCount(drafted, 4, 7);
+						int totalScore = scoreCards(drafted);
+						int avgScore = 0;
+						if ((pickNumber - 1) == 0) {}
+						else { avgScore = avgScoreCards(drafted, (pickNumber - 1)); }
+						
+						JButton spellBtn = new JButton(); spellBtn.setBorder(BorderFactory.createEmptyBorder()); spellBtn.setContentAreaFilled(false);
+						JButton trapBtn = new JButton(); trapBtn.setBorder(BorderFactory.createEmptyBorder()); trapBtn.setContentAreaFilled(false);
+						JButton aquaBtn = new JButton(); aquaBtn.setBorder(BorderFactory.createEmptyBorder()); aquaBtn.setContentAreaFilled(false);
+						JButton beastBtn = new JButton(); beastBtn.setBorder(BorderFactory.createEmptyBorder()); beastBtn.setContentAreaFilled(false);
+						JButton beastWarriorBtn = new JButton(); beastWarriorBtn.setBorder(BorderFactory.createEmptyBorder()); beastWarriorBtn.setContentAreaFilled(false);
+						JButton dinosaurBtn = new JButton(); dinosaurBtn.setBorder(BorderFactory.createEmptyBorder()); dinosaurBtn.setContentAreaFilled(false);
+						JButton divineBtn = new JButton(); divineBtn.setBorder(BorderFactory.createEmptyBorder()); divineBtn.setContentAreaFilled(false);
+						JButton dragonBtn = new JButton(); dragonBtn.setBorder(BorderFactory.createEmptyBorder()); dragonBtn.setContentAreaFilled(false);
+						JButton fairyBtn = new JButton(); fairyBtn.setBorder(BorderFactory.createEmptyBorder()); fairyBtn.setContentAreaFilled(false);
+						JButton fiendBtn = new JButton(); fiendBtn.setBorder(BorderFactory.createEmptyBorder()); fiendBtn.setContentAreaFilled(false);
+						JButton fishBtn = new JButton(); fishBtn.setBorder(BorderFactory.createEmptyBorder()); fishBtn.setContentAreaFilled(false);
+						JButton insectBtn = new JButton(); insectBtn.setBorder(BorderFactory.createEmptyBorder()); insectBtn.setContentAreaFilled(false);
+						JButton machineBtn = new JButton(); machineBtn.setBorder(BorderFactory.createEmptyBorder()); machineBtn.setContentAreaFilled(false);
+						JButton plantBtn = new JButton(); plantBtn.setBorder(BorderFactory.createEmptyBorder()); plantBtn.setContentAreaFilled(false);
+						JButton psychicBtn = new JButton(); psychicBtn.setBorder(BorderFactory.createEmptyBorder()); psychicBtn.setContentAreaFilled(false);
+						JButton pyroBtn = new JButton(); pyroBtn.setBorder(BorderFactory.createEmptyBorder()); pyroBtn.setContentAreaFilled(false);
+						JButton reptileBtn = new JButton(); reptileBtn.setBorder(BorderFactory.createEmptyBorder()); reptileBtn.setContentAreaFilled(false);
+						JButton rockBtn = new JButton(); rockBtn.setBorder(BorderFactory.createEmptyBorder()); rockBtn.setContentAreaFilled(false);
+						JButton seaSerpentBtn = new JButton(); seaSerpentBtn.setBorder(BorderFactory.createEmptyBorder()); seaSerpentBtn.setContentAreaFilled(false);
+						JButton spellcasterBtn = new JButton(); spellcasterBtn.setBorder(BorderFactory.createEmptyBorder()); spellcasterBtn.setContentAreaFilled(false);
+						JButton thunderBtn = new JButton(); thunderBtn.setBorder(BorderFactory.createEmptyBorder()); thunderBtn.setContentAreaFilled(false);
+						JButton warriorBtn = new JButton(); warriorBtn.setBorder(BorderFactory.createEmptyBorder()); warriorBtn.setContentAreaFilled(false);
+						JButton wingedBeastBtn = new JButton(); wingedBeastBtn.setBorder(BorderFactory.createEmptyBorder()); wingedBeastBtn.setContentAreaFilled(false);
+						JButton zombieBtn = new JButton(); zombieBtn.setBorder(BorderFactory.createEmptyBorder()); zombieBtn.setContentAreaFilled(false);
+						JButton darkBtn = new JButton(); darkBtn.setBorder(BorderFactory.createEmptyBorder()); darkBtn.setContentAreaFilled(false);
+						JButton fireBtn = new JButton(); fireBtn.setBorder(BorderFactory.createEmptyBorder()); fireBtn.setContentAreaFilled(false);
+						JButton earthBtn = new JButton(); earthBtn.setBorder(BorderFactory.createEmptyBorder()); earthBtn.setContentAreaFilled(false);
+						JButton lightBtn = new JButton(); lightBtn.setBorder(BorderFactory.createEmptyBorder()); lightBtn.setContentAreaFilled(false);
+						JButton waterBtn = new JButton(); waterBtn.setBorder(BorderFactory.createEmptyBorder()); waterBtn.setContentAreaFilled(false);
+						JButton windBtn = new JButton(); windBtn.setBorder(BorderFactory.createEmptyBorder()); windBtn.setContentAreaFilled(false);
+						JButton monsterBtn = new JButton(); monsterBtn.setBorder(BorderFactory.createEmptyBorder()); monsterBtn.setContentAreaFilled(false);
+						JButton oneSacBtn = new JButton(); oneSacBtn.setBorder(BorderFactory.createEmptyBorder()); oneSacBtn.setContentAreaFilled(false);
+						JButton twoSacBtn = new JButton(); twoSacBtn.setBorder(BorderFactory.createEmptyBorder()); twoSacBtn.setContentAreaFilled(false);
+						JButton fullListBtn = new JButton(); fullListBtn.setBorder(BorderFactory.createEmptyBorder()); fullListBtn.setContentAreaFilled(false);
+						
+						ImageIcon aquaI = new ImageIcon("src/images/Type - Aqua.png"); aquaBtn.setToolTipText("Aqua"); aquaBtn.setIcon(aquaI);
+						ImageIcon beastI = new ImageIcon("src/images/Type - Beast.png"); beastBtn.setToolTipText("Beast"); beastBtn.setIcon(beastI);
+						ImageIcon beastWarriorI = new ImageIcon("src/images/Type - Beast-Warrior.png"); beastWarriorBtn.setToolTipText("Beast-Warrior"); beastWarriorBtn.setIcon(beastWarriorI);
+						ImageIcon dinosaurI = new ImageIcon("src/images/Type - Dinosaur.png"); dinosaurBtn.setToolTipText("Dinosaur"); dinosaurBtn.setIcon(dinosaurI);
+						ImageIcon divineI = new ImageIcon("src/images/Type - Divine-Beast.png"); divineBtn.setToolTipText("Divine"); divineBtn.setIcon(divineI);
+						ImageIcon dragonI = new ImageIcon("src/images/Type - Dragon.png"); dragonBtn.setToolTipText("Dragon"); dragonBtn.setIcon(dragonI);
+						ImageIcon fairyI = new ImageIcon("src/images/Type - Fairy.png"); fairyBtn.setToolTipText("Fairy"); fairyBtn.setIcon(fairyI);
+						ImageIcon fiendI = new ImageIcon("src/images/Type - Fiend.png"); fiendBtn.setToolTipText("Fiend"); fiendBtn.setIcon(fiendI);
+						ImageIcon fishI = new ImageIcon("src/images/Type - Fish.png"); fishBtn.setToolTipText("Fish"); fishBtn.setIcon(fishI);
+						ImageIcon insectI = new ImageIcon("src/images/Type - Insect.png"); insectBtn.setToolTipText("Insect"); insectBtn.setIcon(insectI);
+						ImageIcon machineI = new ImageIcon("src/images/Type - Machine.png"); machineBtn.setToolTipText("Machine"); machineBtn.setIcon(machineI);
+						ImageIcon plantI = new ImageIcon("src/images/Type - Plant.png"); plantBtn.setToolTipText("Plant"); plantBtn.setIcon(plantI);
+						ImageIcon psychicI = new ImageIcon("src/images/Type - Psychic.png"); psychicBtn.setToolTipText("Psychic"); psychicBtn.setIcon(psychicI);
+						ImageIcon pyroI = new ImageIcon("src/images/Type - pyro.png"); pyroBtn.setToolTipText("Pyro"); pyroBtn.setIcon(pyroI);
+						ImageIcon reptileI = new ImageIcon("src/images/Type - reptile.png"); reptileBtn.setToolTipText("Reptile"); reptileBtn.setIcon(reptileI);
+						ImageIcon rockI = new ImageIcon("src/images/Type - rock.png"); rockBtn.setToolTipText("Rock"); rockBtn.setIcon(rockI);
+						ImageIcon seaSerpentI = new ImageIcon("src/images/Type - Sea Serpent.png"); seaSerpentBtn.setToolTipText("Sea Serpent"); seaSerpentBtn.setIcon(seaSerpentI);
+						ImageIcon spellcasterI = new ImageIcon("src/images/Type - Spellcaster.png"); spellcasterBtn.setToolTipText("Spellcaster"); spellcasterBtn.setIcon(spellcasterI);
+						ImageIcon thunderI = new ImageIcon("src/images/Type - Thunder.png"); thunderBtn.setToolTipText("Thunder"); thunderBtn.setIcon(thunderI);
+						ImageIcon warriorI = new ImageIcon("src/images/Type - Warrior.png"); warriorBtn.setToolTipText("Warrior"); warriorBtn.setIcon(warriorI);
+						ImageIcon wingedBeastI = new ImageIcon("src/images/Type - Winged Beast.png"); wingedBeastBtn.setToolTipText("Winged Beast"); wingedBeastBtn.setIcon(wingedBeastI);
+						ImageIcon zombieI = new ImageIcon("src/images/Type - Zombie.png"); zombieBtn.setToolTipText("Zombie"); zombieBtn.setIcon(zombieI);
+						ImageIcon darkI = new ImageIcon("src/images/Attribute - Dark.png"); darkBtn.setToolTipText("Dark"); darkBtn.setIcon(darkI);
+						ImageIcon fireI = new ImageIcon("src/images/Attribute - Fire.png"); fireBtn.setToolTipText("Fire"); fireBtn.setIcon(fireI);
+						ImageIcon earthI = new ImageIcon("src/images/Attribute - Earth.png"); earthBtn.setToolTipText("Earth"); earthBtn.setIcon(earthI);
+						ImageIcon lightI = new ImageIcon("src/images/Attribute - Light.png"); lightBtn.setToolTipText("Light"); lightBtn.setIcon(lightI);
+						ImageIcon waterI = new ImageIcon("src/images/Attribute - Water.png"); waterBtn.setToolTipText("water"); waterBtn.setIcon(waterI);
+						ImageIcon windI = new ImageIcon("src/images/Attribute - Wind.png"); windBtn.setToolTipText("Wind"); windBtn.setIcon(windI);
+						ImageIcon monsterI = new ImageIcon("src/images/Level Under 4 Icons.png"); monsterBtn.setToolTipText("No Tribute"); monsterBtn.setIcon(monsterI);
+						ImageIcon oneSacI = new ImageIcon("src/images/Level 56 Icons.png"); oneSacBtn.setToolTipText("One Tribute"); oneSacBtn.setIcon(oneSacI);
+						ImageIcon twoSacI = new ImageIcon("src/images/Level 7 Icons.png"); twoSacBtn.setToolTipText("Two Tribute"); twoSacBtn.setIcon(twoSacI);
+						ImageIcon spellI = new ImageIcon("src/images/Attribute - Spell.png"); spellBtn.setToolTipText("Spell"); spellBtn.setIcon(spellI);
+						ImageIcon trapI = new ImageIcon("src/images/Attribute - Trap.png"); trapBtn.setToolTipText("Trap"); trapBtn.setIcon(trapI);
+						ImageLabel score1I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); score1I.setToolTipText("Total Deck Score");
+						ImageLabel score2I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); score2I.setToolTipText("Average Card Score");
+						ImageIcon refreshI = new ImageIcon("src/images/View - Reset.png"); fullListBtn.setToolTipText("Full Deck"); fullListBtn.setIcon(refreshI);
+						
+						
+						JPanel panel = new JPanel();
+						panel.setLayout(new GridBagLayout());
+						GridBagConstraints c = new GridBagConstraints();
+						c.fill = GridBagConstraints.BOTH;
+						c.weightx = 1.0;
+						
+						JLabel typeLbl = new JLabel("Types");
+						JLabel attributeLbl = new JLabel("Attributes");
+					
+						JProgressBar cardProgress = new JProgressBar(0, (cardsToDraftLocal - 1));
+						cardProgress.setValue(pickNumber - 1);
+						cardProgress.setStringPainted(true);
+						cardProgress.setString((pickNumber - 1) + "/" + cardsToDraftLocal);
+						
+						// Attributes
+						JProgressBar darkProgress = new JProgressBar(0, (cardsToDraftLocal -1)); darkProgress.setValue(dark); darkProgress.setStringPainted(true);
+						darkProgress.setString(String.valueOf(dark));
+						JProgressBar earthProgress = new JProgressBar(0, (cardsToDraftLocal -1)); earthProgress.setValue(earth); earthProgress.setStringPainted(true);
+						earthProgress.setString(String.valueOf(earth));
+						JProgressBar fireProgress = new JProgressBar(0, (cardsToDraftLocal -1)); fireProgress.setValue(fire); fireProgress.setStringPainted(true);
+						fireProgress.setString(String.valueOf(fire));
+						JProgressBar lightProgress = new JProgressBar(0, (cardsToDraftLocal -1)); lightProgress.setValue(light); lightProgress.setStringPainted(true);
+						lightProgress.setString(String.valueOf(light));
+						JProgressBar waterProgress = new JProgressBar(0, (cardsToDraftLocal -1)); waterProgress.setValue(water); waterProgress.setStringPainted(true);
+						waterProgress.setString(String.valueOf(water));
+						JProgressBar windProgress = new JProgressBar(0, (cardsToDraftLocal -1)); windProgress.setValue(wind); windProgress.setStringPainted(true);
+						windProgress.setString(String.valueOf(wind));
+						JProgressBar monsterProgress = new JProgressBar(0, (cardsToDraftLocal -1)); monsterProgress.setValue(lowLvlCount); monsterProgress.setStringPainted(true);
+						monsterProgress.setString(String.valueOf(lowLvlCount));
+						JProgressBar spellProgress = new JProgressBar(0, (cardsToDraftLocal -1)); spellProgress.setValue(wind); spellProgress.setStringPainted(true);
+						spellProgress.setString(String.valueOf(spells));
+						JProgressBar trapProgress = new JProgressBar(0, (cardsToDraftLocal -1)); trapProgress.setValue(wind); trapProgress.setStringPainted(true);
+						trapProgress.setString(String.valueOf(traps));
+						
+						// Types
+						JProgressBar aquaProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); aquaProgress.setValue(aqua); aquaProgress.setStringPainted(true);
+						aquaProgress.setString(String.valueOf(aqua));
+						JProgressBar beastProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); beastProgress.setValue(beast); beastProgress.setStringPainted(true);
+						beastProgress.setString(String.valueOf(beast));
+						JProgressBar beastWarriorProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); beastWarriorProgress.setValue(beastWarrior); beastWarriorProgress.setStringPainted(true);
+						beastWarriorProgress.setString(String.valueOf(beastWarrior));
+						JProgressBar dinosaurProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); dinosaurProgress.setValue(dinosaur); dinosaurProgress.setStringPainted(true);
+						dinosaurProgress.setString(String.valueOf(dinosaur));
+						JProgressBar divineProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); divineProgress.setValue(divine); divineProgress.setStringPainted(true);
+						divineProgress.setString(String.valueOf(divine));
+						JProgressBar dragonProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); dragonProgress.setValue(dragon); dragonProgress.setStringPainted(true);
+						dragonProgress.setString(String.valueOf(dragon));
+						JProgressBar fairyProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); fairyProgress.setValue(fairy); fairyProgress.setStringPainted(true);
+						fairyProgress.setString(String.valueOf(fairy));
+						JProgressBar fiendProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); fiendProgress.setValue(fiend); fiendProgress.setStringPainted(true);
+						fiendProgress.setString(String.valueOf(fiend));
+						JProgressBar fishProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); fishProgress.setValue(fish); fishProgress.setStringPainted(true);
+						fishProgress.setString(String.valueOf(fish));
+						JProgressBar insectProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); insectProgress.setValue(insect); insectProgress.setStringPainted(true);
+						insectProgress.setString(String.valueOf(insect));
+						JProgressBar machineProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); machineProgress.setValue(machine); machineProgress.setStringPainted(true);
+						machineProgress.setString(String.valueOf(machine));
+						JProgressBar plantProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); plantProgress.setValue(plant); plantProgress.setStringPainted(true);
+						plantProgress.setString(String.valueOf(plant));
+						JProgressBar psychicProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); psychicProgress.setValue(psychic); psychicProgress.setStringPainted(true);
+						psychicProgress.setString(String.valueOf(psychic));
+						JProgressBar pyroProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); pyroProgress.setValue(pyro); pyroProgress.setStringPainted(true);
+						pyroProgress.setString(String.valueOf(pyro));
+						JProgressBar reptileProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); reptileProgress.setValue(reptile); reptileProgress.setStringPainted(true);
+						reptileProgress.setString(String.valueOf(reptile));
+						JProgressBar rockProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); rockProgress.setValue(rock); rockProgress.setStringPainted(true);
+						rockProgress.setString(String.valueOf(rock));
+						JProgressBar seaSerpentProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); seaSerpentProgress.setValue(seaSerpent); seaSerpentProgress.setStringPainted(true);
+						seaSerpentProgress.setString(String.valueOf(seaSerpent));
+						JProgressBar spellcasterProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); spellcasterProgress.setValue(spellcaster); spellcasterProgress.setStringPainted(true);
+						spellcasterProgress.setString(String.valueOf(spellcaster));
+						JProgressBar thunderProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); thunderProgress.setValue(fiend); thunderProgress.setStringPainted(true);
+						thunderProgress.setString(String.valueOf(thunder));
+						JProgressBar warriorProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); warriorProgress.setValue(warrior); warriorProgress.setStringPainted(true);
+						warriorProgress.setString(String.valueOf(warrior));
+						JProgressBar wingedBeastProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); wingedBeastProgress.setValue(wingedBeast); wingedBeastProgress.setStringPainted(true);
+						wingedBeastProgress.setString(String.valueOf(wingedBeast));
+						JProgressBar zombieProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); zombieProgress.setValue(zombie); zombieProgress.setStringPainted(true);
+						zombieProgress.setString(String.valueOf(zombie));
+						
+						// Other
+						JProgressBar lowLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); lowLvlProgress.setValue(lowLvlCount); lowLvlProgress.setStringPainted(true);
+						lowLvlProgress.setString(String.valueOf(lowLvlCount));
+						JProgressBar medLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); medLvlProgress.setValue(medLvlCount); medLvlProgress.setStringPainted(true);
+						medLvlProgress.setString(String.valueOf(medLvlCount));
+						JProgressBar highLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); highLvlProgress.setValue(highLvlCount); highLvlProgress.setStringPainted(true);
+						highLvlProgress.setString(String.valueOf(highLvlCount));
+						JProgressBar totalScoreProgress = new JProgressBar(0, (cardsToDraftLocal * 100)); totalScoreProgress.setValue(totalScore); totalScoreProgress.setStringPainted(true);
+						totalScoreProgress.setString(String.valueOf(totalScore));
+						JProgressBar avgScoreProgress = new JProgressBar(0, 100); avgScoreProgress.setValue(avgScore); avgScoreProgress.setStringPainted(true);
+						avgScoreProgress.setString(String.valueOf(avgScore));
+						
+						
+						
+						
 						KeyListener keyListener = new KeyListener()
 						{
 							public void keyPressed(KeyEvent e)
@@ -1867,6 +2299,7 @@ public class CardPool_GUI_1_Stable {
 											public void actionPerformed(ActionEvent e) 
 											{
 												JFrame fullView = new JFrame();
+												fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
 												JPanel fullPanel = new JPanel();
 												ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
 												fullPanel.add(bigImage);
@@ -1968,6 +2401,7 @@ public class CardPool_GUI_1_Stable {
 											public void actionPerformed(ActionEvent e) 
 											{
 												JFrame fullView = new JFrame();
+												fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
 												JPanel fullPanel = new JPanel();
 												ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
 												fullPanel.add(bigImage);
@@ -2021,13 +2455,110 @@ public class CardPool_GUI_1_Stable {
 						};
 						list.addMouseListener(mouseListener);
 						JScrollPane scrollPane = new JScrollPane();
-						scrollPane.setViewportView(list);
-						cardViewLocal.getContentPane().add(scrollPane);
+						scrollPane.setViewportView(dynamicList);
+						int defaultHeight = scrollPane.getHeight();
+						int defaultWidth = scrollPane.getWidth();
+						Dimension spDim = new Dimension(defaultWidth, defaultHeight);
+						scrollPane.setMinimumSize(spDim);
+						scrollPane.setMaximumSize(spDim);
+						
+						c.gridx = 0; c.gridy = 0; c.gridheight = 600; c.gridwidth = 1; c.fill = GridBagConstraints.BOTH; panel.add(scrollPane, c);
+						
+						c.insets = new Insets(5, 5, 5, 5); c.gridheight = 1;
+						c.gridx = 2; c.gridy = 1; panel.add(typeLbl, c);
+						c.gridx = 4; c.gridy = 1; c.gridwidth = 1; panel.add(attributeLbl, c);
+						c.gridx = 2; c.gridy = 2; c.gridwidth = 1; panel.add(darkProgress, c);
+						c.gridx = 1; c.gridy = 2; panel.add(darkBtn, c);
+						c.gridx = 2; c.gridy = 3; panel.add(earthProgress, c);
+						c.gridx = 1; c.gridy = 3; panel.add(earthBtn, c);
+						c.gridx = 2; c.gridy = 4; panel.add(fireProgress, c);
+						c.gridx = 1; c.gridy = 4; panel.add(fireBtn, c);
+						c.gridx = 2; c.gridy = 5; panel.add(lightProgress, c);
+						c.gridx = 1; c.gridy = 5; panel.add(lightBtn, c);
+						c.gridx = 2; c.gridy = 6; panel.add(waterProgress, c);
+						c.gridx = 1; c.gridy = 6; panel.add(waterBtn, c);
+						c.gridx = 2; c.gridy = 7; panel.add(windProgress, c);
+						c.gridx = 1; c.gridy = 7; panel.add(windBtn, c);
+						c.gridx = 2; c.gridy = 8; panel.add(monsterProgress, c);
+						c.gridx = 1; c.gridy = 8; panel.add(monsterBtn, c);
+						c.gridx = 2; c.gridy = 9; panel.add(medLvlProgress, c);
+						c.gridx = 1; c.gridy = 9; panel.add(oneSacBtn, c);
+						c.gridx = 2; c.gridy = 10; panel.add(highLvlProgress, c);
+						c.gridx = 1; c.gridy = 10; panel.add(twoSacBtn, c);
+						c.gridx = 2; c.gridy = 11; panel.add(spellProgress, c);
+						c.gridx = 1; c.gridy = 11; panel.add(spellBtn, c);
+						c.gridx = 2; c.gridy = 12; panel.add(trapProgress, c);
+						c.gridx = 1; c.gridy = 12; panel.add(trapBtn, c);
+						c.gridx = 4; c.gridy = 2; panel.add(aquaProgress, c);
+						c.gridx = 3; c.gridy = 2; panel.add(aquaBtn, c);
+						c.gridx = 4; c.gridy = 3; panel.add(beastProgress, c);
+						c.gridx = 3; c.gridy = 3; panel.add(beastBtn, c);
+						c.gridx = 4; c.gridy = 4; panel.add(beastWarriorProgress, c);
+						c.gridx = 3; c.gridy = 4; panel.add(beastWarriorBtn, c);
+						c.gridx = 4; c.gridy = 5; panel.add(dinosaurProgress, c);
+						c.gridx = 3; c.gridy = 5; panel.add(dinosaurBtn, c);
+						c.gridx = 4; c.gridy = 6; panel.add(divineProgress, c);
+						c.gridx = 3; c.gridy = 6; panel.add(divineBtn, c);
+						c.gridx = 4; c.gridy = 7; panel.add(dragonProgress, c);
+						c.gridx = 3; c.gridy = 7; panel.add(dragonBtn, c);
+						c.gridx = 4; c.gridy = 8; panel.add(fairyProgress, c);
+						c.gridx = 3; c.gridy = 8; panel.add(fairyBtn, c);
+						c.gridx = 4; c.gridy = 9; panel.add(fiendProgress, c);
+						c.gridx = 3; c.gridy = 9; panel.add(fiendBtn, c);
+						c.gridx = 4; c.gridy = 10; panel.add(fishProgress, c);
+						c.gridx = 3; c.gridy = 10; panel.add(fishBtn, c);
+						c.gridx = 4; c.gridy = 11; panel.add(insectProgress, c);
+						c.gridx = 3; c.gridy = 11; panel.add(insectBtn, c);
+						c.gridx = 4; c.gridy = 12; panel.add(machineProgress, c);
+						c.gridx = 3; c.gridy = 12; panel.add(machineBtn, c);
+						c.gridx = 6; c.gridy = 2; panel.add(plantProgress, c);
+						c.gridx = 5; c.gridy = 2; panel.add(plantBtn, c);
+						c.gridx = 6; c.gridy = 3; panel.add(psychicProgress, c);
+						c.gridx = 5; c.gridy = 3; panel.add(psychicBtn, c);
+						c.gridx = 6; c.gridy = 4; panel.add(pyroProgress, c);
+						c.gridx = 5; c.gridy = 4; panel.add(pyroBtn, c);
+						c.gridx = 6; c.gridy = 5; panel.add(reptileProgress, c);
+						c.gridx = 5; c.gridy = 5; panel.add(reptileBtn, c);
+						c.gridx = 6; c.gridy = 6; panel.add(rockProgress, c);
+						c.gridx = 5; c.gridy = 6; panel.add(rockBtn, c);
+						c.gridx = 6; c.gridy = 7; panel.add(seaSerpentProgress, c);
+						c.gridx = 5; c.gridy = 7; panel.add(seaSerpentBtn, c);
+						c.gridx = 6; c.gridy = 8; panel.add(spellcasterProgress, c);
+						c.gridx = 5; c.gridy = 8; panel.add(spellcasterBtn, c);
+						c.gridx = 6; c.gridy = 9; panel.add(thunderProgress, c);
+						c.gridx = 5; c.gridy = 9; panel.add(thunderBtn, c);
+						c.gridx = 6; c.gridy = 10; panel.add(warriorProgress, c);
+						c.gridx = 5; c.gridy = 10; panel.add(warriorBtn, c);
+						c.gridx = 6; c.gridy = 11; panel.add(wingedBeastProgress, c);
+						c.gridx = 5; c.gridy = 11; panel.add(wingedBeastBtn, c);
+						c.gridx = 6; c.gridy = 12; panel.add(zombieProgress, c);
+						c.gridx = 5; c.gridy = 12; panel.add(zombieBtn, c);
+						c.gridx = 2; c.gridy = 13; c.gridwidth = 5; panel.add(totalScoreProgress, c);
+						c.gridx = 1; c.gridy = 13; c.gridwidth = 1; panel.add(score1I, c);
+						c.gridx = 2; c.gridy = 14; c.gridwidth = 5; panel.add(avgScoreProgress, c);
+						c.gridx = 1; c.gridy = 14; c.gridwidth = 1; panel.add(score2I, c);
+						c.insets = new Insets(0, 5, 10, 5);
+						c.gridx = 0; c.gridy = 601; panel.add(cardProgress, c);
+						c.gridx = 1; c.gridy = 601; panel.add(fullListBtn, c);
+						cardViewLocal.getContentPane().add(panel);
+						setupDeckListeners(cardViewLocal, scrollPane, fullListBtn, drafted, aquaBtn, AquaCards, beastBtn, BeastCards,
+								BeastWarriorCards, beastWarriorBtn, DinosaurCards, dinosaurBtn, DivineCards, divineBtn, DragonCards, dragonBtn,
+								FairyCards, fairyBtn, FiendCards, fiendBtn, FishCards, fishBtn, InsectCards, insectBtn, MachineCards, machineBtn,
+								PlantCards, plantBtn, PsychicCards, psychicBtn, PyroCards, pyroBtn, ReptileCards, reptileBtn, RockCards, rockBtn,
+								SeaSerpentCards, seaSerpentBtn, SpellcasterCards, spellcasterBtn, ThunderCards, thunderBtn, WarriorCards, warriorBtn,
+								WingedBeastCards, wingedBeastBtn, ZombieCards, zombieBtn, DarkCards, darkBtn, FireCards, fireBtn, EarthCards, earthBtn,
+								LightCards, lightBtn, WaterCards, waterBtn, WindCards, windBtn, lowLvlCards, monsterBtn, medLvlCards, oneSacBtn, highLvlCards,
+								twoSacBtn, spDim);
+						
+						
+		
 						cardViewLocal.pack();
 						cardViewLocal.setVisible(true);
 					}
-				});
 
+				});
+				
+				
 				DraftInit.pack();
 				DraftInit.revalidate();
 				DraftInit.repaint();
@@ -2068,6 +2599,9 @@ public class CardPool_GUI_1_Stable {
 				{
 					line = databaseStream.readLine();	
 					input = line.split("~");
+					
+					// This line is for debugging when I fuck something up on the database input side
+					//System.out.println(input[0] + " -- " + input[21]);
 
 					name = input[0];	attribute = input[1];	type = input[2];	cardType = input[7];	
 					atk = Integer.parseInt(input[3]);	def = Integer.parseInt(input[4]); tierScore = Integer.parseInt(input[9]);
@@ -2590,6 +3124,7 @@ public class CardPool_GUI_1_Stable {
 			}
 		}
 		
+		/*
 		System.out.println("Cards over 85 score per player: " + ultimatesAllowed);
 		System.out.println("Cards between 70-85 per player: " + ultrasAllowed);
 		System.out.println("Cards between 50-70 per player: " + supersAllowed);
@@ -2601,6 +3136,7 @@ public class CardPool_GUI_1_Stable {
 		System.out.println("Cards between 50-70 in pool: " + aSupers);
 		System.out.println("Cards between 30-50 in pool: " + aRares);
 		System.out.println("Cards under 35 score in pool: " + aCommons);
+		*/
 	
 	}
 
@@ -11591,6 +12127,678 @@ public class CardPool_GUI_1_Stable {
 			tag.setForeground(Color.BLACK); break;
 		}
 	}
+	
+
+	
+
+	
+	// Type counter
+	public static int typeCount(ArrayList<Card> pool, String type)
+	{
+		int count = 0;
+		for (Card card : pool)
+		{
+			if (card.getType().equals(type))
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	// Attribute counter
+	public static int attributeCount(ArrayList<Card> pool, String attribute)
+	{
+		int count = 0;
+		for (Card card : pool)
+		{
+			if (card.getAttribute().equals(attribute))
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	
+	// Spell counter
+	public static int spellCount(ArrayList<Card> pool)
+	{
+		int count = 0;
+		for (Card card : pool)
+		{
+			if (card.getCardType().equals("Spell"))
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	// Trap counter
+	public static int trapCount(ArrayList<Card> pool)
+	{
+		int count = 0;
+		for (Card card : pool)
+		{
+			if (card.getCardType().equals("Trap"))
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	// Level < counter
+	public static int lvlLessCount(ArrayList<Card> pool, int lvl)
+	{
+		int count = 0;
+		for (Card card : pool)
+		{
+			if (card.getLvl() < lvl && card.getLvl() != 0)
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	// Level > counter
+	public static int lvlMoreCount(ArrayList<Card> pool, int lvl)
+	{
+		int count = 0;
+		for (Card card : pool)
+		{
+			if (card.getLvl() > lvl)
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+
+	// Level >< counter
+	public static int lvlBetweenCount(ArrayList<Card> pool, int lowLvl, int highLvl)
+	{
+		int count = 0;
+		for (Card card : pool)
+		{
+			if (card.getLvl() > lowLvl && card.getLvl() < highLvl)
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	// Calculates total score for the cards in the given pool
+	public static int scoreCards(ArrayList<Card> pool)
+	{
+		int score = 0;
+		for (Card card : pool)
+		{
+			score += card.getTierScore();
+		}
+		return score;
+	}
+	
+	// Calculates avg score per card in the given pool
+	public static int avgScoreCards(ArrayList<Card> pool, int poolSize)
+	{
+		int score = 0;
+		for (Card card : pool)
+		{
+			score += card.getTierScore();
+		}
+		
+		score = score / poolSize;
+		return score;
+	}
+	
+	public static void setupDeckListeners(JFrame localFrame, JScrollPane scrollPane, JButton fullListBtn, ArrayList<Card> fullDeck, JButton aqua, ArrayList<Card> AquaCards, JButton beast, ArrayList<Card> BeastCards,
+			ArrayList<Card> BeastWarriorCards, JButton BeastWarriorBtn, ArrayList<Card> DinosaurCards, JButton DinosaurBtn, ArrayList<Card> DivineCards, JButton DivineBtn, ArrayList<Card> DragonCards, JButton DragonBtn,
+			ArrayList<Card> FairyCards, JButton FairyBtn, ArrayList<Card> FiendCards, JButton FiendBtn, ArrayList<Card> FishCards, JButton FishBtn, ArrayList<Card> InsectCards, JButton InsectBtn, ArrayList<Card> MachineCards, JButton MachineBtn,
+			ArrayList<Card> PlantCards, JButton PlantBtn, ArrayList<Card> PsychicCards, JButton PsychicBtn, ArrayList<Card> PyroCards, JButton PyroBtn, ArrayList<Card> ReptileCards, JButton ReptileBtn, ArrayList<Card> RockCards, JButton RockBtn,
+			ArrayList<Card> SeaSerpentCards, JButton SeaSerpentBtn, ArrayList<Card> SpellcasterCards, JButton SpellcasterBtn, ArrayList<Card> ThunderCards, JButton ThunderBtn, ArrayList<Card> WarriorCards, JButton WarriorBtn,
+			ArrayList<Card> WingedBeastCards, JButton WingedBeastBtn, ArrayList<Card> ZombieCards, JButton ZombieBtn, ArrayList<Card> DarkCards, JButton DarkBtn, ArrayList<Card> FireCards, JButton FireBtn, ArrayList<Card> EarthCards,JButton  EarthBtn,
+			ArrayList<Card> LightCards, JButton LightBtn, ArrayList<Card> WaterCards, JButton WaterBtn, ArrayList<Card> WindCards, JButton WindBtn, ArrayList<Card> MonsterCards, JButton MonsterBtn, ArrayList<Card> OneSacCards, JButton OneSacBtn, ArrayList<Card> TwoSacCards,
+			JButton TwoSacBtn, Dimension spDim)
+	{
+		
+		
+		
+		fullListBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				ArrayList<Card> tempDeck = listMaker(fullDeck);
+				dynamicModel1.clear();
+				for (Card card : tempDeck) { dynamicModel1.addElement(card); }
+				dynamicList.setModel(dynamicModel1);
+				scrollPane.setMinimumSize(spDim);
+				scrollPane.setMaximumSize(spDim);
+				scrollPane.setViewportView(dynamicList);
+				localFrame.revalidate(); localFrame.repaint();
+			}
+			
+		});
+		
+		aqua.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (AquaCards.isEmpty() == false)
+				{
+					refreshList(AquaCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+				}
+				
+			}
+			
+		});
+		
+		beast.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (BeastCards.isEmpty() == false)
+				{
+					refreshList(BeastCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		BeastWarriorBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (BeastWarriorCards.isEmpty() == false)
+				{
+					refreshList(BeastWarriorCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		DinosaurBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (DinosaurCards.isEmpty() == false)
+				{
+					refreshList(DinosaurCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		DivineBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (DivineCards.isEmpty() == false)
+				{
+					refreshList(DivineCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		DragonBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (DragonCards.isEmpty() == false)
+				{
+					refreshList(DragonCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		FairyBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (FairyCards.isEmpty() == false)
+				{
+					refreshList(FairyCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		FiendBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (FiendCards.isEmpty() == false)
+				{
+					refreshList(FiendCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		FishBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (FishCards.isEmpty() == false)
+				{
+					refreshList(FishCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		InsectBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (InsectCards.isEmpty() == false)
+				{
+					refreshList(InsectCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		MachineBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (MachineCards.isEmpty() == false)
+				{
+					refreshList(MachineCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		PlantBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (PlantCards.isEmpty() == false)
+				{
+					refreshList(PlantCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		PsychicBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (PsychicCards.isEmpty() == false)
+				{
+					refreshList(PsychicCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		PyroBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (PyroCards.isEmpty() == false)
+				{
+					refreshList(PyroCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		ReptileBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (ReptileCards.isEmpty() == false)
+				{
+					refreshList(ReptileCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		RockBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (RockCards.isEmpty() == false)
+				{
+					refreshList(RockCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		SeaSerpentBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (SeaSerpentCards.isEmpty() == false)
+				{
+					refreshList(SeaSerpentCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		SpellcasterBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (SpellcasterCards.isEmpty() == false)
+				{
+					refreshList(SpellcasterCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		ThunderBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (ThunderCards.isEmpty() == false)
+				{
+					refreshList(ThunderCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		WarriorBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (WarriorCards.isEmpty() == false)
+				{
+					refreshList(WarriorCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		WingedBeastBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (WingedBeastCards.isEmpty() == false)
+				{
+					refreshList(WingedBeastCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		ZombieBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (ZombieCards.isEmpty() == false)
+				{
+					refreshList(ZombieCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		DarkBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (DarkCards.isEmpty() == false)
+				{
+					refreshList(DarkCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		FireBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (FireCards.isEmpty() == false)
+				{
+					refreshList(FireCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		EarthBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (EarthCards.isEmpty() == false)
+				{
+					refreshList(EarthCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		LightBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (LightCards.isEmpty() == false)
+				{
+					refreshList(LightCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		WaterBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (WaterCards.isEmpty() == false)
+				{
+					refreshList(WaterCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		WindBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (WindCards.isEmpty() == false)
+				{
+					refreshList(WindCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		MonsterBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (MonsterCards.isEmpty() == false)
+				{
+					refreshList(MonsterCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		OneSacBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (OneSacCards.isEmpty() == false)
+				{
+					refreshList(OneSacCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		TwoSacBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (TwoSacCards.isEmpty() == false)
+				{
+					refreshList(TwoSacCards);
+					scrollPane.setViewportView(dynamicList);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+	}
+	
+	public static void refreshList(ArrayList<Card> cards)
+	{
+		ArrayList<Card> tempDeck = listMaker(cards);
+		dynamicModel1.clear();
+		for (Card card : tempDeck) { dynamicModel1.addElement(card); }
+		dynamicList.setModel(dynamicModel1);
+	}
+		
 
 }
 // END CLASS CardPool_GUI_1_Stable

@@ -123,6 +123,14 @@ public class Card implements Comparator<Card>
 		this.name = name;
 		this.tierScore = tierScore;
 	}
+	
+	public Card(String name, int tierScore, int quantity, String rarity)
+	{
+		this.name = name;
+		this.tierScore = tierScore;
+		this.quantity = quantity;
+		this.rarity = rarity;
+	}
 
 	// Getters and Setters //
 	public String getName() { return name;	}
@@ -175,6 +183,7 @@ public class Card implements Comparator<Card>
 	{
 		return card1.getName().compareTo(card2.getName());
 	}
+
 	
 	@Override
 	public String toString() {
