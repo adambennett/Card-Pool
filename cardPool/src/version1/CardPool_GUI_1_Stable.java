@@ -1,6 +1,7 @@
 package version1;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -21,9 +22,19 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
 import java.util.Random;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -41,6 +52,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -61,6 +73,7 @@ public class CardPool_GUI_1_Stable {
 	private ArrayList<Card> drafted = new ArrayList<Card>();
 	private ArrayList<Card> threeChoiceTemp = new ArrayList<Card>();
 	private static JList<Card> dynamicList = new JList<Card>();
+	private static JList<ListEntry> dynamicList2 = new JList<ListEntry>();
 	private static DefaultListModel<Card> dynamicModel1 = new DefaultListModel<Card>();
 
 	// GUI Init Stuff
@@ -399,9 +412,18 @@ public class CardPool_GUI_1_Stable {
 				if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 				else { exodia = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); } cardPick3.setIcon(exodia);
 				
+				cardPick1.setBorder(BorderFactory.createEmptyBorder()); cardPick1.setContentAreaFilled(false); cardPick1.setMargin(new Insets(0, 0, 0, 0));
+				cardPick2.setBorder(BorderFactory.createEmptyBorder()); cardPick2.setContentAreaFilled(false); cardPick2.setMargin(new Insets(0, 0, 0, 0));
+				cardPick3.setBorder(BorderFactory.createEmptyBorder()); cardPick3.setContentAreaFilled(false); cardPick3.setMargin(new Insets(0, 0, 0, 0));
+				//reroll.setBorder(BorderFactory.createEmptyBorder()); reroll.setContentAreaFilled(false); reroll.setMargin(new Insets(0, 0, 0, 0));
+				//viewDeck.setBorder(BorderFactory.createEmptyBorder()); viewDeck.setContentAreaFilled(false); viewDeck.setMargin(new Insets(0, 0, 0, 0));
+				
+				
+				
 				// Setup the labels on the draft window
 				JLabel pickCounter = new JLabel("Pick " + pickNumber + "/" + cardsToDraftLocal);
 				JLabel poolCardCount = new JLabel("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
+				//JProgressBar poolSize = new JProgressBar(0, defPoolSize);
 				JLabel playerDraftLbl = new JLabel("Player " + (playerDrafting + 1));
 				JLabel pick1Rarity = new JLabel(threeChoiceTemp.get(0).getRarity()); textColor(threeChoiceTemp.get(0), pick1Rarity);
 				JLabel pick2Rarity = new JLabel(threeChoiceTemp.get(1).getRarity()); textColor(threeChoiceTemp.get(1), pick2Rarity);
@@ -413,16 +435,22 @@ public class CardPool_GUI_1_Stable {
 				avgDeckScore.setToolTipText("Average Card Score");
 				avgDeckScore.setStringPainted(true);
 				avgDeckScore.setString(String.valueOf(avgScore));
+				/*poolSize.setToolTipText("Pool Size");
+				poolSize.setStringPainted(true);
+				poolSize.setString(String.valueOf(draftPools.get(playerDrafting).size()));*/
 
 				// Adding everything to the draft window
 				c.insets = new Insets(0,10,10,10); 
 				c.weightx = 0.5;  c.gridx = 1; c.gridy = 0; playerDraftLbl.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(playerDraftLbl, c);
+				c.insets = new Insets(30,75,10,75); 
 				c.gridx = 0; c.gridy = 1; DraftInit.getContentPane().add(cardPick1, c); 
 				c.gridx = 1; c.gridy = 1; DraftInit.getContentPane().add(cardPick2, c); 
 				c.gridx = 2; c.gridy = 1; DraftInit.getContentPane().add(cardPick3, c);
+				c.insets = new Insets(0,75,10,75); 
 				c.gridx = 0; c.gridy = 4; DraftInit.getContentPane().add(viewDeck, c);
 				c.gridx = 1; c.gridy = 4; pickCounter.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pickCounter, c);
 				c.gridx = 2; c.gridy = 4; DraftInit.getContentPane().add(reroll, c);
+				c.insets = new Insets(0,10,10,10); 
 				c.gridx = 0; c.gridy = 2; pick1Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Rarity, c);
 				c.gridx = 1; c.gridy = 2; pick2Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Rarity, c); 
 				c.gridx = 2; c.gridy = 2; pick3Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Rarity, c);
@@ -430,6 +458,8 @@ public class CardPool_GUI_1_Stable {
 				c.gridx = 1; c.gridy = 3; pick2Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Score, c);
 				c.gridx = 2; c.gridy = 3; pick3Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Score, c);
 				c.gridx = 1; c.gridy = 5; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolCardCount, c);
+				//c.gridx = 1; c.gridy = 5; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolSize, c);
+				c.insets = new Insets(0,500,10,500); 
 				c.gridx = 0; c.gridy = 6; c.gridwidth = 3; DraftInit.getContentPane().add(avgDeckScore, c);
 
 
@@ -486,6 +516,8 @@ public class CardPool_GUI_1_Stable {
 
 							if (pickNumber > cardsToDraftLocal)
 							{
+								ArrayList<Card> temp = new ArrayList<Card>();
+								copyPoolVoid(drafted, temp);
 								draftDecks.get(playerDrafting).clear();
 								draftDecks.get(playerDrafting).addAll(drafted);
 								cardCounter(draftDecks.get(playerDrafting));
@@ -493,17 +525,67 @@ public class CardPool_GUI_1_Stable {
 								if (playerDrafting + 1 < playerCountLocal)
 								{
 									JFrame tempConfirmBox = new JFrame();
-									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-									tempConfirmBox.setBounds(250, 250, 250, 250);
-									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 									Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 									tempConfirmBox.setLocation(dim.width/2-tempConfirmBox.getSize().width/2, dim.height/2-tempConfirmBox.getSize().height/2);
-									JLabel endTurn = new JLabel("You have finished drafting");
+									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									tempConfirmBox.setBounds(100, 100, 496, 443);
+									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									tempConfirmBox.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+									JTextArea sendTo = new JTextArea(1, 15);
+									JButton send = new JButton("Send");
+									sendTo.setToolTipText("Send to this address");
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); Date date = new Date();
+									send.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											// EMAIL
+											String to = sendTo.getText(); 
+											String from = "cardpoolsender@gmail.com"; 
+											String host = "localhost";//or IP address  
+
+											//Get the session object  
+											Properties properties = System.getProperties();  
+											properties.put("mail.smtp.starttls.enable", "true"); 
+											properties.put("mail.smtp.host", "smtp.gmail.com");
+											properties.put("mail.smtp.user", from); // User name
+											properties.put("mail.smtp.password", "plaintxtpassword"); // password
+											properties.put("mail.smtp.port", "587");
+											properties.put("mail.smtp.auth", "true");
+											//Session session = Session.getDefaultInstance(properties);  
+											Session session = Session.getDefaultInstance(properties, 
+													new javax.mail.Authenticator(){
+												protected PasswordAuthentication getPasswordAuthentication() {
+													return new PasswordAuthentication(
+															from, "plaintxtpassword");// Specify the Username and the PassWord
+												}
+											});
+
+											//compose the message  
+											try{  
+												MimeMessage message = new MimeMessage(session);  
+												message.setFrom(new InternetAddress(from));  
+												message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));  
+												message.setSubject("YGO Deck " + date);  
+												message.setText(mailMessage(temp));  
+
+												// Send message  
+												Transport.send(message);  
+												System.out.println("Message sent to " + to);  
+
+											}catch (MessagingException mex) {mex.printStackTrace();}  
+
+										}// END EMAIL
+									});
+								  
 									JButton confirm = new JButton("Next Player");
 									confirm.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) { tempConfirmBox.setVisible(false); DraftInit.setVisible(true); } });
-									tempConfirmBox.add(endTurn);
+									tempConfirmBox.add(sendTo);
+									tempConfirmBox.add(send);
 									tempConfirmBox.add(confirm);
 									tempConfirmBox.setResizable(false);
+									tempConfirmBox.pack();
 									tempConfirmBox.setVisible(true);
 									DraftInit.setVisible(false);
 								}
@@ -567,6 +649,10 @@ public class CardPool_GUI_1_Stable {
 
 									JButton viewDeckOf = new JButton("View Deck");
 									JButton viewStats = new JButton("Deck Stats");
+									JTextArea sendTo = new JTextArea(1, 15);
+									JButton send = new JButton("Send");
+									sendTo.setToolTipText("Send to this address");
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); Date date = new Date();
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
@@ -895,6 +981,7 @@ public class CardPool_GUI_1_Stable {
 													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
 													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
 
+											stats.setEditable(false);
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
@@ -902,10 +989,60 @@ public class CardPool_GUI_1_Stable {
 										}
 									});
 
+									send.addActionListener(new ActionListener()
+									{
 
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											sendTo.setEditable(false);
+											// EMAIL
+											String to = sendTo.getText(); 
+											String from = "cardpoolsender@gmail.com"; 
+											String host = "localhost";//or IP address  
+
+											//Get the session object  
+											Properties properties = System.getProperties();  
+											properties.put("mail.smtp.starttls.enable", "true"); 
+											properties.put("mail.smtp.host", "smtp.gmail.com");
+											properties.put("mail.smtp.user", from); // User name
+											properties.put("mail.smtp.password", "plaintxtpassword"); // password
+											properties.put("mail.smtp.port", "587");
+											properties.put("mail.smtp.auth", "true");
+											//Session session = Session.getDefaultInstance(properties);  
+											Session session = Session.getDefaultInstance(properties, 
+													new javax.mail.Authenticator(){
+												protected PasswordAuthentication getPasswordAuthentication() {
+													return new PasswordAuthentication(
+															from, "plaintxtpassword");// Specify the Username and the PassWord
+												}
+											});
+
+											//compose the message  
+											try{  
+												MimeMessage message = new MimeMessage(session);  
+												message.setFrom(new InternetAddress(from));  
+												message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));  
+												message.setSubject("YGO Deck " + date);  
+												message.setText(mailMessage(draftDecks.get(playerDeck.getSelectedIndex())));  
+
+												// Send message  
+												Transport.send(message);  
+												System.out.println("Message sent to " + to);  
+
+											}catch (MessagingException mex) {mex.printStackTrace();}  
+
+										}// END EMAIL
+									});
+								
+									
+									
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
 									finalFrame.getContentPane().add(viewStats);
+									finalFrame.getContentPane().add(send);
+									finalFrame.getContentPane().add(sendTo);
+									finalFrame.setResizable(false);
 
 									finalFrame.pack();
 									finalFrame.setVisible(true);
@@ -971,6 +1108,8 @@ public class CardPool_GUI_1_Stable {
 
 							if (pickNumber > cardsToDraftLocal)
 							{
+								ArrayList<Card> temp = new ArrayList<Card>();
+								copyPoolVoid(drafted, temp);
 								draftDecks.get(playerDrafting).clear();
 								draftDecks.get(playerDrafting).addAll(drafted);
 								cardCounter(draftDecks.get(playerDrafting));
@@ -978,19 +1117,71 @@ public class CardPool_GUI_1_Stable {
 								if (playerDrafting + 1 < playerCountLocal)
 								{
 									JFrame tempConfirmBox = new JFrame();
-									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-									tempConfirmBox.setBounds(250, 250, 250, 250);
-									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									
 									Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 									tempConfirmBox.setLocation(dim.width/2-tempConfirmBox.getSize().width/2, dim.height/2-tempConfirmBox.getSize().height/2);
-									JLabel endTurn = new JLabel("You have finished drafting");
+									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									tempConfirmBox.setBounds(100, 100, 496, 443);
+									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									tempConfirmBox.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+									JTextArea sendTo = new JTextArea(1, 15);
+									JButton send = new JButton("Send");
+									sendTo.setToolTipText("Send to this address");
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); Date date = new Date();
+									send.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											// EMAIL
+											String to = sendTo.getText(); 
+											String from = "cardpoolsender@gmail.com"; 
+											String host = "localhost";//or IP address  
+
+											//Get the session object  
+											Properties properties = System.getProperties();  
+											properties.put("mail.smtp.starttls.enable", "true"); 
+											properties.put("mail.smtp.host", "smtp.gmail.com");
+											properties.put("mail.smtp.user", from); // User name
+											properties.put("mail.smtp.password", "plaintxtpassword"); // password
+											properties.put("mail.smtp.port", "587");
+											properties.put("mail.smtp.auth", "true");
+											//Session session = Session.getDefaultInstance(properties);  
+											Session session = Session.getDefaultInstance(properties, 
+													new javax.mail.Authenticator(){
+												protected PasswordAuthentication getPasswordAuthentication() {
+													return new PasswordAuthentication(
+															from, "plaintxtpassword");// Specify the Username and the PassWord
+												}
+											});
+
+											//compose the message  
+											try{  
+												MimeMessage message = new MimeMessage(session);  
+												message.setFrom(new InternetAddress(from));  
+												message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));  
+												message.setSubject("YGO Deck " + date);  
+												message.setText(mailMessage(temp));  
+
+												// Send message  
+												Transport.send(message);  
+												System.out.println("Message sent to " + to);  
+
+											}catch (MessagingException mex) {mex.printStackTrace();}  
+
+										}// END EMAIL
+									});
+								  
 									JButton confirm = new JButton("Next Player");
 									confirm.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) { tempConfirmBox.setVisible(false); DraftInit.setVisible(true); } });
-									tempConfirmBox.add(endTurn);
+									tempConfirmBox.add(sendTo);
+									tempConfirmBox.add(send);
 									tempConfirmBox.add(confirm);
 									tempConfirmBox.setResizable(false);
+									tempConfirmBox.pack();
 									tempConfirmBox.setVisible(true);
 									DraftInit.setVisible(false);
+									
 								}
 							}
 
@@ -1049,6 +1240,10 @@ public class CardPool_GUI_1_Stable {
 
 									JButton viewDeckOf = new JButton("View Deck");
 									JButton viewStats = new JButton("Deck Stats");
+									JTextArea sendTo = new JTextArea(1, 15);
+									JButton send = new JButton("Send");
+									sendTo.setToolTipText("Send to this address");
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); Date date = new Date();
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
@@ -1092,12 +1287,13 @@ public class CardPool_GUI_1_Stable {
 									{
 										public void actionPerformed(ActionEvent arg0) 
 										{
-											JFrame cardViewLocal = new JFrame();
+											JFrame cardViewLocal = new JFrame();	
 											cardViewLocal.setTitle("Player " + (playerDeck.getSelectedIndex() + 1) + "'s Deck");
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
+											ArrayList<Card>allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
+											allCardsNoDupes.sort(allCardsNoDupes.get(0));
 											JList list = new JList(allCardsNoDupes.toArray());
 											dynamicList = list;
 											KeyListener keyListener = new KeyListener()
@@ -1147,6 +1343,7 @@ public class CardPool_GUI_1_Stable {
 																public void actionPerformed(ActionEvent e) 
 																{
 																	JFrame fullView = new JFrame();
+																	fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
 																	JPanel fullPanel = new JPanel();
 																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
 																	fullPanel.add(bigImage);
@@ -1189,7 +1386,6 @@ public class CardPool_GUI_1_Stable {
 																textFrame.pack();
 																textFrame.setResizable(false);
 																textFrame.setVisible(true);
-																
 																
 															}
 														});
@@ -1248,6 +1444,7 @@ public class CardPool_GUI_1_Stable {
 																public void actionPerformed(ActionEvent e) 
 																{
 																	JFrame fullView = new JFrame();
+																	fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
 																	JPanel fullPanel = new JPanel();
 																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
 																	fullPanel.add(bigImage);
@@ -1308,6 +1505,8 @@ public class CardPool_GUI_1_Stable {
 										}
 
 									});
+									
+									
 
 									viewStats.addActionListener(new ActionListener() 
 									{
@@ -1373,6 +1572,7 @@ public class CardPool_GUI_1_Stable {
 													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
 													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
 
+											stats.setEditable(false);
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
@@ -1380,11 +1580,60 @@ public class CardPool_GUI_1_Stable {
 										}
 									});
 
+									send.addActionListener(new ActionListener()
+									{
 
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											sendTo.setEditable(false);
+											// EMAIL
+											String to = sendTo.getText(); 
+											String from = "cardpoolsender@gmail.com"; 
+											String host = "localhost";//or IP address  
 
+											//Get the session object  
+											Properties properties = System.getProperties();  
+											properties.put("mail.smtp.starttls.enable", "true"); 
+											properties.put("mail.smtp.host", "smtp.gmail.com");
+											properties.put("mail.smtp.user", from); // User name
+											properties.put("mail.smtp.password", "plaintxtpassword"); // password
+											properties.put("mail.smtp.port", "587");
+											properties.put("mail.smtp.auth", "true");
+											//Session session = Session.getDefaultInstance(properties);  
+											Session session = Session.getDefaultInstance(properties, 
+													new javax.mail.Authenticator(){
+												protected PasswordAuthentication getPasswordAuthentication() {
+													return new PasswordAuthentication(
+															from, "plaintxtpassword");// Specify the Username and the PassWord
+												}
+											});
+
+											//compose the message  
+											try{  
+												MimeMessage message = new MimeMessage(session);  
+												message.setFrom(new InternetAddress(from));  
+												message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));  
+												message.setSubject("YGO Deck " + date);  
+												message.setText(mailMessage(draftDecks.get(playerDeck.getSelectedIndex())));  
+
+												// Send message  
+												Transport.send(message);  
+												System.out.println("Message sent to " + to);  
+
+											}catch (MessagingException mex) {mex.printStackTrace();}  
+
+										}// END EMAIL
+									});
+								
+									
+									
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
 									finalFrame.getContentPane().add(viewStats);
+									finalFrame.getContentPane().add(send);
+									finalFrame.getContentPane().add(sendTo);
+									finalFrame.setResizable(false);
 
 									finalFrame.pack();
 									finalFrame.setVisible(true);
@@ -1449,6 +1698,8 @@ public class CardPool_GUI_1_Stable {
 
 							if (pickNumber > cardsToDraftLocal)
 							{
+								ArrayList<Card> temp = new ArrayList<Card>();
+								copyPoolVoid(drafted, temp);
 								draftDecks.get(playerDrafting).clear();
 								draftDecks.get(playerDrafting).addAll(drafted);
 								cardCounter(draftDecks.get(playerDrafting));
@@ -1456,19 +1707,71 @@ public class CardPool_GUI_1_Stable {
 								if (playerDrafting + 1 < playerCountLocal)
 								{
 									JFrame tempConfirmBox = new JFrame();
-									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-									tempConfirmBox.setBounds(250, 250, 250, 250);
-									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									
 									Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 									tempConfirmBox.setLocation(dim.width/2-tempConfirmBox.getSize().width/2, dim.height/2-tempConfirmBox.getSize().height/2);
-									JLabel endTurn = new JLabel("You have finished drafting");
+									tempConfirmBox.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+									tempConfirmBox.setBounds(100, 100, 496, 443);
+									tempConfirmBox.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									tempConfirmBox.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+									JTextArea sendTo = new JTextArea(1, 15);
+									JButton send = new JButton("Send");
+									sendTo.setToolTipText("Send to this address");
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); Date date = new Date();
+									send.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											// EMAIL
+											String to = sendTo.getText(); 
+											String from = "cardpoolsender@gmail.com"; 
+											String host = "localhost";//or IP address  
+
+											//Get the session object  
+											Properties properties = System.getProperties();  
+											properties.put("mail.smtp.starttls.enable", "true"); 
+											properties.put("mail.smtp.host", "smtp.gmail.com");
+											properties.put("mail.smtp.user", from); // User name
+											properties.put("mail.smtp.password", "plaintxtpassword"); // password
+											properties.put("mail.smtp.port", "587");
+											properties.put("mail.smtp.auth", "true");
+											//Session session = Session.getDefaultInstance(properties);  
+											Session session = Session.getDefaultInstance(properties, 
+													new javax.mail.Authenticator(){
+												protected PasswordAuthentication getPasswordAuthentication() {
+													return new PasswordAuthentication(
+															from, "plaintxtpassword");// Specify the Username and the PassWord
+												}
+											});
+
+											//compose the message  
+											try{  
+												MimeMessage message = new MimeMessage(session);  
+												message.setFrom(new InternetAddress(from));  
+												message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));  
+												message.setSubject("YGO Deck " + date);  
+												message.setText(mailMessage(temp));  
+
+												// Send message  
+												Transport.send(message);  
+												System.out.println("Message sent to " + to);  
+
+											}catch (MessagingException mex) {mex.printStackTrace();}  
+
+										}// END EMAIL
+									});
+								  
 									JButton confirm = new JButton("Next Player");
 									confirm.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) { tempConfirmBox.setVisible(false); DraftInit.setVisible(true); } });
-									tempConfirmBox.add(endTurn);
+									tempConfirmBox.add(sendTo);
+									tempConfirmBox.add(send);
 									tempConfirmBox.add(confirm);
 									tempConfirmBox.setResizable(false);
+									tempConfirmBox.pack();
 									tempConfirmBox.setVisible(true);
 									DraftInit.setVisible(false);
+									
 								}
 							}
 
@@ -1527,6 +1830,10 @@ public class CardPool_GUI_1_Stable {
 
 									JButton viewDeckOf = new JButton("View Deck");
 									JButton viewStats = new JButton("Deck Stats");
+									JTextArea sendTo = new JTextArea(1, 15);
+									JButton send = new JButton("Send");
+									sendTo.setToolTipText("Send to this address");
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); Date date = new Date();
 									JComboBox playerDeck = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
@@ -1575,7 +1882,8 @@ public class CardPool_GUI_1_Stable {
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
 											cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-											ArrayList<Card >allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
+											ArrayList<Card>allCardsNoDupes = listMaker(draftDecks.get(playerDeck.getSelectedIndex()));
+											allCardsNoDupes.sort(allCardsNoDupes.get(0));
 											JList list = new JList(allCardsNoDupes.toArray());
 											dynamicList = list;
 											KeyListener keyListener = new KeyListener()
@@ -1625,6 +1933,7 @@ public class CardPool_GUI_1_Stable {
 																public void actionPerformed(ActionEvent e) 
 																{
 																	JFrame fullView = new JFrame();
+																	fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
 																	JPanel fullPanel = new JPanel();
 																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
 																	fullPanel.add(bigImage);
@@ -1667,7 +1976,6 @@ public class CardPool_GUI_1_Stable {
 																textFrame.pack();
 																textFrame.setResizable(false);
 																textFrame.setVisible(true);
-																
 																
 															}
 														});
@@ -1726,6 +2034,7 @@ public class CardPool_GUI_1_Stable {
 																public void actionPerformed(ActionEvent e) 
 																{
 																	JFrame fullView = new JFrame();
+																	fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
 																	JPanel fullPanel = new JPanel();
 																	ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
 																	fullPanel.add(bigImage);
@@ -1786,12 +2095,14 @@ public class CardPool_GUI_1_Stable {
 										}
 
 									});
+									
+									
 
 									viewStats.addActionListener(new ActionListener() 
 									{
 										public void actionPerformed(ActionEvent arg0) 
 										{
-											JFrame cardViewLocal = new JFrame();
+											JFrame cardViewLocal = new JFrame();	
 											cardViewLocal.setTitle("Player " + (playerDeck.getSelectedIndex() + 1) + "'s Stats");
 											cardViewLocal.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											cardViewLocal.setBounds(100, 100, 496, 443);
@@ -1851,6 +2162,7 @@ public class CardPool_GUI_1_Stable {
 													+ highCard2.getName() + " (" + highCard2.getTierScore() + ")\n"
 													+ highCard3.getName() + " (" + highCard3.getTierScore() + ")");
 
+											stats.setEditable(false);
 											cardViewLocal.getContentPane().add(stats);
 											cardViewLocal.pack();
 											cardViewLocal.setVisible(true);
@@ -1858,11 +2170,60 @@ public class CardPool_GUI_1_Stable {
 										}
 									});
 
+									send.addActionListener(new ActionListener()
+									{
 
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											sendTo.setEditable(false);
+											// EMAIL
+											String to = sendTo.getText(); 
+											String from = "cardpoolsender@gmail.com"; 
+											String host = "localhost";//or IP address  
 
+											//Get the session object  
+											Properties properties = System.getProperties();  
+											properties.put("mail.smtp.starttls.enable", "true"); 
+											properties.put("mail.smtp.host", "smtp.gmail.com");
+											properties.put("mail.smtp.user", from); // User name
+											properties.put("mail.smtp.password", "plaintxtpassword"); // password
+											properties.put("mail.smtp.port", "587");
+											properties.put("mail.smtp.auth", "true");
+											//Session session = Session.getDefaultInstance(properties);  
+											Session session = Session.getDefaultInstance(properties, 
+													new javax.mail.Authenticator(){
+												protected PasswordAuthentication getPasswordAuthentication() {
+													return new PasswordAuthentication(
+															from, "plaintxtpassword");// Specify the Username and the PassWord
+												}
+											});
+
+											//compose the message  
+											try{  
+												MimeMessage message = new MimeMessage(session);  
+												message.setFrom(new InternetAddress(from));  
+												message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));  
+												message.setSubject("YGO Deck " + date);  
+												message.setText(mailMessage(draftDecks.get(playerDeck.getSelectedIndex())));  
+
+												// Send message  
+												Transport.send(message);  
+												System.out.println("Message sent to " + to);  
+
+											}catch (MessagingException mex) {mex.printStackTrace();}  
+
+										}// END EMAIL
+									});
+								
+									
+									
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
 									finalFrame.getContentPane().add(viewStats);
+									finalFrame.getContentPane().add(send);
+									finalFrame.getContentPane().add(sendTo);
+									finalFrame.setResizable(false);
 
 									finalFrame.pack();
 									finalFrame.setVisible(true);
@@ -1947,9 +2308,15 @@ public class CardPool_GUI_1_Stable {
 						cardViewLocal.setBounds(100, 100, 496, 443);
 						cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						cardViewLocal.setResizable(false);
-						ArrayList<Card >allCardsNoDupes = listMaker(drafted);
-						JList list = new JList(allCardsNoDupes.toArray());
-						dynamicList = list;
+						cardViewLocal.setAlwaysOnTop(true);
+						//ArrayList<Card >allCardsNoDupes = listMaker(drafted);
+						DefaultListModel viewDeckModel = new DefaultListModel();
+						listEntryMaker(drafted, viewDeckModel);
+						//JList list = new JList(allCardsNoDupes.toArray());
+						//JList list = new JList(viewDeckModel);
+						//list.setCellRenderer(new ListEntryCellRenderer());
+						dynamicList2 = new JList(viewDeckModel);
+						dynamicList2.setCellRenderer(new ListEntryCellRenderer());
 						
 						ArrayList<Card> AquaCards = new ArrayList<Card>();
 						for (Card card : drafted) { if (card.getType().equals("Aqua")) { AquaCards.add(card); } }
@@ -2035,8 +2402,14 @@ public class CardPool_GUI_1_Stable {
 						ArrayList<Card> WindCards = new ArrayList<Card>();
 						for (Card card : drafted) { if (card.getAttribute().equals("Wind")) { WindCards.add(card); } }
 						
+						ArrayList<Card> SpellCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getCardType().equals("Spell")) { SpellCards.add(card); } }
+						
+						ArrayList<Card> TrapCards = new ArrayList<Card>();
+						for (Card card : drafted) { if (card.getCardType().equals("Trap")) { TrapCards.add(card); } }
+						
 						ArrayList<Card> lowLvlCards = new ArrayList<Card>();
-						for (Card card : drafted) { if (card.getLvl() < 5) { lowLvlCards.add(card); } }
+						for (Card card : drafted) { if (card.getLvl() < 5 && card.getLvl() != 0) { lowLvlCards.add(card); } }
 						
 						ArrayList<Card> highLvlCards = new ArrayList<Card>();
 						for (Card card : drafted) { if (card.getLvl() > 6) { highLvlCards.add(card); } }
@@ -2174,76 +2547,108 @@ public class CardPool_GUI_1_Stable {
 						// Attributes
 						JProgressBar darkProgress = new JProgressBar(0, (cardsToDraftLocal -1)); darkProgress.setValue(dark); darkProgress.setStringPainted(true);
 						darkProgress.setString(String.valueOf(dark));
+						toolTipCards(DarkCards, darkProgress);
 						JProgressBar earthProgress = new JProgressBar(0, (cardsToDraftLocal -1)); earthProgress.setValue(earth); earthProgress.setStringPainted(true);
 						earthProgress.setString(String.valueOf(earth));
+						toolTipCards(EarthCards, earthProgress);
 						JProgressBar fireProgress = new JProgressBar(0, (cardsToDraftLocal -1)); fireProgress.setValue(fire); fireProgress.setStringPainted(true);
 						fireProgress.setString(String.valueOf(fire));
+						toolTipCards(FireCards, fireProgress);
 						JProgressBar lightProgress = new JProgressBar(0, (cardsToDraftLocal -1)); lightProgress.setValue(light); lightProgress.setStringPainted(true);
 						lightProgress.setString(String.valueOf(light));
+						toolTipCards(LightCards, lightProgress);
 						JProgressBar waterProgress = new JProgressBar(0, (cardsToDraftLocal -1)); waterProgress.setValue(water); waterProgress.setStringPainted(true);
 						waterProgress.setString(String.valueOf(water));
+						toolTipCards(WaterCards, waterProgress);
 						JProgressBar windProgress = new JProgressBar(0, (cardsToDraftLocal -1)); windProgress.setValue(wind); windProgress.setStringPainted(true);
 						windProgress.setString(String.valueOf(wind));
+						toolTipCards(WindCards, windProgress);
 						JProgressBar monsterProgress = new JProgressBar(0, (cardsToDraftLocal -1)); monsterProgress.setValue(lowLvlCount); monsterProgress.setStringPainted(true);
 						monsterProgress.setString(String.valueOf(lowLvlCount));
+						toolTipCards(lowLvlCards, monsterProgress);
 						JProgressBar spellProgress = new JProgressBar(0, (cardsToDraftLocal -1)); spellProgress.setValue(wind); spellProgress.setStringPainted(true);
 						spellProgress.setString(String.valueOf(spells));
+						toolTipCards(SpellCards, spellProgress);
 						JProgressBar trapProgress = new JProgressBar(0, (cardsToDraftLocal -1)); trapProgress.setValue(wind); trapProgress.setStringPainted(true);
 						trapProgress.setString(String.valueOf(traps));
+						toolTipCards(TrapCards, trapProgress);
 						
 						// Types
 						JProgressBar aquaProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); aquaProgress.setValue(aqua); aquaProgress.setStringPainted(true);
-						aquaProgress.setString(String.valueOf(aqua));
+						aquaProgress.setString(String.valueOf(aqua)); toolTipCards(AquaCards, aquaProgress);
 						JProgressBar beastProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); beastProgress.setValue(beast); beastProgress.setStringPainted(true);
-						beastProgress.setString(String.valueOf(beast));
+						beastProgress.setString(String.valueOf(beast)); toolTipCards(BeastCards, beastProgress);
 						JProgressBar beastWarriorProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); beastWarriorProgress.setValue(beastWarrior); beastWarriorProgress.setStringPainted(true);
-						beastWarriorProgress.setString(String.valueOf(beastWarrior));
+						beastWarriorProgress.setString(String.valueOf(beastWarrior)); 
+						toolTipCards(BeastWarriorCards, beastWarriorProgress);
 						JProgressBar dinosaurProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); dinosaurProgress.setValue(dinosaur); dinosaurProgress.setStringPainted(true);
 						dinosaurProgress.setString(String.valueOf(dinosaur));
+						toolTipCards(DinosaurCards, dinosaurProgress);
 						JProgressBar divineProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); divineProgress.setValue(divine); divineProgress.setStringPainted(true);
 						divineProgress.setString(String.valueOf(divine));
+						toolTipCards(DivineCards, divineProgress);
 						JProgressBar dragonProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); dragonProgress.setValue(dragon); dragonProgress.setStringPainted(true);
 						dragonProgress.setString(String.valueOf(dragon));
+						toolTipCards(DragonCards, dragonProgress);
 						JProgressBar fairyProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); fairyProgress.setValue(fairy); fairyProgress.setStringPainted(true);
 						fairyProgress.setString(String.valueOf(fairy));
+						toolTipCards(FairyCards, fairyProgress);
 						JProgressBar fiendProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); fiendProgress.setValue(fiend); fiendProgress.setStringPainted(true);
 						fiendProgress.setString(String.valueOf(fiend));
+						toolTipCards(FiendCards, fiendProgress);
 						JProgressBar fishProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); fishProgress.setValue(fish); fishProgress.setStringPainted(true);
 						fishProgress.setString(String.valueOf(fish));
+						toolTipCards(FishCards, fishProgress);
 						JProgressBar insectProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); insectProgress.setValue(insect); insectProgress.setStringPainted(true);
 						insectProgress.setString(String.valueOf(insect));
+						toolTipCards(InsectCards, insectProgress);
 						JProgressBar machineProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); machineProgress.setValue(machine); machineProgress.setStringPainted(true);
 						machineProgress.setString(String.valueOf(machine));
+						toolTipCards(MachineCards, machineProgress);
 						JProgressBar plantProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); plantProgress.setValue(plant); plantProgress.setStringPainted(true);
 						plantProgress.setString(String.valueOf(plant));
+						toolTipCards(PlantCards, plantProgress);
 						JProgressBar psychicProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); psychicProgress.setValue(psychic); psychicProgress.setStringPainted(true);
 						psychicProgress.setString(String.valueOf(psychic));
+						toolTipCards(PsychicCards, psychicProgress);
 						JProgressBar pyroProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); pyroProgress.setValue(pyro); pyroProgress.setStringPainted(true);
 						pyroProgress.setString(String.valueOf(pyro));
+						toolTipCards(PyroCards, pyroProgress);
 						JProgressBar reptileProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); reptileProgress.setValue(reptile); reptileProgress.setStringPainted(true);
 						reptileProgress.setString(String.valueOf(reptile));
+						toolTipCards(ReptileCards, reptileProgress);
 						JProgressBar rockProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); rockProgress.setValue(rock); rockProgress.setStringPainted(true);
 						rockProgress.setString(String.valueOf(rock));
+						toolTipCards(RockCards, rockProgress);
 						JProgressBar seaSerpentProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); seaSerpentProgress.setValue(seaSerpent); seaSerpentProgress.setStringPainted(true);
 						seaSerpentProgress.setString(String.valueOf(seaSerpent));
+						toolTipCards(SeaSerpentCards, seaSerpentProgress);
 						JProgressBar spellcasterProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); spellcasterProgress.setValue(spellcaster); spellcasterProgress.setStringPainted(true);
 						spellcasterProgress.setString(String.valueOf(spellcaster));
+						toolTipCards(SpellcasterCards, spellcasterProgress);
 						JProgressBar thunderProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); thunderProgress.setValue(fiend); thunderProgress.setStringPainted(true);
 						thunderProgress.setString(String.valueOf(thunder));
+						toolTipCards(ThunderCards, thunderProgress);
 						JProgressBar warriorProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); warriorProgress.setValue(warrior); warriorProgress.setStringPainted(true);
 						warriorProgress.setString(String.valueOf(warrior));
+						toolTipCards(WarriorCards, warriorProgress);
 						JProgressBar wingedBeastProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); wingedBeastProgress.setValue(wingedBeast); wingedBeastProgress.setStringPainted(true);
 						wingedBeastProgress.setString(String.valueOf(wingedBeast));
+						toolTipCards(WingedBeastCards, wingedBeastProgress);
 						JProgressBar zombieProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); zombieProgress.setValue(zombie); zombieProgress.setStringPainted(true);
 						zombieProgress.setString(String.valueOf(zombie));
+						toolTipCards(ZombieCards, zombieProgress);
 						
 						// Other
-						JProgressBar lowLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); lowLvlProgress.setValue(lowLvlCount); lowLvlProgress.setStringPainted(true);
+						/*JProgressBar lowLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); lowLvlProgress.setValue(lowLvlCount); lowLvlProgress.setStringPainted(true);
 						lowLvlProgress.setString(String.valueOf(lowLvlCount));
+						toolTipCards(lowLvlCards, lowLvlProgress);*/
 						JProgressBar medLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); medLvlProgress.setValue(medLvlCount); medLvlProgress.setStringPainted(true);
 						medLvlProgress.setString(String.valueOf(medLvlCount));
+						toolTipCards(medLvlCards, medLvlProgress);
 						JProgressBar highLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); highLvlProgress.setValue(highLvlCount); highLvlProgress.setStringPainted(true);
 						highLvlProgress.setString(String.valueOf(highLvlCount));
+						toolTipCards(highLvlCards, highLvlProgress);
 						JProgressBar totalScoreProgress = new JProgressBar(0, (cardsToDraftLocal * 100)); totalScoreProgress.setValue(totalScore); totalScoreProgress.setStringPainted(true);
 						totalScoreProgress.setString(String.valueOf(totalScore));
 						JProgressBar avgScoreProgress = new JProgressBar(0, 100); avgScoreProgress.setValue(avgScore); avgScoreProgress.setStringPainted(true);
@@ -2258,8 +2663,9 @@ public class CardPool_GUI_1_Stable {
 							{
 								if (e.getKeyCode() == KeyEvent.VK_ENTER)
 								{
-									dynamicCard = (Card) dynamicList.getSelectedValue();
-									singleCardView = new JFrame();										
+									dynamicCard = dynamicList2.getSelectedValue().getCard();									
+									singleCardView = new JFrame();
+									singleCardView.setAlwaysOnTop(true);
 									JPanel panel = new JPanel();
 									boolean smallImage = false;
 									JButton fullSize = new JButton("Full Resolution");
@@ -2299,7 +2705,8 @@ public class CardPool_GUI_1_Stable {
 											public void actionPerformed(ActionEvent e) 
 											{
 												JFrame fullView = new JFrame();
-												fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
+												fullView.setAlwaysOnTop(true);
+												fullView.setTitle(dynamicCard.getName() + " - Zoomed");
 												JPanel fullPanel = new JPanel();
 												ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
 												fullPanel.add(bigImage);
@@ -2326,6 +2733,7 @@ public class CardPool_GUI_1_Stable {
 										public void actionPerformed(ActionEvent arg0) 
 										{
 											JFrame textFrame = new JFrame();
+											textFrame.setAlwaysOnTop(true);
 											textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											textFrame.setBounds(100, 100, 496, 443);
 											textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -2353,15 +2761,18 @@ public class CardPool_GUI_1_Stable {
 
 							@Override public void keyReleased(KeyEvent arg0) {} @Override public void keyTyped(KeyEvent arg0) {}
 						};
-						list.addKeyListener(keyListener);
+						//list.addKeyListener(keyListener);
+						dynamicList2.addKeyListener(keyListener);
 						MouseListener mouseListener = new MouseAdapter() 
 						{
 							public void mouseClicked(MouseEvent e) 
 							{
 								if (e.getClickCount() == 2) 
 								{    		
-									dynamicCard = (Card) dynamicList.getSelectedValue();
-									singleCardView = new JFrame();										
+									dynamicCard = dynamicList2.getSelectedValue().getCard();
+									//dynamicCard = (Card) dynamicList.getSelectedValue();
+									singleCardView = new JFrame();		
+									singleCardView.setAlwaysOnTop(true);
 									JPanel panel = new JPanel();
 									boolean smallImage = false;
 									JButton fullSize = new JButton("Full Resolution");
@@ -2401,7 +2812,8 @@ public class CardPool_GUI_1_Stable {
 											public void actionPerformed(ActionEvent e) 
 											{
 												JFrame fullView = new JFrame();
-												fullView.setTitle(dynamicList.getSelectedValue().getName() + " - Zoomed");
+												fullView.setAlwaysOnTop(true);
+												fullView.setTitle(dynamicCard.getName() + " - Zoomed");
 												JPanel fullPanel = new JPanel();
 												ImageLabel bigImage = new ImageLabel(new ImageIcon("src/images/" + dynamicCard.getName() + ".png"));
 												fullPanel.add(bigImage);
@@ -2428,6 +2840,7 @@ public class CardPool_GUI_1_Stable {
 										public void actionPerformed(ActionEvent arg0) 
 										{
 											JFrame textFrame = new JFrame();
+											textFrame.setAlwaysOnTop(true);
 											textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 											textFrame.setBounds(100, 100, 496, 443);
 											textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -2453,9 +2866,9 @@ public class CardPool_GUI_1_Stable {
 								}
 							}
 						};
-						list.addMouseListener(mouseListener);
+						dynamicList2.addMouseListener(mouseListener);
 						JScrollPane scrollPane = new JScrollPane();
-						scrollPane.setViewportView(dynamicList);
+						scrollPane.setViewportView(dynamicList2);
 						int defaultHeight = scrollPane.getHeight();
 						int defaultWidth = scrollPane.getWidth();
 						Dimension spDim = new Dimension(defaultWidth, defaultHeight);
@@ -2548,7 +2961,7 @@ public class CardPool_GUI_1_Stable {
 								SeaSerpentCards, seaSerpentBtn, SpellcasterCards, spellcasterBtn, ThunderCards, thunderBtn, WarriorCards, warriorBtn,
 								WingedBeastCards, wingedBeastBtn, ZombieCards, zombieBtn, DarkCards, darkBtn, FireCards, fireBtn, EarthCards, earthBtn,
 								LightCards, lightBtn, WaterCards, waterBtn, WindCards, windBtn, lowLvlCards, monsterBtn, medLvlCards, oneSacBtn, highLvlCards,
-								twoSacBtn, spDim);
+								twoSacBtn, SpellCards, spellBtn, TrapCards, trapBtn, spDim);
 						
 						
 		
@@ -2832,6 +3245,44 @@ public class CardPool_GUI_1_Stable {
 
 		temp.remove(0);
 		return temp;
+	}
+	
+	static void listEntryMaker(ArrayList<Card> pool, DefaultListModel model)
+	{
+		ArrayList<Card> temp = new ArrayList<Card>();
+		boolean checker = true;
+		for (int k = 0; k < pool.size(); k++)
+		{
+			checker = true;
+			if (temp.size() == 0) { Card tempCard2 = new Card("temp"); temp.add(tempCard2); }
+
+			for (int i = 0; i < temp.size(); i++)
+			{
+				if (pool.get(k).getName().equals(temp.get(i).getName()))
+				{
+					checker = false; i = temp.size();
+				}
+			}
+
+			if (checker) 
+			{ 
+				int howMany = howManyCards(pool, pool.get(k));
+				Card newCard = new Card(pool.get(k), howMany); 
+				temp.add(newCard); 
+			}
+
+			for (Card card : temp) { if (card.getName().equals("temp")) { temp.remove(card); } }
+		
+			
+		}
+		
+		temp.sort(temp.get(0));
+		cardCounter(temp);
+		
+		for (Card card : temp) 
+		{
+			 model.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - " + card.getQuantity() + ".png"), card));
+		}
 	}
 	static ArrayList<Card> listMakerRarity(ArrayList<Card> pool, String rarity)
 	{
@@ -12270,7 +12721,7 @@ public class CardPool_GUI_1_Stable {
 			ArrayList<Card> SeaSerpentCards, JButton SeaSerpentBtn, ArrayList<Card> SpellcasterCards, JButton SpellcasterBtn, ArrayList<Card> ThunderCards, JButton ThunderBtn, ArrayList<Card> WarriorCards, JButton WarriorBtn,
 			ArrayList<Card> WingedBeastCards, JButton WingedBeastBtn, ArrayList<Card> ZombieCards, JButton ZombieBtn, ArrayList<Card> DarkCards, JButton DarkBtn, ArrayList<Card> FireCards, JButton FireBtn, ArrayList<Card> EarthCards,JButton  EarthBtn,
 			ArrayList<Card> LightCards, JButton LightBtn, ArrayList<Card> WaterCards, JButton WaterBtn, ArrayList<Card> WindCards, JButton WindBtn, ArrayList<Card> MonsterCards, JButton MonsterBtn, ArrayList<Card> OneSacCards, JButton OneSacBtn, ArrayList<Card> TwoSacCards,
-			JButton TwoSacBtn, Dimension spDim)
+			JButton TwoSacBtn, ArrayList<Card> SpellCards, JButton SpellBtn, ArrayList<Card> TrapCards, JButton TrapBtn, Dimension spDim)
 	{
 		
 		
@@ -12281,13 +12732,10 @@ public class CardPool_GUI_1_Stable {
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				ArrayList<Card> tempDeck = listMaker(fullDeck);
-				dynamicModel1.clear();
-				for (Card card : tempDeck) { dynamicModel1.addElement(card); }
-				dynamicList.setModel(dynamicModel1);
+				String msg = mailMessage(fullDeck);
 				scrollPane.setMinimumSize(spDim);
 				scrollPane.setMaximumSize(spDim);
-				scrollPane.setViewportView(dynamicList);
+				scrollPane.setViewportView(dynamicList2);
 				localFrame.revalidate(); localFrame.repaint();
 			}
 			
@@ -12302,7 +12750,9 @@ public class CardPool_GUI_1_Stable {
 				if (AquaCards.isEmpty() == false)
 				{
 					refreshList(AquaCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 				}
 				
@@ -12319,7 +12769,9 @@ public class CardPool_GUI_1_Stable {
 				if (BeastCards.isEmpty() == false)
 				{
 					refreshList(BeastCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12335,7 +12787,9 @@ public class CardPool_GUI_1_Stable {
 				if (BeastWarriorCards.isEmpty() == false)
 				{
 					refreshList(BeastWarriorCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12351,7 +12805,9 @@ public class CardPool_GUI_1_Stable {
 				if (DinosaurCards.isEmpty() == false)
 				{
 					refreshList(DinosaurCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12367,7 +12823,9 @@ public class CardPool_GUI_1_Stable {
 				if (DivineCards.isEmpty() == false)
 				{
 					refreshList(DivineCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12383,7 +12841,9 @@ public class CardPool_GUI_1_Stable {
 				if (DragonCards.isEmpty() == false)
 				{
 					refreshList(DragonCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12399,7 +12859,9 @@ public class CardPool_GUI_1_Stable {
 				if (FairyCards.isEmpty() == false)
 				{
 					refreshList(FairyCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12415,7 +12877,9 @@ public class CardPool_GUI_1_Stable {
 				if (FiendCards.isEmpty() == false)
 				{
 					refreshList(FiendCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12431,7 +12895,9 @@ public class CardPool_GUI_1_Stable {
 				if (FishCards.isEmpty() == false)
 				{
 					refreshList(FishCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12447,7 +12913,9 @@ public class CardPool_GUI_1_Stable {
 				if (InsectCards.isEmpty() == false)
 				{
 					refreshList(InsectCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12463,7 +12931,9 @@ public class CardPool_GUI_1_Stable {
 				if (MachineCards.isEmpty() == false)
 				{
 					refreshList(MachineCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12479,7 +12949,9 @@ public class CardPool_GUI_1_Stable {
 				if (PlantCards.isEmpty() == false)
 				{
 					refreshList(PlantCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12495,7 +12967,9 @@ public class CardPool_GUI_1_Stable {
 				if (PsychicCards.isEmpty() == false)
 				{
 					refreshList(PsychicCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12511,7 +12985,9 @@ public class CardPool_GUI_1_Stable {
 				if (PyroCards.isEmpty() == false)
 				{
 					refreshList(PyroCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12527,7 +13003,9 @@ public class CardPool_GUI_1_Stable {
 				if (ReptileCards.isEmpty() == false)
 				{
 					refreshList(ReptileCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12543,7 +13021,9 @@ public class CardPool_GUI_1_Stable {
 				if (RockCards.isEmpty() == false)
 				{
 					refreshList(RockCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12559,7 +13039,9 @@ public class CardPool_GUI_1_Stable {
 				if (SeaSerpentCards.isEmpty() == false)
 				{
 					refreshList(SeaSerpentCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12575,7 +13057,9 @@ public class CardPool_GUI_1_Stable {
 				if (SpellcasterCards.isEmpty() == false)
 				{
 					refreshList(SpellcasterCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12591,7 +13075,9 @@ public class CardPool_GUI_1_Stable {
 				if (ThunderCards.isEmpty() == false)
 				{
 					refreshList(ThunderCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12607,7 +13093,9 @@ public class CardPool_GUI_1_Stable {
 				if (WarriorCards.isEmpty() == false)
 				{
 					refreshList(WarriorCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12623,7 +13111,9 @@ public class CardPool_GUI_1_Stable {
 				if (WingedBeastCards.isEmpty() == false)
 				{
 					refreshList(WingedBeastCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12639,7 +13129,9 @@ public class CardPool_GUI_1_Stable {
 				if (ZombieCards.isEmpty() == false)
 				{
 					refreshList(ZombieCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12655,7 +13147,9 @@ public class CardPool_GUI_1_Stable {
 				if (DarkCards.isEmpty() == false)
 				{
 					refreshList(DarkCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12671,7 +13165,9 @@ public class CardPool_GUI_1_Stable {
 				if (FireCards.isEmpty() == false)
 				{
 					refreshList(FireCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12687,7 +13183,9 @@ public class CardPool_GUI_1_Stable {
 				if (EarthCards.isEmpty() == false)
 				{
 					refreshList(EarthCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12703,7 +13201,9 @@ public class CardPool_GUI_1_Stable {
 				if (LightCards.isEmpty() == false)
 				{
 					refreshList(LightCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12719,7 +13219,9 @@ public class CardPool_GUI_1_Stable {
 				if (WaterCards.isEmpty() == false)
 				{
 					refreshList(WaterCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12735,7 +13237,9 @@ public class CardPool_GUI_1_Stable {
 				if (WindCards.isEmpty() == false)
 				{
 					refreshList(WindCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12751,7 +13255,9 @@ public class CardPool_GUI_1_Stable {
 				if (MonsterCards.isEmpty() == false)
 				{
 					refreshList(MonsterCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12767,7 +13273,9 @@ public class CardPool_GUI_1_Stable {
 				if (OneSacCards.isEmpty() == false)
 				{
 					refreshList(OneSacCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12783,7 +13291,45 @@ public class CardPool_GUI_1_Stable {
 				if (TwoSacCards.isEmpty() == false)
 				{
 					refreshList(TwoSacCards);
-					scrollPane.setViewportView(dynamicList);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		SpellBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (SpellCards.isEmpty() == false)
+				{
+					refreshList(SpellCards);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
+					localFrame.revalidate(); localFrame.repaint();
+			
+				}
+			}
+		});
+		
+		TrapBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				if (TrapCards.isEmpty() == false)
+				{
+					refreshList(TrapCards);
+					scrollPane.setMinimumSize(spDim);
+					scrollPane.setMaximumSize(spDim);
+					scrollPane.setViewportView(dynamicList2);
 					localFrame.revalidate(); localFrame.repaint();
 			
 				}
@@ -12794,9 +13340,40 @@ public class CardPool_GUI_1_Stable {
 	public static void refreshList(ArrayList<Card> cards)
 	{
 		ArrayList<Card> tempDeck = listMaker(cards);
-		dynamicModel1.clear();
-		for (Card card : tempDeck) { dynamicModel1.addElement(card); }
-		dynamicList.setModel(dynamicModel1);
+		DefaultListModel localModel = new DefaultListModel();
+		for (Card card : tempDeck) { localModel.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - " + card.getQuantity() + ".png"), card)); }
+		dynamicList2.setModel(localModel);
+	}
+	
+	public static void toolTipCards(ArrayList<Card> cards, JProgressBar bar)
+	{
+		String names = "<html>";
+		for (Card card : cards) 
+		{
+			if (names.equals("<html>")) { names = names + card.getName() + "<br>"; }
+			else { names = names + card.getName() + "<br>"; }
+		}
+		
+		if (names.equals("<html>")) { names = "Empty"; }
+		bar.setToolTipText(names);
+		
+	}
+	
+	public static String mailMessage(ArrayList<Card> deck)
+	{
+		String cards = "";
+		deck.sort(deck.get(0));
+		cardCounter(deck);
+		for (Card card : deck)
+		{
+			if (card.getQuantity() == 0) {}
+			else
+			{
+				cards = cards + card.getName() + "  x" + card.getQuantity() + "\n";
+			}
+		}
+		
+		return cards;
 	}
 		
 
@@ -12807,3 +13384,58 @@ public class CardPool_GUI_1_Stable {
 @SuppressWarnings("serial")
 class ImageLabel extends JLabel { public ImageLabel(String img) { this(new ImageIcon(img)); }
 public ImageLabel(ImageIcon icon) { setIcon(icon); setIconTextGap(0); setBorder(null); setText(null); setSize(icon.getImage().getWidth(null), icon.getImage().getHeight(null)); } }
+
+// Implementing some stuff for displaying lists better in the future, only works with view deck during the draft currently
+class ListEntry {
+   private String value;
+   private ImageIcon icon;
+   private Card card;
+   public ListEntry(String value, ImageIcon icon) {
+      this.value = value;
+      this.icon = icon;
+   }
+   public ListEntry(String value, ImageIcon icon, Card card) {
+	      this.value = value;
+	      this.icon = icon;
+	      this.card = card;
+	   }
+   public String getValue() {
+      return value;
+   }
+   public ImageIcon getIcon() {
+      return icon;
+   }
+   public Card getCard() { return card; }
+   public String toString() {
+      return value;
+   }}
+
+class ListEntryCellRenderer extends JLabel implements ListCellRenderer 
+{ 
+	private JLabel label; 
+	
+	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
+	{
+      ListEntry entry = (ListEntry) value;
+  
+      setText(value.toString());
+      setIcon(entry.getIcon());
+      
+   
+      if (isSelected) {
+         setBackground(list.getSelectionBackground());
+         setForeground(list.getSelectionForeground());
+      }
+      else {
+         setBackground(list.getBackground());
+         setForeground(list.getForeground());
+      }
+  
+      setEnabled(list.isEnabled());
+      setFont(list.getFont());
+      setOpaque(true);
+  
+      return this;
+   }}
+
+
