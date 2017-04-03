@@ -67,6 +67,7 @@ public class main
 		System.out.println("\nCards w/o text: " + textlessCounter);
 		*/
 		
+		/*
 		String[] temp = {"Cross-Sword Beetle", "Evigishki Soul Ogre", "Gishki Mollusk", "Gishki Noellia", "Evigishki Levianima", "Dunames Dark Witch", "Ancient Gear Gadjiltron Dragon", "Dark Paladin", "Gishki Chain", "Ape Fighter", "Fortress Warrior", "Half Shut", "Evilswarm Heliotrope", "Gishki Avance", "Gishki Natalia", "Gishki Psychelone", "Hundred-Footed Horror", "Dwarf Star Dragon Planeter", "Sabersaurus", "Informer Spider", "Shield Worm", "Metal Armored Bug", "Tytannial, Princess of Camellias", "Hedge Guard", "Aztekipede, the Worm Warrior", "Insect Knight", "Slate Warrior", "The World Tree", "Buster Blader", "Big-Tusked Mammoth", "Golem Sentry", "Hand of Nephthys", "Garoth, the Lightsworn Warrior", "Double Attack", "Mother Spider", "Spider Egg", "Ultimate Tyranno", "Criosphinx", "Gil Garth", "Double Coston", "Desert Twister", "Multiple Piece Golem", "Lair Wire", "Gishki Photomirror", "Evigishki Tetrogre", "Infernal Flame Emperor", "Hieracosphinx", "Plant Food Chain", "Turret Warrior", "Wall of Thorns", "Green Gadget", "Yellow Gadget", "Red Gadget", "Alpha the Magnet Warrior", "Beta the Magnet Warrior", "Gamma the Magnet Warrior", "Predaplant Sarraceniant", "Double Payback", "Gishki Diviner", "Fabled Gallabas", "Fabled Ashenveil", "Forbidden Arts of the Gishki", "Gishki Emilia", "Dark General Freed", "Maximum Six", "Blue-Eyes Ultimate Dragon", "Divine Dragon Apocralyph", "Gishki Beast", "Destiny HERO - Disk Commander", "Relinquished Spider", "Spider Web", "Renge, Gatekeeper of Dark World", "Airknight Parshath", "Sacred Phoenix of Nephthys", "Celestia, Lightsworn Angel", "Shire, Lightsworn Spirit", "Valkyrion the Magna Warrior", "Paladin of the Cursed Dragon", "Hunter Dragon", "Des Volstgalph", "Big Piece Golem", "Medium Piece Golem", "Small Piece Golem", "Ojamagic", "Genesis Dragon", "Alien Shocktrooper", "King of the Swamp", "Horus the Black Flame Dragon LV8", "Armored Bee", "Gishki Marker", "Gishki Vanity", "Gishki Reliever", "White-Horned Dragon", "Gishki Shadow", "Gishki Vision", "Predaplant Chimerafflesia", "Gishki Aquamirror", "Gishki Ariel", "Chainsaw Insect", "Big Evolution Pill", "Wulf, Lightsworn Beast", "Judgement Dragon", "Destiny End Dragoon", "Super Solar Nutrient", "Apprentice Piper", "Spell Strider", "Darklord Superbia", "Predaplanet", "Predaplant Pterapenthes", "Predapruning", "Predaplant Flytrap", "Tierra, Source of Destruction", "Super-Ancient Dinobeast", "Armed Dragon LV7", "Gragonith, Lightsworn Dragon", "The Creator Incarnate", "Fusilier Dragon, the Dual-Mode Beast", "Lyla, Lightsworn Sorceress" , "The Creator", "Ojama King", "Prime Material Dragon", "Predaplant Chlamydosundew", "Doom Dozer", "Predaplant Spinodionaea", "Gishki Abyss", "Predaplant Squid Drosera", "Gigaplant", "Aurkus, Lightsworn Druid", "Naturia Cliff", "Dragon Master Knight", "Greedy Venom Fusion Dragon", "Predaplant Drosophyllum Hydra", "Gishki Zielgigas", "Earthquake Giant", "Degen-Force", "Skelesaurus", "Spyder Spider", "Five-Headed Dragon", "Ojama Knight", "Evigishki Mind Augus", "Evigishki Gustkraken", "The Dark Creator", "Raiden, Hand of the Lightsworn", "Grasschopper", "Preparation of Rites", "Jurassic World", "Shadow Toon", "Toon Briefcase", "Destiny HERO - Dystopia", "Predaplant Moray Nepenthes", "Pre-Preparation of Rites", "Thousand-Eyes Restrict", "Mark of the Rose", "Miracle Fertilizer", "Predaponics"};
 		int countTemp = 0;
 		for (String string : temp)
@@ -108,8 +109,8 @@ public class main
 			else { System.out.print(card.getName() + "', '"); uniqueCardCount++; }
 		}
 		System.out.print("]\n" + uniqueCardCount);
+		*/
 		
-		/*
 		ArrayList<Card> allCardsNoDupes = listMaker(allCards);
 		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
 		for (Card card : allCardsNoDupes)
@@ -123,6 +124,7 @@ public class main
 			{
 				System.out.println("6: " + card.getName() + " - " + card.getRarity());
 			}
+			*/
 			
 			switch (card.getRarity())
 			{
