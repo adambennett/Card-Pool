@@ -185,26 +185,32 @@ public class CardPool_GUI_1_Stable {
 		JMenu mnBanGrouping = new JMenu("Ban: Grouping");
 		JMenuItem AncientGear = new JMenuItem("Ancient Gear");
 		JMenuItem Archfiend = new JMenuItem("Archfiend");
+		JMenuItem Aroma = new JMenuItem("Aroma");
 		JMenuItem Crashbug = new JMenuItem("Crashbug");
 		JMenuItem Destiny = new JMenuItem("Destiny Hero");
 		JMenuItem Elemental = new JMenuItem("Elemental Hero");
 		JMenuItem Exodia = new JMenuItem("Exodia");
 		JMenuItem Fissure = new JMenuItem("Fissure");
 		JMenuItem Flip = new JMenuItem("Flip");
+		JMenuItem Galaxy = new JMenuItem("Galaxy");
 		JMenuItem Gishki = new JMenuItem("Gishki");
 		JMenuItem God = new JMenuItem("God");
 		JMenuItem Harpies = new JMenuItem("Harpies");
 		JMenuItem Hazy = new JMenuItem("Hazy");
+		JMenuItem HeroicChallenger = new JMenuItem("Heroic Challenger");
 		JMenuItem LV = new JMenuItem("LV");
 		JMenuItem Lightsworn = new JMenuItem("Lightsworn");
 		JMenuItem Magnet = new JMenuItem("Magnet Warriors");
 		JMenuItem Monarchs = new JMenuItem("Monarchs");
 		JMenuItem Naturia = new JMenuItem("Naturia");
+		JMenuItem Nekroz = new JMenuItem("Nekroz");
 		JMenuItem Ojama = new JMenuItem("Ojama");
+		JMenuItem Predaplant = new JMenuItem("Predaplant");
 		JMenuItem SuperHeavy = new JMenuItem("Superheavy Samurai");
 		JMenuItem Creator = new JMenuItem("The Creator");
 		JMenuItem Toon = new JMenuItem("Toon");
 		JMenuItem TrapHole = new JMenuItem("Trap Hole");
+		JMenuItem Vampire = new JMenuItem("Vampire");
 		JMenuItem Volcanic = new JMenuItem("Volcanic");
 		JMenuItem Fusion = new JMenuItem("Fusion");
 		JMenuItem Ritual = new JMenuItem("Ritual");
@@ -291,17 +297,22 @@ public class CardPool_GUI_1_Stable {
 		mnBanAll.add(commonBanner); mnBan.add(reset);
 
 		mnBanGrouping.add(AncientGear); mnBanGrouping.add(Archfiend);
+		mnBanGrouping.add(Aroma);
 		mnBanGrouping.add(Crashbug); mnBanGrouping.add(Destiny);
 		mnBanGrouping.add(Elemental); mnBanGrouping.add(Exodia);
 		mnBanGrouping.add(Fissure); mnBanGrouping.add(Flip);
+		mnBanGrouping.add(Galaxy);
 		mnBanGrouping.add(Gishki); mnBanGrouping.add(God);
 		mnBanGrouping.add(Harpies); mnBanGrouping.add(Hazy);
+		mnBanGrouping.add(HeroicChallenger);
 		mnBanGrouping.add(LV); mnBanGrouping.add(Lightsworn);
 		mnBanGrouping.add(Magnet); mnBanGrouping.add(Monarchs); 
-		mnBanGrouping.add(Naturia); mnBanGrouping.add(Ojama);
+		mnBanGrouping.add(Naturia); mnBanGrouping.add(Nekroz);
+		mnBanGrouping.add(Ojama); mnBanGrouping.add(Predaplant);
 		mnBanGrouping.add(SuperHeavy); mnBanGrouping.add(Creator);
 		mnBanGrouping.add(Toon); mnBanGrouping.add(TrapHole);
-		mnBanGrouping.add(Volcanic); mnBanGrouping.add(Fusion);
+		mnBanGrouping.add(Volcanic); mnBanGrouping.add(Vampire);
+		mnBanGrouping.add(Fusion);
 		mnBanGrouping.add(Ritual); mnBanGrouping.add(Draw); 
 		mnBanGrouping.add(Discard); mnBanGrouping.add(EasySummon);
 		mnBanGrouping.add(Limited); mnBanGrouping.add(SemiLimited);
@@ -329,17 +340,16 @@ public class CardPool_GUI_1_Stable {
 		mnBanScore.add(veryHighScore); mnBanScore.add(OP);
 
 		// Grey out ban buttons that currently ban 0 cards
-		Divine.setEnabled(false); Psychic.setEnabled(false);
-		Wyrm.setEnabled(false); Creator.setEnabled(false);
-		Gishki.setEnabled(false); Hazy.setEnabled(false);
-		Volcanic.setEnabled(false); Ojama.setEnabled(false);
-		Magnet.setEnabled(false); God.setEnabled(false);
-		AncientGear.setEnabled(false);
+		Psychic.setEnabled(false);
+		Wyrm.setEnabled(false); 
+		Hazy.setEnabled(false);
+		Volcanic.setEnabled(false); 
+		
 
 		blackListenerInit(blacklist, allCards, blackListed, banned, dumbThing, banModel, lblCardCount, lblUniqueCards, DraftInit, mntmUltraRares, mntmSuperRares, mntmRares,
-				mntmCommon, ultimateBanner, ultraBanner, superBanner, rareBanner, commonBanner, mntmNewMenuItem, Monarchs, Fissure, TrapHole, Exodia, Water, Naturia,
+				mntmCommon, ultimateBanner, ultraBanner, superBanner, rareBanner, commonBanner, mntmNewMenuItem, Monarchs, Fissure, TrapHole, Exodia, Water, Naturia, Nekroz,
 				Toon, Draw, Ritual, Fusion, LowAtk, Limited, SemiLimited, HighAtk, LowLvl, HighLvl, reset, backupAllCards, allCardsNopeDupe, Light, Dark, Wind, Fire, Earth,
-				AncientGear, Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, SuperHeavy, Creator, Volcanic,
+				AncientGear, Archfiend, Aroma, Crashbug, Destiny, Elemental, Flip, Galaxy, Gishki, God, Harpies, Hazy, HeroicChallenger, LV, Lightsworn, Magnet, Ojama, Predaplant, SuperHeavy, Creator, Vampire, Volcanic,
 				Discard, EasySummon, Aqua, Beast, BeastWarrior, Dinosaur, Divine, Dragon, Fairy, Fiend, Fish, Insect, Machine, Plant, Psychic, Pyro, Reptile, Rock, SeaSerpent, 
 				Spellcaster, Thunder, Warrior, WingedBeast, Wyrm, Zombie, Spell, Trap, Contin, ContinSpell, ContinTrap, Field, Quickplay, Equip, Counter, lowScore, medScore,
 				highScore, veryHighScore, OP);
@@ -1042,6 +1052,7 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.getContentPane().add(viewStats);
 									finalFrame.getContentPane().add(send);
 									finalFrame.getContentPane().add(sendTo);
+									finalFrame.setTitle("Draft Complete");
 									finalFrame.setResizable(false);
 
 									finalFrame.pack();
@@ -1633,6 +1644,7 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.getContentPane().add(viewStats);
 									finalFrame.getContentPane().add(send);
 									finalFrame.getContentPane().add(sendTo);
+									finalFrame.setTitle("Draft Complete");
 									finalFrame.setResizable(false);
 
 									finalFrame.pack();
@@ -2223,6 +2235,7 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.getContentPane().add(viewStats);
 									finalFrame.getContentPane().add(send);
 									finalFrame.getContentPane().add(sendTo);
+									finalFrame.setTitle("Draft Complete");
 									finalFrame.setResizable(false);
 
 									finalFrame.pack();
@@ -3713,11 +3726,11 @@ public class CardPool_GUI_1_Stable {
 			while (rolling)
 			{
 				int seed = oneKDie();
-				if ((seed < 850) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 								// 85% chance at common				
-				else if ((seed >= 850 && seed < 925) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }				// 7.5% chance at rare
-				else if ((seed >= 925 && seed < 980) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }			// 5.5% chance at super rare
-				else if ((seed >= 980 && seed < 995) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }				// 1.5% chance at ultra rare
-				else if ((seed >= 995 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 0.5% chance at ultimate rare
+				if ((seed < 790) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 								// 79% chance at common				
+				else if ((seed >= 790 && seed < 893) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }				// 10.3% chance at rare
+				else if ((seed >= 893 && seed < 970) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }			// 7.7% chance at super rare
+				else if ((seed >= 970 && seed < 993) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }				// 2.3% chance at ultra rare
+				else if ((seed >= 993 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 0.7% chance at ultimate rare
 				// Backup
 				else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
 			}
@@ -3746,11 +3759,11 @@ public class CardPool_GUI_1_Stable {
 			while (rolling)
 			{
 				int seed = oneKDie();
-				if ((seed < 850) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
-				else if ((seed >= 850 && seed < 925) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
-				else if ((seed >= 925 && seed < 980) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
-				else if ((seed >= 980 && seed < 995) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
-				else if ((seed >= 995 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
+				if ((seed < 790) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
+				else if ((seed >= 790 && seed < 893) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
+				else if ((seed >= 893 && seed < 970) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
+				else if ((seed >= 970 && seed < 993) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
+				else if ((seed >= 993 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
 				// Backup
 				else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
 			}
@@ -5606,7 +5619,7 @@ public class CardPool_GUI_1_Stable {
 			JMenuItem Ritual, JMenuItem Fusion, JMenuItem LowAtk, JMenuItem Limited, JMenuItem SemiLimited, JMenuItem HighAtk, JMenuItem LowLvl, JMenuItem HighLvl,
 			JMenuItem AncientGear, JMenuItem Archfiend, JMenuItem Crashbug, JMenuItem Destiny, JMenuItem Elemental,
 			JMenuItem Flip, JMenuItem Gishki, JMenuItem God, JMenuItem Harpies, JMenuItem Hazy, JMenuItem LV,
-			JMenuItem Lightsworn, JMenuItem Magnet, JMenuItem Ojama, JMenuItem SuperHeavy, JMenuItem Creator, JMenuItem Volcanic,
+			JMenuItem Lightsworn, JMenuItem Magnet, JMenuItem Ojama, JMenuItem Predaplant, JMenuItem SuperHeavy, JMenuItem Creator, JMenuItem Volcanic,
 			JMenuItem Discard, JMenuItem EasySummon)
 	{
 		Monarchs.addActionListener(new ActionListener() 
@@ -6928,6 +6941,45 @@ public class CardPool_GUI_1_Stable {
 				}
 
 				EasySummon.setEnabled(false);
+				int totalCards2 = cardCount(allCards);
+				lblCardCount.setText("Cards Available: " + totalCards2);
+				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
+				int totalUnique = allCardsNopeDupe.size();
+				lblUniqueCards.setText("Unique Cards: " + totalUnique);
+				DraftInit.revalidate(); DraftInit.repaint(); 
+			}
+		});
+		
+		Predaplant.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				boolean checker = false;
+				for (int a = 0; a < allCards.size(); a++)
+				{
+					if (allCards.get(a).getSynergies().contains("predaplant")) 
+					{				
+						for (int bm = 0; bm < banModel.getSize(); bm++)
+						{
+							if (allCards.get(a).getName().equals(banModel.getCardAt(bm).getName())) 
+							{
+								checker = true; 
+							}
+						}
+
+						if (checker == false) 
+						{ 
+							int howMany = howManyCards(allCards, allCards.get(a));
+							Card temp = new Card(allCards.get(a), howMany); 
+							banModel.addElement(temp); 
+						}
+						allCards.remove(a);
+						a = 0;
+						checker = false;
+					}
+				}
+
+				Predaplant.setEnabled(false);
 				int totalCards2 = cardCount(allCards);
 				lblCardCount.setText("Cards Available: " + totalCards2);
 				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
@@ -11861,11 +11913,11 @@ public class CardPool_GUI_1_Stable {
 			JList<Card> banned, ArrayList<String> dumbThing, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit,
 			JMenuItem mntmUltraRares, JMenuItem mntmSuperRares, JMenuItem mntmRares, JMenuItem mntmCommon, JMenuItem ultimateBanner, JMenuItem ultraBanner,
 			JMenuItem superBanner, JMenuItem rareBanner, JMenuItem commonBanner, JMenuItem mntmNewMenuItem, JMenuItem Monarchs, JMenuItem Fissure, JMenuItem TrapHole, 
-			JMenuItem Exodia, JMenuItem Water, JMenuItem Naturia, JMenuItem Toon, JMenuItem Draw, JMenuItem Ritual, JMenuItem Fusion, JMenuItem LowAtk, JMenuItem Limited,
+			JMenuItem Exodia, JMenuItem Water, JMenuItem Naturia, JMenuItem Nekroz, JMenuItem Toon, JMenuItem Draw, JMenuItem Ritual, JMenuItem Fusion, JMenuItem LowAtk, JMenuItem Limited,
 			JMenuItem SemiLimited, JMenuItem HighAtk, JMenuItem LowLvl, JMenuItem HighLvl, JMenuItem reset, ArrayList<Card> backupAllCards, ArrayList<Card> allCardsNopeDupe,
-			JMenuItem Light, JMenuItem Dark, JMenuItem Wind, JMenuItem Fire, JMenuItem Earth, JMenuItem AncientGear, JMenuItem Archfiend, JMenuItem Crashbug, JMenuItem Destiny,
-			JMenuItem Elemental, JMenuItem Flip, JMenuItem Gishki, JMenuItem God, JMenuItem Harpies, JMenuItem Hazy, JMenuItem LV, JMenuItem Lightsworn, JMenuItem Magnet,
-			JMenuItem Ojama, JMenuItem SuperHeavy, JMenuItem Creator, JMenuItem Volcanic, JMenuItem Discard, JMenuItem EasySummon, JMenuItem Aqua,
+			JMenuItem Light, JMenuItem Dark, JMenuItem Wind, JMenuItem Fire, JMenuItem Earth, JMenuItem AncientGear, JMenuItem Archfiend, JMenuItem Aroma, JMenuItem Crashbug, JMenuItem Destiny,
+			JMenuItem Elemental, JMenuItem Flip, JMenuItem Galaxy, JMenuItem Gishki, JMenuItem God, JMenuItem Harpies, JMenuItem Hazy, JMenuItem HeroicChallenger, JMenuItem LV, JMenuItem Lightsworn, JMenuItem Magnet,
+			JMenuItem Ojama, JMenuItem Predaplant, JMenuItem SuperHeavy, JMenuItem Creator, JMenuItem Vampire, JMenuItem Volcanic, JMenuItem Discard, JMenuItem EasySummon, JMenuItem Aqua,
 			JMenuItem Beast, JMenuItem BeastWarrior, JMenuItem Dinosaur, JMenuItem Divine, JMenuItem Dragon, JMenuItem Fairy, JMenuItem Fiend, JMenuItem Fish, JMenuItem Insect,
 			JMenuItem Machine, JMenuItem Plant, JMenuItem Psychic, JMenuItem Pyro, JMenuItem Reptile, JMenuItem Rock, JMenuItem SeaSerpent, JMenuItem Spellcaster,
 			JMenuItem Thunder, JMenuItem Warrior, JMenuItem WingedBeast, JMenuItem Wyrm, JMenuItem Zombie, JMenuItem Spell, JMenuItem Trap, JMenuItem Contin, JMenuItem ContinSpell,
@@ -12449,12 +12501,15 @@ public class CardPool_GUI_1_Stable {
 				Ritual.setEnabled(true); Fusion.setEnabled(true);
 				Wind.setEnabled(true); Dark.setEnabled(true);
 				Light.setEnabled(true); Fire.setEnabled(true); Earth.setEnabled(true);
-				AncientGear.setEnabled(true); Archfiend.setEnabled(true);
+				AncientGear.setEnabled(true); Archfiend.setEnabled(true); Aroma.setEnabled(true);
 				Crashbug.setEnabled(true); Destiny.setEnabled(true); Elemental.setEnabled(true);
-				Flip.setEnabled(true); Gishki.setEnabled(true); God.setEnabled(true);
-				Harpies.setEnabled(true); Hazy.setEnabled(true); LV.setEnabled(true);
+				Flip.setEnabled(true); Galaxy.setEnabled(true); Gishki.setEnabled(true); God.setEnabled(true);
+				Harpies.setEnabled(true); Hazy.setEnabled(true); HeroicChallenger.setEnabled(true);
+				LV.setEnabled(true);
 				Lightsworn.setEnabled(true); Magnet.setEnabled(true); Ojama.setEnabled(true);
-				SuperHeavy.setEnabled(true); Creator.setEnabled(true); Volcanic.setEnabled(true);
+				Predaplant.setEnabled(true); Nekroz.setEnabled(true);
+				SuperHeavy.setEnabled(true); Creator.setEnabled(true); Vampire.setEnabled(true);
+				Volcanic.setEnabled(true);
 				Discard.setEnabled(true); EasySummon.setEnabled(true); Aqua.setEnabled(true);
 				Beast.setEnabled(true); BeastWarrior.setEnabled(true); Dinosaur.setEnabled(true);
 				Divine.setEnabled(true); Dragon.setEnabled(true); Fairy.setEnabled(true);
@@ -12477,8 +12532,8 @@ public class CardPool_GUI_1_Stable {
 		// end reset listener
 
 		banGroupListenerInit(allCards, DraftInit, banModel, lblCardCount, lblUniqueCards, Monarchs, Fissure, TrapHole,  Exodia,  
-				Naturia,  Toon,  Draw, Ritual,  Fusion,  LowAtk,  Limited, SemiLimited,  HighAtk,  LowLvl,  HighLvl, AncientGear, 
-				Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, SuperHeavy,
+				Naturia, Toon,  Draw, Ritual,  Fusion,  LowAtk,  Limited, SemiLimited,  HighAtk,  LowLvl,  HighLvl, AncientGear, 
+				Archfiend, Crashbug, Destiny, Elemental, Flip, Gishki, God, Harpies, Hazy, LV, Lightsworn, Magnet, Ojama, Predaplant, SuperHeavy,
 				Creator, Volcanic, Discard, EasySummon);	
 
 		banAttributeListenerInit(allCards, banModel, lblCardCount, lblUniqueCards, DraftInit, Water, Fire, Wind, Light, Earth, Dark);
@@ -12732,7 +12787,7 @@ public class CardPool_GUI_1_Stable {
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				String msg = mailMessage(fullDeck);
+				refreshList(fullDeck);
 				scrollPane.setMinimumSize(spDim);
 				scrollPane.setMaximumSize(spDim);
 				scrollPane.setViewportView(dynamicList2);
