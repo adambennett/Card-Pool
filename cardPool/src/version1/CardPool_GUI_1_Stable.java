@@ -142,7 +142,7 @@ public class CardPool_GUI_1_Stable {
 		DraftInit = new JFrame();	
 		DraftInit.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 		DraftInit.setBounds(600, 600, 275, 200);
-		DraftInit.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		DraftInit.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		DraftInit.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		DraftInit.setTitle("Draft Options");
 		
@@ -166,13 +166,13 @@ public class CardPool_GUI_1_Stable {
 		JButton draftStart = new JButton("Start Draft"); 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu mnViewDatabase = new JMenu("Database");
+		mnViewDatabase.setToolTipText("View cards that exist within the overall draft pool");
 		JMenuItem mntmViewAllCards = new JMenuItem("View all cards");
 		JMenuItem mntmNewMenuItem = new JMenuItem("Ultimate Rare");
 		JMenuItem mntmUltraRares = new JMenuItem("Ultra Rare");
 		JMenuItem mntmSuperRares = new JMenuItem("Super Rare");
 		JMenuItem mntmRares = new JMenuItem("Rare");
 		JMenuItem mntmCommon = new JMenuItem("Common");
-		JMenuItem cardViewer = new JMenuItem("Card Viewer");
 		JMenu mnBan = new JMenu("Ban Menu");
 		JMenuItem blacklist = new JMenuItem("Ban Cards");
 		JMenuItem reset = new JMenuItem("Reset Pool");
@@ -297,21 +297,26 @@ public class CardPool_GUI_1_Stable {
 		mnBanAll.add(commonBanner); mnBan.add(reset);
 
 		mnBanGrouping.add(AncientGear); mnBanGrouping.add(Archfiend);
-		mnBanGrouping.add(Aroma);
+		//mnBanGrouping.add(Aroma);
 		mnBanGrouping.add(Crashbug); mnBanGrouping.add(Destiny);
 		mnBanGrouping.add(Elemental); mnBanGrouping.add(Exodia);
 		mnBanGrouping.add(Fissure); mnBanGrouping.add(Flip);
-		mnBanGrouping.add(Galaxy);
+		//mnBanGrouping.add(Galaxy);
 		mnBanGrouping.add(Gishki); mnBanGrouping.add(God);
-		mnBanGrouping.add(Harpies); mnBanGrouping.add(Hazy);
-		mnBanGrouping.add(HeroicChallenger);
+		mnBanGrouping.add(Harpies); 
+		//mnBanGrouping.add(Hazy);
+		//mnBanGrouping.add(HeroicChallenger);
 		mnBanGrouping.add(LV); mnBanGrouping.add(Lightsworn);
 		mnBanGrouping.add(Magnet); mnBanGrouping.add(Monarchs); 
-		mnBanGrouping.add(Naturia); mnBanGrouping.add(Nekroz);
+		mnBanGrouping.add(Naturia);
+		//mnBanGrouping.add(Nekroz);
 		mnBanGrouping.add(Ojama); mnBanGrouping.add(Predaplant);
-		mnBanGrouping.add(SuperHeavy); mnBanGrouping.add(Creator);
-		mnBanGrouping.add(Toon); mnBanGrouping.add(TrapHole);
-		mnBanGrouping.add(Volcanic); mnBanGrouping.add(Vampire);
+		mnBanGrouping.add(SuperHeavy); 
+		//mnBanGrouping.add(Creator);
+		mnBanGrouping.add(Toon); 
+		mnBanGrouping.add(TrapHole);
+		//mnBanGrouping.add(Volcanic); 
+		//mnBanGrouping.add(Vampire);
 		mnBanGrouping.add(Fusion);
 		mnBanGrouping.add(Ritual); mnBanGrouping.add(Draw); 
 		mnBanGrouping.add(Discard); mnBanGrouping.add(EasySummon);
@@ -341,9 +346,6 @@ public class CardPool_GUI_1_Stable {
 
 		// Grey out ban buttons that currently ban 0 cards
 		Psychic.setEnabled(false);
-		Wyrm.setEnabled(false); 
-		Hazy.setEnabled(false);
-		Volcanic.setEnabled(false); 
 		
 
 		blackListenerInit(blacklist, allCards, blackListed, banned, dumbThing, banModel, lblCardCount, lblUniqueCards, DraftInit, mntmUltraRares, mntmSuperRares, mntmRares,
@@ -386,6 +388,8 @@ public class CardPool_GUI_1_Stable {
 				
 				JButton viewDeck = new JButton("View Deck");
 				JButton reroll = new JButton("Reroll " + "(" + rerollsLocal + ")"); if (rerollsLocal == 0) { reroll.setEnabled(false); }
+				reroll.setToolTipText("<html>Discard these three cards from your pool.<br>(This does not count as a pick.)");
+				viewDeck.setToolTipText("<html>View your current deck.");
 
 				// Change pool fill based on selection made in primary window
 				String fillStyleString = fillStyle.getSelectedItem().toString();
@@ -2322,15 +2326,12 @@ public class CardPool_GUI_1_Stable {
 						cardViewLocal.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						cardViewLocal.setResizable(false);
 						cardViewLocal.setAlwaysOnTop(true);
-						//ArrayList<Card >allCardsNoDupes = listMaker(drafted);
 						DefaultListModel viewDeckModel = new DefaultListModel();
-						listEntryMaker(drafted, viewDeckModel);
-						//JList list = new JList(allCardsNoDupes.toArray());
-						//JList list = new JList(viewDeckModel);
-						//list.setCellRenderer(new ListEntryCellRenderer());
+						if (drafted.size() > 0) { listEntryMaker(drafted, viewDeckModel); }
 						dynamicList2 = new JList(viewDeckModel);
 						dynamicList2.setCellRenderer(new ListEntryCellRenderer());
 						
+						// Uhhhh yeah this should be a switch
 						ArrayList<Card> AquaCards = new ArrayList<Card>();
 						for (Card card : drafted) { if (card.getType().equals("Aqua")) { AquaCards.add(card); } }
 						
@@ -2678,6 +2679,7 @@ public class CardPool_GUI_1_Stable {
 								{
 									dynamicCard = dynamicList2.getSelectedValue().getCard();									
 									singleCardView = new JFrame();
+									singleCardView.setTitle(dynamicCard.getName());
 									singleCardView.setAlwaysOnTop(true);
 									JPanel panel = new JPanel();
 									boolean smallImage = false;
@@ -2783,8 +2785,8 @@ public class CardPool_GUI_1_Stable {
 								if (e.getClickCount() == 2) 
 								{    		
 									dynamicCard = dynamicList2.getSelectedValue().getCard();
-									//dynamicCard = (Card) dynamicList.getSelectedValue();
 									singleCardView = new JFrame();		
+									singleCardView.setTitle(dynamicCard.getName());
 									singleCardView.setAlwaysOnTop(true);
 									JPanel panel = new JPanel();
 									boolean smallImage = false;
@@ -3726,11 +3728,11 @@ public class CardPool_GUI_1_Stable {
 			while (rolling)
 			{
 				int seed = oneKDie();
-				if ((seed < 785) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 								// 78.5% chance at common				
-				else if ((seed >= 785 && seed < 889) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }				// 10.4% chance at rare
-				else if ((seed >= 889 && seed < 966) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }			// 7.7% chance at super rare
-				else if ((seed >= 966 && seed < 993) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }				// 2.7% chance at ultra rare
-				else if ((seed >= 993 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 0.7% chance at ultimate rare
+				if ((seed < 726) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 								// 72.6% chance at common				
+				else if ((seed >= 726 && seed < 910) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }				// 18.4% chance at rare
+				else if ((seed >= 910 && seed < 972) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }			// 6.2% chance at super rare
+				else if ((seed >= 972 && seed < 996) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }				// 2.4% chance at ultra rare
+				else if ((seed >= 996 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 0.4% chance at ultimate rare
 				// Backup
 				else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
 			}
@@ -3759,11 +3761,11 @@ public class CardPool_GUI_1_Stable {
 			while (rolling)
 			{
 				int seed = oneKDie();
-				if ((seed < 785) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
-				else if ((seed >= 785 && seed < 889) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
-				else if ((seed >= 889 && seed < 966) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
-				else if ((seed >= 966 && seed < 993) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
-				else if ((seed >= 993 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
+				if ((seed < 726) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
+				else if ((seed >= 726 && seed < 910) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
+				else if ((seed >= 910 && seed < 972) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
+				else if ((seed >= 972 && seed < 996) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
+				else if ((seed >= 996 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
 				// Backup
 				else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
 			}
@@ -12514,16 +12516,16 @@ public class CardPool_GUI_1_Stable {
 				Beast.setEnabled(true); BeastWarrior.setEnabled(true); Dinosaur.setEnabled(true);
 				Divine.setEnabled(true); Dragon.setEnabled(true); Fairy.setEnabled(true);
 				Fiend.setEnabled(true); Fish.setEnabled(true); Insect.setEnabled(true);
-				Machine.setEnabled(true); Plant.setEnabled(true); Psychic.setEnabled(true);
+				Machine.setEnabled(true); Plant.setEnabled(true); 
+				//Psychic.setEnabled(true);
 				Pyro.setEnabled(true); Reptile.setEnabled(true); Rock.setEnabled(true);
 				SeaSerpent.setEnabled(true); Spellcaster.setEnabled(true); Thunder.setEnabled(true);
 				Warrior.setEnabled(true); WingedBeast.setEnabled(true); Wyrm.setEnabled(true);
 				Zombie.setEnabled(true);  Spell.setEnabled(true); Trap.setEnabled(true);
 				ContinSpell.setEnabled(true); ContinTrap.setEnabled(true); Contin.setEnabled(true);
 				Quickplay.setEnabled(true); Field.setEnabled(true); Equip.setEnabled(true);
-				Counter.setEnabled(true); /*lowScore.setEnabled(true); medScore.setEnabled(true);
+				Counter.setEnabled(true); lowScore.setEnabled(true); medScore.setEnabled(true);
 				highScore.setEnabled(true); veryHighScore.setEnabled(true); OP.setEnabled(true);
-				 */
 				int totalCards2 = cardCount(allCards); lblCardCount.setText("Cards Available: " + totalCards2);
 				int totalUnique = allCardsNopeDupe.size(); lblUniqueCards.setText("Unique Cards: " + totalUnique);
 				DraftInit.revalidate(); DraftInit.repaint();
