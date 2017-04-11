@@ -50,6 +50,11 @@ public class main
 
 		readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards);		
 		
+		ArrayList<Card> discovered = discoverSpell(allCards);
+		for (int i = 0; i < 3; i++)
+		{
+			System.out.println("Spell #" + (i + 1) + ": " + discovered.get(i));
+		}
 		
 		// Prints out a nice list of cards that need text that can be dumped into ParseHub
 		/*
@@ -101,7 +106,7 @@ public class main
 		}
 		*/
 		
-	
+		/*
 		int uniqueCardCount = 0;
 		ArrayList<Card> allCardsNoDupes = listMaker(allCards);
 		System.out.print("'");
@@ -127,7 +132,7 @@ public class main
 				System.out.println("6: " + card.getName() + " - " + card.getRarity());
 			}
 			*/
-			
+			/*
 			switch (card.getRarity())
 			{
 				case "Ultimate Rare":
@@ -151,6 +156,7 @@ public class main
 		System.out.println("Super Rare: " + supers);
 		System.out.println("Rares " + rares);
 		System.out.println("Commons: " + commons);
+		*/
 		
 		/*
 		int totalCards = cardCount(allCards);	
@@ -1743,6 +1749,43 @@ public class main
 		}
 
 		return temp;
+	}
+	
+	public static ArrayList<Card> discoverSpell(ArrayList<Card> pool)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getCardType().equals("Spell"))
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
 	}
 }
  // END Class

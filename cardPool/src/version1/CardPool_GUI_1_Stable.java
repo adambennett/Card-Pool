@@ -53,9 +53,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+
+
 
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 
@@ -68,6 +69,8 @@ public class CardPool_GUI_1_Stable {
 	private int rerollsSoFar = 0;
 	private int pickNumber = 1;
 	private int playerDrafting = 0;
+	private int cardsToDraftLocal;
+	private int rerollsLocal;
 	private static int avgScore = 0;
 	private static Card dynamicCard = new Card("init");
 	private ArrayList<Card> drafted = new ArrayList<Card>();
@@ -75,6 +78,42 @@ public class CardPool_GUI_1_Stable {
 	private static JList<Card> dynamicList = new JList<Card>();
 	private static JList<ListEntry> dynamicList2 = new JList<ListEntry>();
 	private static DefaultListModel<Card> dynamicModel1 = new DefaultListModel<Card>();
+	private ImageIcon aquaI = new ImageIcon("src/images/Type - Aqua.png"); 
+	private ImageIcon beastI = new ImageIcon("src/images/Type - Beast.png"); 
+	private ImageIcon beastWarriorI = new ImageIcon("src/images/Type - Beast-Warrior.png"); 
+	private ImageIcon dinosaurI = new ImageIcon("src/images/Type - Dinosaur.png"); 
+	private ImageIcon divineI = new ImageIcon("src/images/Type - Divine-Beast.png"); 
+	private ImageIcon dragonI = new ImageIcon("src/images/Type - Dragon.png");
+	private ImageIcon fairyI = new ImageIcon("src/images/Type - Fairy.png"); 
+	private ImageIcon fiendI = new ImageIcon("src/images/Type - Fiend.png");
+	private ImageIcon fishI = new ImageIcon("src/images/Type - Fish.png"); 
+	private ImageIcon insectI = new ImageIcon("src/images/Type - Insect.png"); 
+	private ImageIcon machineI = new ImageIcon("src/images/Type - Machine.png"); 
+	private ImageIcon plantI = new ImageIcon("src/images/Type - Plant.png"); 
+	private ImageIcon psychicI = new ImageIcon("src/images/Type - Psychic.png"); 
+	private ImageIcon pyroI = new ImageIcon("src/images/Type - pyro.png"); 
+	private ImageIcon reptileI = new ImageIcon("src/images/Type - reptile.png");
+	private ImageIcon rockI = new ImageIcon("src/images/Type - rock.png");
+	private ImageIcon seaSerpentI = new ImageIcon("src/images/Type - Sea Serpent.png"); 
+	private ImageIcon spellcasterI = new ImageIcon("src/images/Type - Spellcaster.png"); 
+	private ImageIcon thunderI = new ImageIcon("src/images/Type - Thunder.png");
+	private ImageIcon warriorI = new ImageIcon("src/images/Type - Warrior.png"); 
+	private ImageIcon wingedBeastI = new ImageIcon("src/images/Type - Winged Beast.png"); 
+	private ImageIcon zombieI = new ImageIcon("src/images/Type - Zombie.png"); 
+	private ImageIcon darkI = new ImageIcon("src/images/Attribute - Dark.png"); 
+	private ImageIcon fireI = new ImageIcon("src/images/Attribute - Fire.png"); 
+	private ImageIcon earthI = new ImageIcon("src/images/Attribute - Earth.png");
+	private ImageIcon lightI = new ImageIcon("src/images/Attribute - Light.png"); 
+	private ImageIcon waterI = new ImageIcon("src/images/Attribute - Water.png");
+	private ImageIcon windI = new ImageIcon("src/images/Attribute - Wind.png"); 
+	private ImageIcon monsterI = new ImageIcon("src/images/Level Under 4 Icons.png");
+	private ImageIcon oneSacI = new ImageIcon("src/images/Level 56 Icons.png"); 
+	private ImageIcon twoSacI = new ImageIcon("src/images/Level 7 Icons.png"); 
+	private ImageIcon spellI = new ImageIcon("src/images/Attribute - Spell.png");
+	private ImageIcon trapI = new ImageIcon("src/images/Attribute - Trap.png"); 
+	private ImageLabel score1I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); 
+	private ImageLabel score2I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); 
+	private ImageIcon refreshI = new ImageIcon("src/images/View - Reset.png"); 
 
 	// GUI Init Stuff
 	public static void main(String[] args) 
@@ -98,13 +137,14 @@ public class CardPool_GUI_1_Stable {
 	}
 	public CardPool_GUI_1_Stable() {
 		initialize();
+		
 	}
 	// End GUI Init Stuff
 
 
 
 	// MAIN
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initialize() 
 	{
 
@@ -367,9 +407,13 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.setTitle("Draft");
 				DraftInit.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 				// Final Draft Variable Init
+				if ((Integer)numberOfPlayers.getValue() > 3 && (Integer)cardsToDraft.getValue() > 120) { cardsToDraftLocal = 120; }
+				else if ((Integer)numberOfPlayers.getValue() > 5 && (Integer)cardsToDraft.getValue() > 50) { cardsToDraftLocal = 50; }
+				else { cardsToDraftLocal = (Integer) cardsToDraft.getValue(); }
 				int playerCountLocal = (Integer) numberOfPlayers.getValue();
-				int cardsToDraftLocal = (Integer) cardsToDraft.getValue();
-				int rerollsLocal = (Integer) rerolls.getValue();
+				rerollsLocal = (Integer) rerolls.getValue();
+				if ((Integer)numberOfPlayers.getValue() > 9 && (Integer)cardsToDraft.getValue() == 60 && rerollsLocal > 4 && fillStyle.getSelectedItem().toString().equals("Random")) { rerollsLocal = 4; }
+				else if ((Integer)numberOfPlayers.getValue() > 9 && (Integer)cardsToDraft.getValue() == 60 && rerollsLocal > 1 && !fillStyle.getSelectedItem().toString().equals("Random")) { rerollsLocal = 1; }
 				boolean urItem = mntmNewMenuItem.isEnabled();
 				boolean ulrItem = mntmUltraRares.isEnabled();
 				boolean srItem = mntmSuperRares.isEnabled();
@@ -388,7 +432,7 @@ public class CardPool_GUI_1_Stable {
 				
 				JButton viewDeck = new JButton("View Deck");
 				JButton reroll = new JButton("Reroll " + "(" + rerollsLocal + ")"); if (rerollsLocal == 0) { reroll.setEnabled(false); }
-				reroll.setToolTipText("<html>Discard these three cards from your pool.<br>(This does not count as a pick.)");
+				reroll.setToolTipText("<html>Discard these three cards from your pool.<br>Chances for Next 3 Cards:<br>Common - 80.1% (+7.5%)<br>Rare - 14.3% (-4.1%)<br>Super Rare - 3.8% (-1.4%)<br>Ultra Rare - 1.7% (-0.7%)<br>Ultimate Rare - 0.1% (-0.3%)");
 				viewDeck.setToolTipText("<html>View your current deck.");
 
 				// Change pool fill based on selection made in primary window
@@ -436,6 +480,7 @@ public class CardPool_GUI_1_Stable {
 				
 				// Setup the labels on the draft window
 				JLabel pickCounter = new JLabel("Pick " + pickNumber + "/" + cardsToDraftLocal);
+				pickCounter.setToolTipText("<html>Chances for Next 3 Cards:<br>Common - 72.6%<br>Rare - 18.4%<br>Super Rare - 6.2%<br>Ultra Rare - 2.4%<br>Ultimate Rare - 0.4%");
 				JLabel poolCardCount = new JLabel("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 				//JProgressBar poolSize = new JProgressBar(0, defPoolSize);
 				JLabel playerDraftLbl = new JLabel("Player " + (playerDrafting + 1));
@@ -527,6 +572,8 @@ public class CardPool_GUI_1_Stable {
 							pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 
 							poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
+							
+							if (draftPools.get(playerDrafting).size() < 35) { pickNumber = cardsToDraftLocal + 1; }
 
 							if (pickNumber > cardsToDraftLocal)
 							{
@@ -617,6 +664,7 @@ public class CardPool_GUI_1_Stable {
 									pickNumber = 1;
 									rerollsSoFar = 0;
 									reroll.setEnabled(true);
+									reroll.setText("Reroll " + "(" + rerollsLocal + ")");
 									drafted.clear();
 									removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
 									threeChoiceTemp = picks(draftPools.get(playerDrafting), drafted, 3);
@@ -658,7 +706,7 @@ public class CardPool_GUI_1_Stable {
 									JFrame finalFrame = new JFrame();
 									finalFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 									finalFrame.setBounds(100, 100, 496, 443);
-									finalFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									finalFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 									JButton viewDeckOf = new JButton("View Deck");
@@ -668,41 +716,67 @@ public class CardPool_GUI_1_Stable {
 									sendTo.setToolTipText("Send to this address");
 									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); Date date = new Date();
 									JComboBox playerDeck = new JComboBox();
+									JComboBox discoverOptions = new JComboBox();
+									discoverOptions.setModel(new DefaultComboBoxModel(new String[] {"Aqua", "Beast", "Board Control", "Card Draw", "Common", "Counter Trap", "Dark",
+											"Dinosaur", "Easy Summon", "Effect Monster", "Exodia", "Field Spell", "Fiend", "Flip Effect", "Fusion Monster", "Fusion or Ritual",
+											"Gadget", "Gishki", "Highly Rated", "Level 4 Effect Monster", "Level 4 Monster", "Level 4 Normal Monster", "Light", "Lightsworn",
+											"Monster", "No Tribute Monster", "Normal Monster", "One Tribute Effect Monster", "One Tribute Monster", "One Tribute Normal Monster",
+											"Plant", "Random", "Rare", "Ritual Monster", "Spell", "Spell or Trap", "Super Rare", "Toon", "Trap", "Two Tribute Effect Monster", 
+											"Two Tribute Monster", "Two Tribute Normal Monster", "Ultimate Rare", "Ultra Rare", "Unique", "Warrior", "Water", "Zombie"}));
+									JComboBox discoverLocation = new JComboBox();
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
 									{
 									case 1:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck"}));
 										break;
 									case 2:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck"}));
 										break;
 									case 3:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck"}));
 										break;
 									case 4:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck"}));
 										break;
 									case 5:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+												"Player 5 Deck"}));
 										break;
 									case 6:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+												"Player 5 Deck", "Player 6 Deck"}));
 										break;
 									case 7:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck"}));
 										break;
 									case 8:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck"}));
 										break;
 									case 9:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck"}));
 										break;
 									case 10:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck", "Player 10 Deck"}));
 										break;
 									default: 
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
+										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck", "Player 10 Deck"}));
 										break;
 									}
 
@@ -1056,6 +1130,8 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.getContentPane().add(viewStats);
 									finalFrame.getContentPane().add(send);
 									finalFrame.getContentPane().add(sendTo);
+									finalFrame.getContentPane().add(discoverOptions);
+									finalFrame.getContentPane().add(discoverLocation);
 									finalFrame.setTitle("Draft Complete");
 									finalFrame.setResizable(false);
 
@@ -1209,6 +1285,7 @@ public class CardPool_GUI_1_Stable {
 									pickNumber = 1;
 									rerollsSoFar = 0;
 									reroll.setEnabled(true);
+									reroll.setText("Reroll " + "(" + rerollsLocal + ")");
 									drafted.clear();
 									removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
 									threeChoiceTemp = picks(draftPools.get(playerDrafting), drafted, 3);
@@ -1250,7 +1327,7 @@ public class CardPool_GUI_1_Stable {
 									JFrame finalFrame = new JFrame();
 									finalFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 									finalFrame.setBounds(100, 100, 496, 443);
-									finalFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									finalFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 									JButton viewDeckOf = new JButton("View Deck");
@@ -1800,6 +1877,7 @@ public class CardPool_GUI_1_Stable {
 									pickNumber = 1;
 									rerollsSoFar = 0;
 									reroll.setEnabled(true);
+									reroll.setText("Reroll " + "(" + rerollsLocal + ")");
 									drafted.clear();
 									removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
 									threeChoiceTemp = picks(draftPools.get(playerDrafting), drafted, 3);
@@ -1841,7 +1919,7 @@ public class CardPool_GUI_1_Stable {
 									JFrame finalFrame = new JFrame();
 									finalFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
 									finalFrame.setBounds(100, 100, 496, 443);
-									finalFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+									finalFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 									JButton viewDeckOf = new JButton("View Deck");
@@ -2267,7 +2345,7 @@ public class CardPool_GUI_1_Stable {
 							draftPools.remove(threeChoiceTemp.get(0));
 							draftPools.remove(threeChoiceTemp.get(1));
 							draftPools.remove(threeChoiceTemp.get(2));
-							picksVoid(draftPools.get(playerDrafting), drafted, 3, threeChoiceTemp);
+							picksVoidReroll(draftPools.get(playerDrafting), drafted, 3, threeChoiceTemp);
 
 							ImageIcon coh2 = null;
 							if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh2 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
@@ -2330,8 +2408,7 @@ public class CardPool_GUI_1_Stable {
 						if (drafted.size() > 0) { listEntryMaker(drafted, viewDeckModel); }
 						dynamicList2 = new JList(viewDeckModel);
 						dynamicList2.setCellRenderer(new ListEntryCellRenderer());
-						
-						// Uhhhh yeah this should be a switch
+								
 						ArrayList<Card> AquaCards = new ArrayList<Card>();
 						for (Card card : drafted) { if (card.getType().equals("Aqua")) { AquaCards.add(card); } }
 						
@@ -2506,42 +2583,43 @@ public class CardPool_GUI_1_Stable {
 						JButton twoSacBtn = new JButton(); twoSacBtn.setBorder(BorderFactory.createEmptyBorder()); twoSacBtn.setContentAreaFilled(false);
 						JButton fullListBtn = new JButton(); fullListBtn.setBorder(BorderFactory.createEmptyBorder()); fullListBtn.setContentAreaFilled(false);
 						
-						ImageIcon aquaI = new ImageIcon("src/images/Type - Aqua.png"); aquaBtn.setToolTipText("Aqua"); aquaBtn.setIcon(aquaI);
-						ImageIcon beastI = new ImageIcon("src/images/Type - Beast.png"); beastBtn.setToolTipText("Beast"); beastBtn.setIcon(beastI);
-						ImageIcon beastWarriorI = new ImageIcon("src/images/Type - Beast-Warrior.png"); beastWarriorBtn.setToolTipText("Beast-Warrior"); beastWarriorBtn.setIcon(beastWarriorI);
-						ImageIcon dinosaurI = new ImageIcon("src/images/Type - Dinosaur.png"); dinosaurBtn.setToolTipText("Dinosaur"); dinosaurBtn.setIcon(dinosaurI);
-						ImageIcon divineI = new ImageIcon("src/images/Type - Divine-Beast.png"); divineBtn.setToolTipText("Divine"); divineBtn.setIcon(divineI);
-						ImageIcon dragonI = new ImageIcon("src/images/Type - Dragon.png"); dragonBtn.setToolTipText("Dragon"); dragonBtn.setIcon(dragonI);
-						ImageIcon fairyI = new ImageIcon("src/images/Type - Fairy.png"); fairyBtn.setToolTipText("Fairy"); fairyBtn.setIcon(fairyI);
-						ImageIcon fiendI = new ImageIcon("src/images/Type - Fiend.png"); fiendBtn.setToolTipText("Fiend"); fiendBtn.setIcon(fiendI);
-						ImageIcon fishI = new ImageIcon("src/images/Type - Fish.png"); fishBtn.setToolTipText("Fish"); fishBtn.setIcon(fishI);
-						ImageIcon insectI = new ImageIcon("src/images/Type - Insect.png"); insectBtn.setToolTipText("Insect"); insectBtn.setIcon(insectI);
-						ImageIcon machineI = new ImageIcon("src/images/Type - Machine.png"); machineBtn.setToolTipText("Machine"); machineBtn.setIcon(machineI);
-						ImageIcon plantI = new ImageIcon("src/images/Type - Plant.png"); plantBtn.setToolTipText("Plant"); plantBtn.setIcon(plantI);
-						ImageIcon psychicI = new ImageIcon("src/images/Type - Psychic.png"); psychicBtn.setToolTipText("Psychic"); psychicBtn.setIcon(psychicI);
-						ImageIcon pyroI = new ImageIcon("src/images/Type - pyro.png"); pyroBtn.setToolTipText("Pyro"); pyroBtn.setIcon(pyroI);
-						ImageIcon reptileI = new ImageIcon("src/images/Type - reptile.png"); reptileBtn.setToolTipText("Reptile"); reptileBtn.setIcon(reptileI);
-						ImageIcon rockI = new ImageIcon("src/images/Type - rock.png"); rockBtn.setToolTipText("Rock"); rockBtn.setIcon(rockI);
-						ImageIcon seaSerpentI = new ImageIcon("src/images/Type - Sea Serpent.png"); seaSerpentBtn.setToolTipText("Sea Serpent"); seaSerpentBtn.setIcon(seaSerpentI);
-						ImageIcon spellcasterI = new ImageIcon("src/images/Type - Spellcaster.png"); spellcasterBtn.setToolTipText("Spellcaster"); spellcasterBtn.setIcon(spellcasterI);
-						ImageIcon thunderI = new ImageIcon("src/images/Type - Thunder.png"); thunderBtn.setToolTipText("Thunder"); thunderBtn.setIcon(thunderI);
-						ImageIcon warriorI = new ImageIcon("src/images/Type - Warrior.png"); warriorBtn.setToolTipText("Warrior"); warriorBtn.setIcon(warriorI);
-						ImageIcon wingedBeastI = new ImageIcon("src/images/Type - Winged Beast.png"); wingedBeastBtn.setToolTipText("Winged Beast"); wingedBeastBtn.setIcon(wingedBeastI);
-						ImageIcon zombieI = new ImageIcon("src/images/Type - Zombie.png"); zombieBtn.setToolTipText("Zombie"); zombieBtn.setIcon(zombieI);
-						ImageIcon darkI = new ImageIcon("src/images/Attribute - Dark.png"); darkBtn.setToolTipText("Dark"); darkBtn.setIcon(darkI);
-						ImageIcon fireI = new ImageIcon("src/images/Attribute - Fire.png"); fireBtn.setToolTipText("Fire"); fireBtn.setIcon(fireI);
-						ImageIcon earthI = new ImageIcon("src/images/Attribute - Earth.png"); earthBtn.setToolTipText("Earth"); earthBtn.setIcon(earthI);
-						ImageIcon lightI = new ImageIcon("src/images/Attribute - Light.png"); lightBtn.setToolTipText("Light"); lightBtn.setIcon(lightI);
-						ImageIcon waterI = new ImageIcon("src/images/Attribute - Water.png"); waterBtn.setToolTipText("water"); waterBtn.setIcon(waterI);
-						ImageIcon windI = new ImageIcon("src/images/Attribute - Wind.png"); windBtn.setToolTipText("Wind"); windBtn.setIcon(windI);
-						ImageIcon monsterI = new ImageIcon("src/images/Level Under 4 Icons.png"); monsterBtn.setToolTipText("No Tribute"); monsterBtn.setIcon(monsterI);
-						ImageIcon oneSacI = new ImageIcon("src/images/Level 56 Icons.png"); oneSacBtn.setToolTipText("One Tribute"); oneSacBtn.setIcon(oneSacI);
-						ImageIcon twoSacI = new ImageIcon("src/images/Level 7 Icons.png"); twoSacBtn.setToolTipText("Two Tribute"); twoSacBtn.setIcon(twoSacI);
-						ImageIcon spellI = new ImageIcon("src/images/Attribute - Spell.png"); spellBtn.setToolTipText("Spell"); spellBtn.setIcon(spellI);
-						ImageIcon trapI = new ImageIcon("src/images/Attribute - Trap.png"); trapBtn.setToolTipText("Trap"); trapBtn.setIcon(trapI);
-						ImageLabel score1I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); score1I.setToolTipText("Total Deck Score");
-						ImageLabel score2I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); score2I.setToolTipText("Average Card Score");
-						ImageIcon refreshI = new ImageIcon("src/images/View - Reset.png"); fullListBtn.setToolTipText("Full Deck"); fullListBtn.setIcon(refreshI);
+						
+						aquaBtn.setToolTipText("Aqua"); aquaBtn.setIcon(aquaI);
+						beastBtn.setToolTipText("Beast"); beastBtn.setIcon(beastI);
+						beastWarriorBtn.setToolTipText("Beast-Warrior"); beastWarriorBtn.setIcon(beastWarriorI);
+						dinosaurBtn.setToolTipText("Dinosaur"); dinosaurBtn.setIcon(dinosaurI);
+						divineBtn.setToolTipText("Divine"); divineBtn.setIcon(divineI);
+						dragonBtn.setToolTipText("Dragon"); dragonBtn.setIcon(dragonI);
+						fairyBtn.setToolTipText("Fairy"); fairyBtn.setIcon(fairyI);
+						fiendBtn.setToolTipText("Fiend"); fiendBtn.setIcon(fiendI);
+						fishBtn.setToolTipText("Fish"); fishBtn.setIcon(fishI);
+						insectBtn.setToolTipText("Insect"); insectBtn.setIcon(insectI);
+						machineBtn.setToolTipText("Machine"); machineBtn.setIcon(machineI);
+						plantBtn.setToolTipText("Plant"); plantBtn.setIcon(plantI);
+						psychicBtn.setToolTipText("Psychic"); psychicBtn.setIcon(psychicI);
+						pyroBtn.setToolTipText("Pyro"); pyroBtn.setIcon(pyroI);
+						reptileBtn.setToolTipText("Reptile"); reptileBtn.setIcon(reptileI);
+						rockBtn.setToolTipText("Rock"); rockBtn.setIcon(rockI);
+						seaSerpentBtn.setToolTipText("Sea Serpent"); seaSerpentBtn.setIcon(seaSerpentI);
+						spellcasterBtn.setToolTipText("Spellcaster"); spellcasterBtn.setIcon(spellcasterI);
+						thunderBtn.setToolTipText("Thunder"); thunderBtn.setIcon(thunderI);
+						warriorBtn.setToolTipText("Warrior"); warriorBtn.setIcon(warriorI);
+						wingedBeastBtn.setToolTipText("Winged Beast"); wingedBeastBtn.setIcon(wingedBeastI);
+						zombieBtn.setToolTipText("Zombie"); zombieBtn.setIcon(zombieI);
+						darkBtn.setToolTipText("Dark"); darkBtn.setIcon(darkI);
+						fireBtn.setToolTipText("Fire"); fireBtn.setIcon(fireI);
+						earthBtn.setToolTipText("Earth"); earthBtn.setIcon(earthI);
+						lightBtn.setToolTipText("Light"); lightBtn.setIcon(lightI);
+						waterBtn.setToolTipText("water"); waterBtn.setIcon(waterI);
+						windBtn.setToolTipText("Wind"); windBtn.setIcon(windI);
+						monsterBtn.setToolTipText("No Tribute"); monsterBtn.setIcon(monsterI);
+						oneSacBtn.setToolTipText("One Tribute"); oneSacBtn.setIcon(oneSacI);
+						twoSacBtn.setToolTipText("Two Tribute"); twoSacBtn.setIcon(twoSacI);
+						spellBtn.setToolTipText("Spell"); spellBtn.setIcon(spellI);
+						trapBtn.setToolTipText("Trap"); trapBtn.setIcon(trapI);
+						score1I.setToolTipText("Total Deck Score");
+						score2I.setToolTipText("Average Card Score");
+						fullListBtn.setToolTipText("Full Deck"); fullListBtn.setIcon(refreshI);
 						
 						
 						JPanel panel = new JPanel();
@@ -2654,9 +2732,6 @@ public class CardPool_GUI_1_Stable {
 						toolTipCards(ZombieCards, zombieProgress);
 						
 						// Other
-						/*JProgressBar lowLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); lowLvlProgress.setValue(lowLvlCount); lowLvlProgress.setStringPainted(true);
-						lowLvlProgress.setString(String.valueOf(lowLvlCount));
-						toolTipCards(lowLvlCards, lowLvlProgress);*/
 						JProgressBar medLvlProgress = new JProgressBar(0, (cardsToDraftLocal - 1)); medLvlProgress.setValue(medLvlCount); medLvlProgress.setStringPainted(true);
 						medLvlProgress.setString(String.valueOf(medLvlCount));
 						toolTipCards(medLvlCards, medLvlProgress);
@@ -3761,17 +3836,50 @@ public class CardPool_GUI_1_Stable {
 			while (rolling)
 			{
 				int seed = oneKDie();
-				if ((seed < 726) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 							// 69% chance at common				
-				else if ((seed >= 726 && seed < 910) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }			// 8% chance at rare
-				else if ((seed >= 910 && seed < 972) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }		// 4% chance at super rare
-				else if ((seed >= 972 && seed < 996) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }		// 2% chance at ultra rare
-				else if ((seed >= 996 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 1% chance at ultimate rare
+				if ((seed < 726) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 								// 72.6% chance at common				
+				else if ((seed >= 726 && seed < 910) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }				// 18.4% chance at rare
+				else if ((seed >= 910 && seed < 972) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }			// 6.2% chance at super rare
+				else if ((seed >= 972 && seed < 996) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }				// 2.4% chance at ultra rare
+				else if ((seed >= 996 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 0.4% chance at ultimate rare
 				// Backup
 				else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
 			}
 		}
 		copyPoolVoid(picks, threePicks);
 	}
+	
+	// Generates a list of 'random' picks from draftPool
+		// Makes sure those cards exist in the pool, are not duplicates of each other and picking any of them should not break deck limits
+		static void picksVoidReroll(ArrayList<Card> draftPool, ArrayList<Card> deck, int choices, ArrayList<Card> threePicks)
+		{
+			ArrayList<Card> picks = new ArrayList<Card>();
+			Card temp = new Card();
+			boolean rolling = true;
+			String common = "Common";
+			String rare = "Rare";
+			String superR = "Super Rare";
+			String ultra = "Ultra Rare";
+			String ultimate = "Ultimate Rare";
+			String roll = "";
+			String seedValue = "";
+
+			for (int i = 0; i < choices; i++)
+			{
+				rolling = true;
+				while (rolling)
+				{
+					int seed = oneKDie();
+					if ((seed < 801) && (howManyRarity(draftPool, common) > 0)) { rolling = rarityRoll(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = common; } 								// 80.1% chance at common				
+					else if ((seed >= 801 && seed < 944) && (howManyRarity(draftPool, rare) > 0)) { rolling = rarityRoll(draftPool, rare, deck, temp, roll, seedValue, picks, rolling, seed); roll = rare; }				// 14.3% chance at rare
+					else if ((seed >= 944 && seed < 982) && (howManyRarity(draftPool, superR) > 0)) { rolling = rarityRoll(draftPool, superR, deck, temp, roll, seedValue, picks, rolling, seed); roll = superR; }			// 3.8% chance at super rare
+					else if ((seed >= 982 && seed < 999) && (howManyRarity(draftPool, ultra) > 0)) { rolling = rarityRoll(draftPool, ultra, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultra; }				// 1.7% chance at ultra rare
+					else if ((seed >= 999 && seed <= 1000) && (howManyRarity(draftPool, ultimate) > 0)) { rolling = rarityRoll(draftPool, ultimate, deck, temp, roll, seedValue, picks, rolling, seed); roll = ultimate; }	// 0.1% chance at ultimate rare
+					// Backup
+					else { rarityRollBackup(draftPool, common, deck, temp, roll, seedValue, picks, rolling, seed); roll = "Purely Random"; }
+				}
+			}
+			copyPoolVoid(picks, threePicks);
+		}
 
 
 	// Returns a number between 1-1000
@@ -13432,6 +13540,460 @@ public class CardPool_GUI_1_Stable {
 		
 		return cards;
 	}
+		
+	public static ArrayList<Card> discoverCardType(ArrayList<Card> pool, String cardType)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getCardType().equals(cardType))
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverCardType2(ArrayList<Card> pool, String cardType, String cardType2)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getCardType().equals(cardType))
+			{
+				spells++;
+				spellList.add(card);
+			}
+			
+			else if (card.getCardType().equals(cardType2))
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverLevel(ArrayList<Card> pool, int level)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getLvl() == level)
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverAtkHigher(ArrayList<Card> pool, int base)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getAtk() > base)
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverDefLower(ArrayList<Card> pool, int bound)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getDef() < bound && card.getDef() != 0)
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverAtkBetween(ArrayList<Card> pool, int base, int bound)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getAtk() > base && card.getAtk() < bound && card.getAtk() != 0)
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverDefHigher(ArrayList<Card> pool, int base)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getDef() > base)
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverAtkLower(ArrayList<Card> pool, int bound)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getAtk() < bound && card.getAtk() != 0)
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverDefBetween(ArrayList<Card> pool, int base, int bound)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getDef() > base && card.getDef() < bound && card.getDef() != 0)
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverSynergy(ArrayList<Card> pool, String synergy)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getSynergies().contains(synergy))
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverType(ArrayList<Card> pool, String type)
+	{
+		int spells = 0;
+		boolean checker = false;
+		//cardCounter(pool);
+		//pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getType().equals(type))
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static ArrayList<Card> discoverTypeCardType(ArrayList<Card> pool, String type, String cardType)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getType().equals(type) && card.getCardType().equals(cardType))
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	
+	
 		
 
 }

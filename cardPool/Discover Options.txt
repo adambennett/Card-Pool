@@ -1,0 +1,48 @@
+Aqua
+Beast
+Board Control
+Card Draw
+Common
+Counter Trap
+Dark
+Dinosaur
+Easy Summon
+Effect Monster
+Exodia
+Field Spell
+Fiend
+Flip Effect
+Fusion Monster
+Fusion or Ritual Monster
+Gadget
+Gishki
+Highly Rated
+Level 4 Effect Monster
+Level 4 Monster
+Level 4 Normal Monster
+Light
+Lightsworn
+Monster
+No Tribute Monster
+Normal Monster
+One Tribute Effect Monster
+One Tribute Monster
+One Tribute Normal Monster
+Plant
+Random
+Rare
+Ritual Monster
+Spell
+Spell or Trap
+Super Rare
+Toon
+Trap
+Two Tribute Effect Monster
+Two Tribute Monster
+Two Tribute Normal Monster
+Ultimate Rare
+Ultra Rare
+Unique
+Warrior
+Water
+Zombie
