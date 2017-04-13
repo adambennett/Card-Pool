@@ -49,115 +49,17 @@ public class main
 		
 
 		readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards);		
-		
-		ArrayList<Card> discovered = discoverSpell(allCards);
-		for (int i = 0; i < 3; i++)
-		{
-			System.out.println("Spell #" + (i + 1) + ": " + discovered.get(i));
-		}
-		
-		// Prints out a nice list of cards that need text that can be dumped into ParseHub
-		/*
-		Card dummy = new Card("dummy");
-		int textlessCounter = 0;
-		for (Card card : allCards)
-		{
-			if (card.getText().equals("(Text)"))
-			{
-				if (card.getName().equals(dummy.getName())) {}
-				else { textlessCounter++; dummy = card; System.out.print("\"" + card.getName() + "\", "); }
-			}
-		}
-		
-		System.out.println("\nCards w/o text: " + textlessCounter);
-		*/
-		
-		
-		/*String[] temp = {"Cross-Sword Beetle", "Evigishki Soul Ogre", "Gishki Mollusk", "Gishki Noellia", "Evigishki Levianima", "Dunames Dark Witch", "Ancient Gear Gadjiltron Dragon", "Dark Paladin", "Gishki Chain", "Ape Fighter", "Fortress Warrior", "Half Shut", "Evilswarm Heliotrope", "Gishki Avance", "Gishki Natalia", "Gishki Psychelone", "Hundred-Footed Horror", "Dwarf Star Dragon Planeter", "Sabersaurus", "Informer Spider", "Shield Worm", "Metal Armored Bug", "Tytannial, Princess of Camellias", "Hedge Guard", "Aztekipede, the Worm Warrior", "Insect Knight", "Slate Warrior", "The World Tree", "Buster Blader", "Big-Tusked Mammoth", "Golem Sentry", "Hand of Nephthys", "Garoth, the Lightsworn Warrior", "Double Attack", "Mother Spider", "Spider Egg", "Ultimate Tyranno", "Criosphinx", "Gil Garth", "Double Coston", "Desert Twister", "Multiple Piece Golem", "Lair Wire", "Gishki Photomirror", "Evigishki Tetrogre", "Infernal Flame Emperor", "Hieracosphinx", "Plant Food Chain", "Turret Warrior", "Wall of Thorns", "Green Gadget", "Yellow Gadget", "Red Gadget", "Alpha the Magnet Warrior", "Beta the Magnet Warrior", "Gamma the Magnet Warrior", "Predaplant Sarraceniant", "Double Payback", "Gishki Diviner", "Fabled Gallabas", "Fabled Ashenveil", "Forbidden Arts of the Gishki", "Gishki Emilia", "Dark General Freed", "Maximum Six", "Blue-Eyes Ultimate Dragon", "Divine Dragon Apocralyph", "Gishki Beast", "Destiny HERO - Disk Commander", "Relinquished Spider", "Spider Web", "Renge, Gatekeeper of Dark World", "Airknight Parshath", "Sacred Phoenix of Nephthys", "Celestia, Lightsworn Angel", "Shire, Lightsworn Spirit", "Valkyrion the Magna Warrior", "Paladin of the Cursed Dragon", "Hunter Dragon", "Des Volstgalph", "Big Piece Golem", "Medium Piece Golem", "Small Piece Golem", "Ojamagic", "Genesis Dragon", "Alien Shocktrooper", "King of the Swamp", "Horus the Black Flame Dragon LV8", "Armored Bee", "Gishki Marker", "Gishki Vanity", "Gishki Reliever", "White-Horned Dragon", "Gishki Shadow", "Gishki Vision", "Predaplant Chimerafflesia", "Gishki Aquamirror", "Gishki Ariel", "Chainsaw Insect", "Big Evolution Pill", "Wulf, Lightsworn Beast", "Judgement Dragon", "Destiny End Dragoon", "Super Solar Nutrient", "Apprentice Piper", "Spell Strider", "Darklord Superbia", "Predaplanet", "Predaplant Pterapenthes", "Predapruning", "Predaplant Flytrap", "Tierra, Source of Destruction", "Super-Ancient Dinobeast", "Armed Dragon LV7", "Gragonith, Lightsworn Dragon", "The Creator Incarnate", "Fusilier Dragon, the Dual-Mode Beast", "Lyla, Lightsworn Sorceress" , "The Creator", "Ojama King", "Prime Material Dragon", "Predaplant Chlamydosundew", "Doom Dozer", "Predaplant Spinodionaea", "Gishki Abyss", "Predaplant Squid Drosera", "Gigaplant", "Aurkus, Lightsworn Druid", "Naturia Cliff", "Dragon Master Knight", "Greedy Venom Fusion Dragon", "Predaplant Drosophyllum Hydra", "Gishki Zielgigas", "Earthquake Giant", "Degen-Force", "Skelesaurus", "Spyder Spider", "Five-Headed Dragon", "Ojama Knight", "Evigishki Mind Augus", "Evigishki Gustkraken", "The Dark Creator", "Raiden, Hand of the Lightsworn", "Grasschopper", "Preparation of Rites", "Jurassic World", "Shadow Toon", "Toon Briefcase", "Destiny HERO - Dystopia", "Predaplant Moray Nepenthes", "Pre-Preparation of Rites", "Thousand-Eyes Restrict", "Mark of the Rose", "Miracle Fertilizer", "Predaponics"};
-		int countTemp = 0;
-		for (String string : temp)
-		{
-			countTemp++;
-		}
-		System.out.println(countTemp + " cards.");
-		*/
-		
-		/*
-		Card dummy = new Card("dummy");
-		int textlessCounter = 0;
-		for (Card card : allCards)
-		{
-			if (card.getText().equals("(Text)"))
-			{
-				if (card.getName().equals(dummy.getName())) {}
-				else { textlessCounter++; dummy = card; System.out.println(card.getName()); }
-			}
-		}
-		
-		System.out.println("\nCards w/o text: " + textlessCounter);
-		*/
-		
-		/*
-		for (Card card : allCards)
-		{
-			if (card.getCrosslimit().equals("true")) { System.out.print(card.getName());}
-			else if (card.getCrosslimit().equals("none")) {}
-			else { System.out.println(card.getCrosslimit());}
-		}
-		*/
-		
-		/*
-		int uniqueCardCount = 0;
+	
 		ArrayList<Card> allCardsNoDupes = listMaker(allCards);
-		System.out.print("'");
-		for (Card card : allCardsNoDupes)
-		{			
-			if (isImage("src/images/" + card.getName() + ".png")) { }
-			else { System.out.print(card.getName() + "', '"); uniqueCardCount++; }
-		}
-		System.out.println("]\n" + uniqueCardCount);
+		printRarities(allCardsNoDupes);
+		//imageCheck(allCardsNoDupes);
+		//crossLimitPrint(allCardsNoDupes);
+		//textCheck(allCardsNoDupes);
+		//parseHubFormat(allCardsNoDupes);
+		printDiscoverSpell(allCardsNoDupes);
 		
 		
-		//ArrayList<Card> allCardsNoDupes = listMaker(allCards);
-		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
-		for (Card card : allCardsNoDupes)
-		{
-			/*
-			if (card.getLvl() == 5)
-			{
-				System.out.println("5: " + card.getName()  + " - " + card.getRarity());
-			}
-			else if (card.getLvl() == 6)
-			{
-				System.out.println("6: " + card.getName() + " - " + card.getRarity());
-			}
-			*/
-			/*
-			switch (card.getRarity())
-			{
-				case "Ultimate Rare":
-					ultimates++; break;
-				case "Ultra Rare":
-					ultras++; break;
-				case "Super Rare":
-					supers++; break;
-				case "Rare":
-					rares++; break;
-				case "Common":
-					commons++; break;
-				default:
-					System.out.println("Default on rarity check. Card: " + card.getName());	break;
-			}
-			
-		}
-		
-		System.out.println("Ultimate Rare: " + ultimates);
-		System.out.println("Ultra Rare: " + ultras);
-		System.out.println("Super Rare: " + supers);
-		System.out.println("Rares " + rares);
-		System.out.println("Commons: " + commons);
-		*/
-		
+		// CONSOLE DRAFT START
 		/*
 		int totalCards = cardCount(allCards);	
 		int playerCount = poolDeckInit(draftPools, draftDecks, scan, scanCheck);
@@ -763,6 +665,10 @@ public class main
 
 
 	} // END Main
+	
+	
+	
+	// DRAFT METHODS
 
 	// Creates a pool of cards for the currently drafting player
 	// Should enforce some sort of pool limits on cards that have a lot of copies (ex: monster reborn has 21 copies)
@@ -1787,5 +1693,98 @@ public class main
 		return threeSpells;
 		
 	}
-}
+	
+	public static void printRarities(ArrayList<Card> pool)
+	{
+		System.out.println("\n\nRARITY PRINT\n--------------------");
+		//ArrayList<Card> allCardsNoDupes = listMaker(pool);
+		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
+		for (Card card : pool)
+		{	
+			switch (card.getRarity())
+			{
+				case "Ultimate Rare":
+					ultimates++; break;
+				case "Ultra Rare":
+					ultras++; break;
+				case "Super Rare":
+					supers++; break;
+				case "Rare":
+					rares++; break;
+				case "Common":
+					commons++; break;
+				default:
+					System.out.println("Default on rarity check. Card: " + card.getName());	break;
+			}
+			
+		}
+		
+		System.out.println("Ultimate Rare: " + ultimates);
+		System.out.println("Ultra Rare: " + ultras);
+		System.out.println("Super Rare: " + supers);
+		System.out.println("Rares " + rares);
+		System.out.println("Commons: " + commons);
+	}
+	public static void imageCheck(ArrayList<Card> pool)
+	{
+		System.out.println("\n\nIMAGE CHECK\n--------------------");
+		int unique = 0;
+		for (Card card : pool)
+		{			
+			if (isImage("src/images/" + card.getName() + ".png")) { }
+			else { System.out.print(card.getName() + "', '"); unique++; }
+		}
+		System.out.println("Cards w/o Image: " + unique);
+	}
+	public static void crossLimitPrint(ArrayList<Card> pool)
+	{
+		System.out.println("\n\nCROSS LIMIT PRINT\n--------------------");
+		for (Card card : pool)
+		{
+			if (!card.getCrosslimit().equals("none")) { System.out.println(card.getName() + " - " + card.getCrosslimit());}
+		}
+	}
+	public static void textCheck(ArrayList<Card> pool)
+	{
+		System.out.println("\n\nTEXT CHECK\n--------------------");
+		Card dummy = new Card("dummy");
+		int textlessCounter = 0;
+		for (Card card : pool)
+		{
+			if (card.getText().equals("(Text)"))
+			{
+				if (card.getName().equals(dummy.getName())) {}
+				else { textlessCounter++; dummy = card; System.out.println(card.getName()); }
+			}
+		}
+		
+		System.out.println("\nCards w/o text: " + textlessCounter);
+	}
+	
+	public static void parseHubFormat(ArrayList<Card> pool)
+	{
+		System.out.println("\n\nPARSEHUB FORMAT\n--------------------");
+		Card dummy = new Card("dummy");
+		int textlessCounter = 0;
+		for (Card card : pool)
+		{
+			if (card.getText().equals("(Text)"))
+			{
+				if (card.getName().equals(dummy.getName())) {}
+				else { textlessCounter++; dummy = card; System.out.print("\"" + card.getName() + "\", "); }
+			}
+		}
+		
+		System.out.println("\nCards w/o text: " + textlessCounter);
+	}
+	
+	public static void printDiscoverSpell(ArrayList<Card> pool)
+	{
+		System.out.println("\n\nDISCOVER RANDOM SPELL\n--------------------");
+		ArrayList<Card> discovered = discoverSpell(pool);
+		for (int i = 0; i < 3; i++)
+		{
+			System.out.println("Spell #" + (i + 1) + ": " + discovered.get(i).getName());
+		}
+	}}
  // END Class

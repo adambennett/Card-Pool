@@ -58,6 +58,8 @@ import javax.swing.SwingConstants;
 
 
 
+import javax.swing.ToolTipManager;
+
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -114,6 +116,7 @@ public class CardPool_GUI_1_Stable {
 	private ImageLabel score1I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); 
 	private ImageLabel score2I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); 
 	private ImageIcon refreshI = new ImageIcon("src/images/View - Reset.png"); 
+	
 
 	// GUI Init Stuff
 	public static void main(String[] args) 
@@ -148,6 +151,11 @@ public class CardPool_GUI_1_Stable {
 	private void initialize() 
 	{
 
+		// Default Dismiss Delay
+		// int dismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
+		// Show forever
+	    int noDismissDelay = Integer.MAX_VALUE;
+	    ToolTipManager.sharedInstance().setDismissDelay(noDismissDelay);
 
 		// Variable Initialization
 		ArrayList<Card> allCards = new ArrayList<Card>();
@@ -165,7 +173,8 @@ public class CardPool_GUI_1_Stable {
 		// END Variable Init
 
 		// Database Setup
-		readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards);		
+		String databaseName = "yugiohDatabase.txt";
+		readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards, databaseName);		
 		ArrayList<Card> backupAllCards = copyPool(allCards);
 		ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
 		ArrayList<Card> blackListed = new ArrayList<Card>();
@@ -384,9 +393,6 @@ public class CardPool_GUI_1_Stable {
 		mnBanScore.add(lowScore); mnBanScore.add(medScore); mnBanScore.add(highScore);
 		mnBanScore.add(veryHighScore); mnBanScore.add(OP);
 
-		// Grey out ban buttons that currently ban 0 cards
-		Psychic.setEnabled(false);
-		
 
 		blackListenerInit(blacklist, allCards, blackListed, banned, dumbThing, banModel, lblCardCount, lblUniqueCards, DraftInit, mntmUltraRares, mntmSuperRares, mntmRares,
 				mntmCommon, ultimateBanner, ultraBanner, superBanner, rareBanner, commonBanner, mntmNewMenuItem, Monarchs, Fissure, TrapHole, Exodia, Water, Naturia, Nekroz,
@@ -407,13 +413,13 @@ public class CardPool_GUI_1_Stable {
 				DraftInit.setTitle("Draft");
 				DraftInit.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 				// Final Draft Variable Init
-				if ((Integer)numberOfPlayers.getValue() > 3 && (Integer)cardsToDraft.getValue() > 120) { cardsToDraftLocal = 120; }
-				else if ((Integer)numberOfPlayers.getValue() > 5 && (Integer)cardsToDraft.getValue() > 50) { cardsToDraftLocal = 50; }
+				if ((Integer)numberOfPlayers.getValue() > 3 && (Integer)numberOfPlayers.getValue() <= 5 && (Integer)cardsToDraft.getValue() > 120) { cardsToDraftLocal = 120; }
+				else if ((Integer)numberOfPlayers.getValue() > 5 && (Integer)cardsToDraft.getValue() > 60) { cardsToDraftLocal = 60; }
 				else { cardsToDraftLocal = (Integer) cardsToDraft.getValue(); }
 				int playerCountLocal = (Integer) numberOfPlayers.getValue();
 				rerollsLocal = (Integer) rerolls.getValue();
-				if ((Integer)numberOfPlayers.getValue() > 9 && (Integer)cardsToDraft.getValue() == 60 && rerollsLocal > 4 && fillStyle.getSelectedItem().toString().equals("Random")) { rerollsLocal = 4; }
-				else if ((Integer)numberOfPlayers.getValue() > 9 && (Integer)cardsToDraft.getValue() == 60 && rerollsLocal > 1 && !fillStyle.getSelectedItem().toString().equals("Random")) { rerollsLocal = 1; }
+				if ((Integer)numberOfPlayers.getValue() > 9 && cardsToDraftLocal == 60 && rerollsLocal > 6 && fillStyle.getSelectedItem().toString().equals("Random")) { rerollsLocal = 6; }
+				else if ((Integer)numberOfPlayers.getValue() > 9 && cardsToDraftLocal == 60 && rerollsLocal > 4 && !fillStyle.getSelectedItem().toString().equals("Random")) { rerollsLocal = 4; }
 				boolean urItem = mntmNewMenuItem.isEnabled();
 				boolean ulrItem = mntmUltraRares.isEnabled();
 				boolean srItem = mntmSuperRares.isEnabled();
@@ -432,7 +438,7 @@ public class CardPool_GUI_1_Stable {
 				
 				JButton viewDeck = new JButton("View Deck");
 				JButton reroll = new JButton("Reroll " + "(" + rerollsLocal + ")"); if (rerollsLocal == 0) { reroll.setEnabled(false); }
-				reroll.setToolTipText("<html>Discard these three cards from your pool.<br>Chances for Next 3 Cards:<br>Common - 80.1% (+7.5%)<br>Rare - 14.3% (-4.1%)<br>Super Rare - 3.8% (-1.4%)<br>Ultra Rare - 1.7% (-0.7%)<br>Ultimate Rare - 0.1% (-0.3%)");
+				reroll.setToolTipText("<html>Discard these three cards from your pool.<br>Chances for Next 3 Cards<br>--------------------------------<br>Common: 80.1% (+7.5%)<br>Rare: 14.3% (-4.1%)<br>Super Rare: 3.8% (-1.4%)<br>Ultra Rare: 1.7% (-0.7%)<br>Ultimate Rare: 0.1% (-0.3%)");
 				viewDeck.setToolTipText("<html>View your current deck.");
 
 				// Change pool fill based on selection made in primary window
@@ -480,7 +486,7 @@ public class CardPool_GUI_1_Stable {
 				
 				// Setup the labels on the draft window
 				JLabel pickCounter = new JLabel("Pick " + pickNumber + "/" + cardsToDraftLocal);
-				pickCounter.setToolTipText("<html>Chances for Next 3 Cards:<br>Common - 72.6%<br>Rare - 18.4%<br>Super Rare - 6.2%<br>Ultra Rare - 2.4%<br>Ultimate Rare - 0.4%");
+				pickCounter.setToolTipText("<html>Chances for Next 3 Cards:<br>--------------------------------<br>Common: 72.6%<br>Rare: 18.4%<br>Super Rare: 6.2%<br>Ultra Rare; 2.4%<br>Ultimate Rare: 0.4%");
 				JLabel poolCardCount = new JLabel("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 				//JProgressBar poolSize = new JProgressBar(0, defPoolSize);
 				JLabel playerDraftLbl = new JLabel("Player " + (playerDrafting + 1));
@@ -1130,8 +1136,8 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.getContentPane().add(viewStats);
 									finalFrame.getContentPane().add(send);
 									finalFrame.getContentPane().add(sendTo);
-									finalFrame.getContentPane().add(discoverOptions);
-									finalFrame.getContentPane().add(discoverLocation);
+									//finalFrame.getContentPane().add(discoverOptions);
+									//finalFrame.getContentPane().add(discoverLocation);
 									finalFrame.setTitle("Draft Complete");
 									finalFrame.setResizable(false);
 
@@ -3079,19 +3085,22 @@ public class CardPool_GUI_1_Stable {
 
 	// METHODS
 
-
-	// Feed yugiohdatabase.txt database into the program
-	// Second method does some updates to the text of cards missing text
+	/**
+     * Feed card database text file into the program
+     * 
+     * @param noOfCards
+     * @return void
+     */
 	static void readDatabase(int noOfCards, String line, String[] input, String name, String attribute, String type, String cardType, 
 			int atk, int def, int tierScore, int lvl, int quantity, int limit, String crosslimit, String rarity, String text, String synergies, boolean monster,
-			boolean contin, boolean quickplay, boolean counter, boolean field, boolean equip, boolean ritual, boolean normal, ArrayList<Card> allCards)
+			boolean contin, boolean quickplay, boolean counter, boolean field, boolean equip, boolean ritual, boolean normal, ArrayList<Card> allCards, String databaseName)
 	{
 		ArrayList<Card> updates = readOtherDatabase();
 
 		try // Try to open the database
 		{	
 			// Opens database .txt file
-			FileInputStream database = new FileInputStream("yugiohDatabase.txt");
+			FileInputStream database = new FileInputStream(databaseName);
 			BufferedReader databaseStream = new BufferedReader(new InputStreamReader(database));
 
 			// Loops through the text file and pulls the data for each card into a card object
@@ -3147,7 +3156,14 @@ public class CardPool_GUI_1_Stable {
 			database.close();
 		} catch (IOException e) { System.out.println("No file found! Nothing happened."); } // END Try block
 	}
-	static ArrayList<Card> readOtherDatabase()
+	
+	/**
+     * Does some updates to the text of cards missing text
+     * 
+     * 
+     * @return void
+     */
+	public static ArrayList<Card> readOtherDatabase()
 	{
 		FileInputStream database;
 		ArrayList<Card> cardsNeedText = new ArrayList<Card>();
@@ -3177,8 +3193,14 @@ public class CardPool_GUI_1_Stable {
 
 	}
 
-	// Returns how many cards exist in the pool
-	static int cardCount(ArrayList<Card> pool)
+	/**
+     * Counts how many cards exist in the pool
+     * 
+     * @param pool
+     * @return number of cards in the pool
+     */
+	// 
+	public static int cardCount(ArrayList<Card> pool)
 	{
 		int count = 0;
 		for (int i = 0; i < pool.size(); i++)
@@ -3189,8 +3211,13 @@ public class CardPool_GUI_1_Stable {
 		return count;
 	}
 
-	// List copy 
-	static ArrayList<Card> copyPool(ArrayList<Card> pool)
+	/**
+     * List copy
+     * 
+     * @param pool
+     * @return duplicated pool
+     */
+	public static ArrayList<Card> copyPool(ArrayList<Card> pool)
 	{
 		ArrayList<Card> temp = new ArrayList<>();
 		for (Card card : pool)
@@ -3201,8 +3228,14 @@ public class CardPool_GUI_1_Stable {
 		return temp;
 	}
 
-	// List copy void return
-	static void copyPoolVoid(ArrayList<Card> copyFrom, ArrayList<Card> copyOver)
+	/**
+     * List copy with void return. Pass in the list to copy from and then the list to copy into.
+     * 
+     * @param copyFrom
+     * @param copyOver
+     * @return void
+     */
+	public static void copyPoolVoid(ArrayList<Card> copyFrom, ArrayList<Card> copyOver)
 	{
 		copyOver.clear();
 		for (Card card : copyFrom)
@@ -3212,14 +3245,25 @@ public class CardPool_GUI_1_Stable {
 		}
 	}
 	
-	// Card copy void return
-	static void copyCardVoid(Card copyFrom, Card copyOver)
+	/**
+     * Card copy with void return. Pass in the card to copy and then the card to copy over.
+     * 
+     * @param copyFrom
+     * @param copyOver
+     * @return void
+     */
+	public static void copyCardVoid(Card copyFrom, Card copyOver)
 	{
 		copyOver = new Card(copyFrom);
 	}
 
-	// After you have drafted all your cards runs through and totals up how many of each card for nice output
-	static void cardCounter(ArrayList<Card> drafted)
+	/**
+     * After you have drafted all your cards runs through and totals up how many of each card for nice output
+     * 
+     * @param drafted
+     * @return void
+     */
+	public static void cardCounter(ArrayList<Card> drafted)
 	{
 		ArrayList<Card> temp = new ArrayList<Card>();
 		ArrayList<Card> temp2 = new ArrayList<Card>();
@@ -3251,7 +3295,13 @@ public class CardPool_GUI_1_Stable {
 		copyPoolVoid(temp3, drafted);
 	}
 
-	// Returns how many of the given card exist within the given pool
+	/**
+     * Counts up how many of the given card exist within the given pool
+     * 
+     * @param pool
+     * @param card
+     * @return number of the given card that is in the pool
+     */ 
 	static int howManyCards(ArrayList<Card> pool, Card card)
 	{
 		int cardCount = 0;
@@ -3266,9 +3316,14 @@ public class CardPool_GUI_1_Stable {
 		return cardCount;
 	}
 
-	// These listMaker methods create lists to be used with some of the view menus
-	// They return arrays with one of each copy of the cards from the given pool
-	// listMaker does it for every card in the pool, ultimate only for ultimate rares and rarity for the your choice of rarity
+	/**
+     * Creates a list to be used with some of the view menus.
+     * Returned array contains one of each copy of the cards from the given pool.
+     * 
+     * 
+     * @param pool
+     * @return the correctly formatted list
+     */
 	static ArrayList<Card> listMaker(ArrayList<Card> pool)
 	{
 		ArrayList<Card> temp = new ArrayList<Card>();
@@ -3298,6 +3353,16 @@ public class CardPool_GUI_1_Stable {
 
 		return temp;
 	}
+	
+	/**
+     * Creates a list to be used with some of the view menus.
+     * Returned array contains one of each copy of the cards from the given pool.
+     * This method will only return arrays containing ultimate rare cards.
+     * 
+     * 
+     * @param pool
+     * @return the correctly formatted list
+     */
 	static ArrayList<Card> listMakerUltimate(ArrayList<Card> pool)
 	{
 		ArrayList<Card> temp = new ArrayList<Card>();
@@ -3337,6 +3402,16 @@ public class CardPool_GUI_1_Stable {
 		return temp;
 	}
 	
+	/**
+     * Creates a list to be used with the view deck menu seen while choosing cards.
+     * Returned array contains one of each copy of the cards from the given pool.
+     * The list entries are formatted to contain images and text for nice looking quantity icons.
+     * 
+     * 
+     * @param pool
+     * @param model
+     * @return the correctly formatted list
+     */
 	static void listEntryMaker(ArrayList<Card> pool, DefaultListModel model)
 	{
 		ArrayList<Card> temp = new ArrayList<Card>();
@@ -3374,6 +3449,16 @@ public class CardPool_GUI_1_Stable {
 			 model.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - " + card.getQuantity() + ".png"), card));
 		}
 	}
+	
+	/**
+     * Creates a list to be used with some of the view menus.
+     * Returned array contains one of each copy of the cards from the given pool.
+     * The returned array will only contain cards of the given rarity.
+     * 
+     * @param pool
+     * @param rarity
+     * @return the correctly formatted list
+     */
 	static ArrayList<Card> listMakerRarity(ArrayList<Card> pool, String rarity)
 	{
 		ArrayList<Card> temp = new ArrayList<Card>();
@@ -3413,8 +3498,13 @@ public class CardPool_GUI_1_Stable {
 		return temp;
 	}
 
-	// Prompts the user for number of players and then sets up the decks and pools necessary to allow that number of players to draft decks
-	// Used with 'Random' pool fill option
+	/**
+     * Sets up the deck objects used to hold cards before, during and after the draft.
+     * 
+     * 
+     * @param draftPools
+     * @return number of players
+     */
 	static int poolDeckInit(ArrayList<ArrayList<Card>> draftPools, ArrayList<ArrayList<Card>> draftDecks, int playerCount)
 	{
 		for (int i = 0; i < playerCount; i++) 
@@ -3425,6 +3515,16 @@ public class CardPool_GUI_1_Stable {
 		}
 		return playerCount;
 	}
+	
+	
+	/**
+     * Fills up each players draft pool by randomly choosing a card and distributing the next card to each player in sequence.
+     * 
+     * @param allCards
+     * @param decks
+     * @param noOfPlayers
+     * @return int Size of the smallest deck
+     */
 	public static int fillAllPools(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
 	{
 		ArrayList<Card> sizeCheck = copyPool(allCards);
@@ -3450,6 +3550,20 @@ public class CardPool_GUI_1_Stable {
 
 	}
 	
+	/**
+	 * <html>
+     * Fills up each players draft pool with an equal amount of cards from each rarity set.
+     * <br><br>Ultimates in each players pool = (#ofUltimates / #ofPlayers) / 1.25
+     * <br>Ultras in each pool = (#ofUltras / #ofPlayers) / 1.28
+     * <br>Supers in each pool = (#ofSupers / #ofPlayers) / 1.3
+     * <br>Rares in each pool = (#ofRares / #ofPlayers) / 1.35
+     * <br>Commons in each pool = (#ofCommons / #ofPlayers) / 1.08
+     * 
+     * @param allCards
+     * @param decks
+     * @param noOfPlayers
+     * @return void
+     */
 	public static void fillAllPoolsEqual(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
 	{
 		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
@@ -3476,11 +3590,36 @@ public class CardPool_GUI_1_Stable {
 			}
 		}
 				
-		double ultimatesAllowed = Math.floor((ultimates / noOfPlayers) - (noOfPlayers));
-		double ultrasAllowed = Math.floor((ultras / noOfPlayers) - (noOfPlayers - 2));
-		double supersAllowed = Math.floor((supers / noOfPlayers) - (noOfPlayers - 6));
-		double raresAllowed = Math.floor((rares / noOfPlayers) - ((noOfPlayers * 2)));
-		double commonsAllowed = Math.floor((commons / noOfPlayers) - (noOfPlayers * 4) + 24);
+		double ultimatesAllowed = Math.floor((ultimates / noOfPlayers) / (1.25));
+		double ultrasAllowed = Math.floor((ultras / noOfPlayers) / (1.28));
+		double supersAllowed = Math.floor((supers / noOfPlayers) / (1.3));
+		double raresAllowed = Math.floor((rares / noOfPlayers) / (1.35));
+		double commonsAllowed = Math.floor((commons / noOfPlayers) / (1.08));
+		
+		/*
+		double ultimatesAllowed2 = Math.floor((ultimates / noOfPlayers) / (noOfPlayers));
+		double ultrasAllowed2 = Math.floor((ultras / noOfPlayers) - (noOfPlayers - 2));
+		double supersAllowed2 = Math.floor((supers / noOfPlayers) - (noOfPlayers - 6));
+		double raresAllowed2 = Math.floor((rares / noOfPlayers) - ((noOfPlayers * 2)));
+		double commonsAllowed2 = Math.floor((commons / noOfPlayers) - (noOfPlayers * 4) + 24);
+		
+		/*
+		System.out.println("Ultimates: " + ultimatesAllowed);
+		System.out.println("Ultras: " + ultrasAllowed);
+		System.out.println("Supers: " + supersAllowed);
+		System.out.println("Rares: " + raresAllowed);
+		System.out.println("Commons: " + commonsAllowed);
+		System.out.println("(Old code) Ultimates: " + ultimatesAllowed2);
+		System.out.println("(Old code) Ultras: " + ultrasAllowed2);
+		System.out.println("(Old code) Supers: " + supersAllowed2);
+		System.out.println("(Old code) Rares: " + raresAllowed2);
+		System.out.println("(Old code) Commons: " + commonsAllowed2);
+		System.out.println("Ultimates in pool: " + ultimates);
+		System.out.println("Ultras in pool: " + ultras);
+		System.out.println("Supers in pool: " + supers);
+		System.out.println("Rares in pool: " + rares);
+		System.out.println("Commons in pool: " + commons);
+		*/
 		
 		if (ultimatesAllowed < 0 ) { ultimatesAllowed = 1; }
 		if (ultrasAllowed < 0 ) { ultrasAllowed = 2; }
@@ -3529,6 +3668,15 @@ public class CardPool_GUI_1_Stable {
 	
 	}
 	
+	/**
+	 * <html>
+     * Fills up each players draft pool with an low amount of cards from each rarity set.
+     * 
+     * @param allCards
+     * @param decks
+     * @param noOfPlayers
+     * @return void
+     */
 	public static void fillAllPoolsHarsh(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
 	{		
 		double ultimatesAllowed = 2;
@@ -3580,6 +3728,20 @@ public class CardPool_GUI_1_Stable {
 	
 	}
 	
+	/**
+	 * <html>
+     * Fills up each players draft pool with an equal amount of cards from each rarity set.
+     * <br><br>Ultimates in each players pool = (85+ / #ofPlayers) / 1.25
+     * <br>Ultras in each pool = (70-85 / #ofPlayers) / 1.28
+     * <br>Supers in each pool = (50-70 / #ofPlayers) / 1.3
+     * <br>Rares in each pool = (30-50 / #ofPlayers) / 1.35
+     * <br>Commons in each pool = (-30 / #ofPlayers) / 1.08
+     * 
+     * @param allCards
+     * @param decks
+     * @param noOfPlayers
+     * @return void
+     */
 	public static void fillAllPoolsScore(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
 	{
 		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
@@ -3594,16 +3756,11 @@ public class CardPool_GUI_1_Stable {
 			else {}
 		}
 				
-		double ultimatesAllowed = Math.floor((ultimates / noOfPlayers) - (noOfPlayers));
-		ultimatesAllowed -= 0;
-		double ultrasAllowed = Math.floor((ultras / noOfPlayers) - (noOfPlayers - 2));
-		ultrasAllowed -= (110 / noOfPlayers);
-		double supersAllowed = Math.floor((supers / noOfPlayers) - (noOfPlayers - 6));
-		supersAllowed -= (130 / noOfPlayers);
-		double raresAllowed = Math.floor((rares / noOfPlayers) - ((noOfPlayers * 2)));
-		raresAllowed += (90 / noOfPlayers);
-		double commonsAllowed = Math.floor((commons / noOfPlayers) - (noOfPlayers * 4) + 24);
-		commonsAllowed += (120 / noOfPlayers);
+		double ultimatesAllowed = Math.floor((ultimates / noOfPlayers) / (1.25));
+		double ultrasAllowed = Math.floor((ultras / noOfPlayers) / (1.28));
+		double supersAllowed = Math.floor((supers / noOfPlayers) / (1.3));
+		double raresAllowed = Math.floor((rares / noOfPlayers) / (1.35));
+		double commonsAllowed = Math.floor((commons / noOfPlayers) / (1.08));
 		
 		if (ultimatesAllowed < 0 ) { ultimatesAllowed = 1; }
 		if (ultrasAllowed < 0 ) { ultrasAllowed = 2; }
@@ -3666,23 +3823,34 @@ public class CardPool_GUI_1_Stable {
 		}
 		
 		/*
-		System.out.println("Cards over 85 score per player: " + ultimatesAllowed);
-		System.out.println("Cards between 70-85 per player: " + ultrasAllowed);
-		System.out.println("Cards between 50-70 per player: " + supersAllowed);
-		System.out.println("Cards between 30-50 per player: " + raresAllowed);
-		System.out.println("Cards under 30 score per player: " + commonsAllowed);
+		System.out.println("85+/player: " + ultimatesAllowed);
+		System.out.println("70-85/player: " + ultrasAllowed);
+		System.out.println("50-70/player: " + supersAllowed);
+		System.out.println("30-50/player: " + raresAllowed);
+		System.out.println("-30/player: " + commonsAllowed);
 		
-		System.out.println("Cards over 85 score in pool: " + aUltimates);
-		System.out.println("Cards between 70-85 in pool: " + aUltras);
-		System.out.println("Cards between 50-70 in pool: " + aSupers);
-		System.out.println("Cards between 30-50 in pool: " + aRares);
-		System.out.println("Cards under 35 score in pool: " + aCommons);
+		System.out.println("85+/pool: " + ultimates);
+		System.out.println("70-85/pool: " + ultras);
+		System.out.println("50-70/pool: " + supers);
+		System.out.println("30-50/pool: " + rares);
+		System.out.println("-30/pool: " + commons);
+		
+		System.out.println("\n85+/all decks: " + aUltimates);
+		System.out.println("70-85/all decks: " + aUltras);
+		System.out.println("50-70/all decks: " + aSupers);
+		System.out.println("30-50/all decks: " + aRares);
+		System.out.println("-30/all decks: " + aCommons);
 		*/
 	
 	}
 
-	// Pulls a random card from a given pool and removes one from that pool (equal weight to all cards)
-	static Card randomCardRemove(ArrayList<Card> allCards)
+	/**
+	 * Pulls a random card from the given pool and removes it from that pool (equal weight to all cards)
+     * 
+     * @param allCards
+     * @return The removed card
+     */
+	public static Card randomCardRemove(ArrayList<Card> allCards)
 	{
 		Random seed = new Random();
 		int seedValue = seed.nextInt(allCards.size());
@@ -3693,8 +3861,13 @@ public class CardPool_GUI_1_Stable {
 		return selected;
 	}
 	
-	// Pulls a random card from a given pool and removes one from that pool (equal weight to all cards)
-	static Card randomCardRemoveRarity(ArrayList<Card> allCards, String rarity)
+	/**
+	 * Pulls a random card of the given rarity from the given pool and removes it from that pool (equal weight to all cards of that rarity)
+     * 
+     * @param allCards
+     * @return The removed card
+     */ 
+	public static Card randomCardRemoveRarity(ArrayList<Card> allCards, String rarity)
 	{
 		ArrayList<Card> allOfRarity = new ArrayList<Card>();
 		for (Card card : allCards)
@@ -3713,8 +3886,15 @@ public class CardPool_GUI_1_Stable {
 		return selected;
 	}
 	
-	// Pulls a random card from a given pool and removes one from that pool (equal weight to all cards)
-	static Card randomCardRemoveScore(ArrayList<Card> allCards, int lowerBound, int upperBound)
+	/**
+	 * Pulls a random card with a score between the given bounds from the given pool and removes it from that pool (equal weight to all cards in that score bracket)
+	 * 
+     * @param allCards
+     * @param lowerBound
+     * @param upperBound
+     * @return The removed card
+     */  
+	public static Card randomCardRemoveScore(ArrayList<Card> allCards, int lowerBound, int upperBound)
 	{
 		ArrayList<Card> allOfRarity = new ArrayList<Card>();
 		for (Card card : allCards)
@@ -3733,8 +3913,14 @@ public class CardPool_GUI_1_Stable {
 		return selected;
 	}
 
-	// Used to remove cards from your pool once you have drafted a number of copies equal to the limit
-	static ArrayList<Card> removeLimitedCards(ArrayList<Card> draftPool, ArrayList<Card> drafted)
+	/**
+	 * Used to remove cards from your pool once you have drafted a number of copies equal to the limit
+	 * 
+     * @param draftPool
+     * @param drafted
+     * @return The edited array
+     */ 
+	public static ArrayList<Card> removeLimitedCards(ArrayList<Card> draftPool, ArrayList<Card> drafted)
 	{
 		ArrayList<Card> tempList = copyPool(draftPool);
 		ArrayList<Card> tempList2 = new ArrayList<Card>();
@@ -3758,7 +3944,14 @@ public class CardPool_GUI_1_Stable {
 		return tempList;
 	}
 
-	static void removeLimitedCardsVoid(ArrayList<Card> draftPool, ArrayList<Card> drafted)
+	/**
+	 * Used to remove cards from your pool once you have drafted a number of copies equal to the limit, but with a void return
+	 * 
+     * @param draftPool
+     * @param drafted
+     * @return void
+     */ 
+	public static void removeLimitedCardsVoid(ArrayList<Card> draftPool, ArrayList<Card> drafted)
 	{
 		ArrayList<Card> tempList = copyPool(draftPool);
 		ArrayList<Card> tempList2 = new ArrayList<Card>();
@@ -3782,9 +3975,24 @@ public class CardPool_GUI_1_Stable {
 		draftPool.removeAll(tempList2);
 	}
 
-	// Generates a list of 'random' picks from draftPool
-	// Makes sure those cards exist in the pool, are not duplicates of each other and picking any of them should not break deck limits
-	static ArrayList<Card> picks(ArrayList<Card> draftPool, ArrayList<Card> deck, int choices)
+	/**
+	 * Generates a list of 'random' picks from draftPool
+	 * Makes sure those cards exist in the pool, are not duplicates of each other and picking any of them should not break deck limits
+	 * <html>
+	 * <br>Chances<br>
+	 * ---------<br>
+	 * Common: 72.6%<br>
+	 * Rare: 18.4%<br>
+	 * Super Rare: 6.2%<br>
+	 * Ultra Rare: 2.4%<br>
+	 * Ultimate Rare: 0.4%
+	 * 
+     * @param draftPool
+     * @param deck
+     * @param choices
+     * @return The edited array
+     */
+	public static ArrayList<Card> picks(ArrayList<Card> draftPool, ArrayList<Card> deck, int choices)
 	{
 		ArrayList<Card> picks = new ArrayList<Card>();
 		Card temp = new Card();
@@ -3815,9 +4023,25 @@ public class CardPool_GUI_1_Stable {
 		return picks;
 	}
 
-	// Generates a list of 'random' picks from draftPool
-	// Makes sure those cards exist in the pool, are not duplicates of each other and picking any of them should not break deck limits
-	static void picksVoid(ArrayList<Card> draftPool, ArrayList<Card> deck, int choices, ArrayList<Card> threePicks)
+	/**
+	 * Generates a list of 'random' picks from draftPool
+	 * Makes sure those cards exist in the pool, are not duplicates of each other and picking any of them should not break deck limits
+	 * <html>
+	 * <br>Chances<br>
+	 * ---------<br>
+	 * Common: 72.6%<br>
+	 * Rare: 18.4%<br>
+	 * Super Rare: 6.2%<br>
+	 * Ultra Rare: 2.4%<br>
+	 * Ultimate Rare: 0.4%
+	 * 
+     * @param draftPool
+     * @param deck
+     * @param choices
+     * @param threePicks
+     * @return void
+     */
+	public static void picksVoid(ArrayList<Card> draftPool, ArrayList<Card> deck, int choices, ArrayList<Card> threePicks)
 	{
 		ArrayList<Card> picks = new ArrayList<Card>();
 		Card temp = new Card();
@@ -3848,9 +4072,25 @@ public class CardPool_GUI_1_Stable {
 		copyPoolVoid(picks, threePicks);
 	}
 	
-	// Generates a list of 'random' picks from draftPool
-		// Makes sure those cards exist in the pool, are not duplicates of each other and picking any of them should not break deck limits
-		static void picksVoidReroll(ArrayList<Card> draftPool, ArrayList<Card> deck, int choices, ArrayList<Card> threePicks)
+	/**
+	 * <html>
+	 * <br>Generates a list of 'random' picks from draftPool
+	 * <br>Makes sure those cards exist in the pool, are not duplicates of each other and picking any of them should not break deck limits
+	 * <br>The chances are decreased for all rarities except common when rerolling. Common roll chances are increased.
+	 * <br>Chances<br>
+	 * ---------<br>
+	 * Common: 72.6%<br>
+	 * Rare: 18.4%<br>
+	 * Super Rare: 6.2%<br>
+	 * Ultra Rare: 2.4%<br>
+	 * Ultimate Rare: 0.4%
+	 * 
+     * @param draftPool
+     * @param deck
+     * @param choices
+     * @return The edited array
+     */
+	public static void picksVoidReroll(ArrayList<Card> draftPool, ArrayList<Card> deck, int choices, ArrayList<Card> threePicks)
 		{
 			ArrayList<Card> picks = new ArrayList<Card>();
 			Card temp = new Card();
@@ -3881,17 +4121,26 @@ public class CardPool_GUI_1_Stable {
 			copyPoolVoid(picks, threePicks);
 		}
 
-
-	// Returns a number between 1-1000
-	static int oneKDie()
+	/**
+	 * "Rolls a 1000 sided die"
+     * 
+     * @return a random number between 1-1000
+     */ 
+	public static int oneKDie()
 	{
 		Random seed = new Random();
 		int seedValue = seed.nextInt(1000);
 		return seedValue;
 	}
-
-	// Returns the number of cards of the given rarity that exist within the given pool
-	static int howManyRarity(ArrayList<Card> pool, String rarity)
+	
+	/**
+	 * Counts the number of cards of the given rarity that exist within the given pool
+	 * 
+     * @param pool
+     * @param rarity
+     * @return number of cards from the pool that match the given rarity 
+     */  
+	public static int howManyRarity(ArrayList<Card> pool, String rarity)
 	{
 		int counter = 0;
 		for (Card card : pool)
@@ -3907,7 +4156,7 @@ public class CardPool_GUI_1_Stable {
 
 	// Rolls a random card from the draft pool with the passed rarity
 	// Auto checks for deck limits and compares against other picks
-	static boolean rarityRoll(ArrayList<Card> draftPool, String rarity, ArrayList<Card> deck, Card temp, String roll, String seedValue, ArrayList<Card> picks, boolean rolling, int seed)
+	public static boolean rarityRoll(ArrayList<Card> draftPool, String rarity, ArrayList<Card> deck, Card temp, String roll, String seedValue, ArrayList<Card> picks, boolean rolling, int seed)
 	{
 		boolean checker = rolling;
 		if (isThereRandomRarity(draftPool, rarity))
@@ -3926,7 +4175,7 @@ public class CardPool_GUI_1_Stable {
 		return checker;
 	}
 
-	static boolean rarityRollBackup(ArrayList<Card> draftPool, String rarity, ArrayList<Card> deck, Card temp, String roll, String seedValue, ArrayList<Card> picks, boolean rolling, int seed)
+	public static boolean rarityRollBackup(ArrayList<Card> draftPool, String rarity, ArrayList<Card> deck, Card temp, String roll, String seedValue, ArrayList<Card> picks, boolean rolling, int seed)
 	{
 		boolean checker = rolling;
 		if (isThereRandomRarity(draftPool, rarity))
@@ -3946,7 +4195,7 @@ public class CardPool_GUI_1_Stable {
 
 	// Checks every card in the passed pool to see if any match the passed rarity
 	// If there are no cards at all that match returns false, otherwise return true
-	static boolean isThereRandomRarity(ArrayList<Card> pool, String rarity)
+	public static boolean isThereRandomRarity(ArrayList<Card> pool, String rarity)
 	{
 		boolean checker = false;
 		for (Card card : pool)
@@ -3957,7 +4206,7 @@ public class CardPool_GUI_1_Stable {
 	}
 
 	// Pulls a random card with the given rarity from the given pool
-	static Card randomCardRarity(ArrayList<Card> pool, String rarity)
+	public static Card randomCardRarity(ArrayList<Card> pool, String rarity)
 	{
 		boolean looking = true;
 		Card randomCard = new Card();
@@ -3971,7 +4220,7 @@ public class CardPool_GUI_1_Stable {
 	}
 
 	// Pulls a random card from the given pool (equal weight to all cards)
-	static Card randomCard(ArrayList<Card> allCards)
+	public static Card randomCard(ArrayList<Card> allCards)
 	{
 		Random seed = new Random();
 		int seedValue = seed.nextInt(allCards.size());
@@ -3981,7 +4230,7 @@ public class CardPool_GUI_1_Stable {
 
 	// Runs through your pool and checks to see that no deck limits are being broken
 	// Returns true if the card could be added to your pool
-	static boolean limiter(ArrayList<Card> drafted, Card card)
+	public static boolean limiter(ArrayList<Card> drafted, Card card)
 	{
 		boolean checker = true;
 
@@ -4001,7 +4250,7 @@ public class CardPool_GUI_1_Stable {
 	}
 
 	// Checks to make sure all the choices presented are unique from one another
-	static boolean noDupes(ArrayList<Card> picks, Card card)
+	public static boolean noDupes(ArrayList<Card> picks, Card card)
 	{
 		boolean checker = true;
 		if (picks.isEmpty() == false)
@@ -4017,7 +4266,7 @@ public class CardPool_GUI_1_Stable {
 	}
 
 	// All the listeners for the ban: scores sub menu
-	static void banScoreListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem lowScore,
+	public static void banScoreListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem lowScore,
 			JMenuItem medScore, JMenuItem highScore, JMenuItem veryHighScore, JMenuItem OP)
 		{
 			lowScore.addActionListener(new ActionListener() 
@@ -4217,9 +4466,8 @@ public class CardPool_GUI_1_Stable {
 
 		}
 	
-	
 	// All the listeners for the ban: types sub menu
-	static void banTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Aqua,
+	public static void banTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Aqua,
 			JMenuItem Beast, JMenuItem BeastWarrior, JMenuItem Dinosaur, JMenuItem Divine, JMenuItem Dragon, JMenuItem Fairy, JMenuItem Fiend, JMenuItem Fish, JMenuItem Insect,
 			JMenuItem Machine, JMenuItem Plant, JMenuItem Psychic, JMenuItem Pyro, JMenuItem Reptile, JMenuItem Rock, JMenuItem SeaSerpent, JMenuItem Spellcaster,
 			JMenuItem Thunder, JMenuItem Warrior, JMenuItem WingedBeast, JMenuItem Wyrm, JMenuItem Zombie)
@@ -5124,9 +5372,8 @@ public class CardPool_GUI_1_Stable {
 
 	}
 
-	
 	// All the listeners for the ban: card type sub menu
-		static void banCardTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Spell,
+	public static void banCardTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Spell,
 				JMenuItem Trap, JMenuItem Contin, JMenuItem ContinSpell, JMenuItem ContinTrap, JMenuItem Field, JMenuItem Quickplay, JMenuItem Equip, JMenuItem Counter)
 		{
 			Spell.addActionListener(new ActionListener() 
@@ -5481,10 +5728,8 @@ public class CardPool_GUI_1_Stable {
 			});
 		}
 	
-	
-
 	// All the listeners for the ban: attributes sub menu
-	static void banAttributeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Water,
+	public static void banAttributeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Water,
 			JMenuItem Fire, JMenuItem Wind, JMenuItem Light, JMenuItem Earth, JMenuItem Dark)
 	{
 		Water.addActionListener(new ActionListener() 
@@ -5724,7 +5969,7 @@ public class CardPool_GUI_1_Stable {
 
 	// Sets up all the ban>grouping listeners within the ban menu
 	@SuppressWarnings("rawtypes")
-	static void banGroupListenerInit(ArrayList<Card> allCards, JFrame DraftInit, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, 
+	public static void banGroupListenerInit(ArrayList<Card> allCards, JFrame DraftInit, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, 
 			JMenuItem Monarchs, JMenuItem Fissure, JMenuItem TrapHole, JMenuItem Exodia, JMenuItem Naturia, JMenuItem Toon, JMenuItem Draw,
 			JMenuItem Ritual, JMenuItem Fusion, JMenuItem LowAtk, JMenuItem Limited, JMenuItem SemiLimited, JMenuItem HighAtk, JMenuItem LowLvl, JMenuItem HighLvl,
 			JMenuItem AncientGear, JMenuItem Archfiend, JMenuItem Crashbug, JMenuItem Destiny, JMenuItem Elemental,
@@ -8734,7 +8979,7 @@ public class CardPool_GUI_1_Stable {
 	}
 	
 	// Setup the view database listeners the first time when the program opens
-		public static void viewDatabaseListenerInit2(JMenu mnViewDatabase, JMenuItem mntmViewAllCards, JMenuItem mntmNewMenuItem, ArrayList<Card> draftAllCards, 
+	public static void viewDatabaseListenerInit2(JMenu mnViewDatabase, JMenuItem mntmViewAllCards, JMenuItem mntmNewMenuItem, ArrayList<Card> draftAllCards, 
 				JMenuItem mntmUltraRares, JMenuItem mntmSuperRares, JMenuItem mntmRares, JMenuItem mntmCommon, boolean urItem, boolean ulrItem, boolean srItem, 
 				boolean rItem, boolean cItem)
 		{
@@ -12161,7 +12406,7 @@ public class CardPool_GUI_1_Stable {
 				JFrame banList = new JFrame();
 				banList.setTitle("Ban List");
 				banList.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
-				banList.setBounds(100, 100, 496, 443);
+				banList.setBounds(100, 100, 750, 470);
 				banList.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				banList.getContentPane().setLayout(new GridBagLayout());
 				JLabel sourceLabel = new JLabel("Allowed Cards");
@@ -12703,8 +12948,9 @@ public class CardPool_GUI_1_Stable {
 				boolean field = false;	boolean equip = false;	boolean ritual = false;	boolean normal = false;
 				// END Variable Init
 
+				String databaseName = "yugiohDatabase.txt";
 				// Database Setup
-				readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards);		
+				readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards, databaseName);		
 				ArrayList<Card> backupAllCards = copyPool(allCards);
 				ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
 				ArrayList<Card> blackListed = new ArrayList<Card>();
@@ -12744,10 +12990,6 @@ public class CardPool_GUI_1_Stable {
 		}
 	}
 	
-
-	
-
-	
 	// Type counter
 	public static int typeCount(ArrayList<Card> pool, String type)
 	{
@@ -12777,7 +13019,6 @@ public class CardPool_GUI_1_Stable {
 		
 		return count;
 	}
-	
 	
 	// Spell counter
 	public static int spellCount(ArrayList<Card> pool)
@@ -12839,7 +13080,6 @@ public class CardPool_GUI_1_Stable {
 		return count;
 	}
 	
-
 	// Level >< counter
 	public static int lvlBetweenCount(ArrayList<Card> pool, int lowLvl, int highLvl)
 	{
