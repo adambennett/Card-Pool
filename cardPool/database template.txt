@@ -782,7 +782,6 @@ Yomi Ship~Water~Aqua~800~1400~3~2~Effect Monster~true~79~false~false~false~false
 Zaborg the Thunder Monarch~Light~Thunder~2400~1000~5~1~Effect Monster~true~70~false~false~false~false~false~1~monarch~false~false~Rare~(Text)~light&thunder&board control
 Zombyra the Dark~Dark~Warrior~2100~500~4~4~Effect Monster~true~70~false~false~false~false~false~3~none~false~false~Rare~This card cannot attack your opponent directly. If this card destroys a monster by battle: This card loses 200 ATK.~dark&warrior&defense
 Zure, Knight of Dark World~Dark~Fiend~1800~1500~4~1~Normal Monster~true~50~false~false~false~false~false~1~none~false~false~Common~none~none
-
 Cross-Sword Beetle~Wind~Insect~1800~1200~4~3~Effect Monster~true~57~false~false~false~false~false~3~none~false~false~Rare~While you control another Insect-Type monster, during battle between an Insect-Type monster you control and a Defense Position monster whose DEF is lower than the ATK of that Insect-Type moster, inflict the difference as Battle Damage to your opponent.~insect&wind&piercing damage
 Evigishki Soul Ogre~Water~Aqua~2800~2800~8~1~Effect Monster~true~82~false~false~false~false~false~3~none~false~false~Super Rare~Cannot be Normal Summoned or Set. Must first be Ritual Summoned with a "Gishki" Ritual Spell Card. Once per turn: You can discard 1 "Gishki" monster to target 1 face-up card your opponent controls; shuffle it to the Deck.~ritual&gishki&aqua&water
 Gishki Mollusk~Water~Aqua~1700~900~4~2~Effect Monster~true~42~false~false~false~false~false~3~none~false~false~Common~When this card is sent to the Graveyard by a card effect: Look at the top 3 cards of your Deck, then return them all to the top or to the bottom of the Deck, in any order.~gishki&water&aqua
@@ -895,7 +894,44 @@ Hand of Nephthys~Wind~Spellcaster~600~600~2~4~Effect Monster~true~80~false~false
 The Creator Incarnate~Light~Warrior~1600~1500~4~3~Effect Monster~true~68~false~false~false~false~false~3~none~false~false~Common~(Text)~light&warrior&easy summon&creator
 The Creator~Light~Thunder~2300~3000~8~3~Effect Monster~true~85~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~light&thunder&creator&easy summon
 Golem Sentry~Earth~Rock~800~1800~4~4~Effect Monster~true~59~false~false~false~false~false~3~none~false~false~Common~(Text)~earth&rock&flip&defense&return to hand
-
+Informer Spider~Earth~Insect~500~1800~4~2~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Common~(Text)~earth&insect
+Double Coston~Dark~Zombie~1700~1650~4~2~Effect Monster~true~74~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&zombie&easy summon
+Tytannial, Princess of Camellias~Wind~Plant~2800~2600~8~3~Effect Monster~true~82~false~false~false~false~false~3~none~false~false~Rare~(Text)~wind&plant&board control
+Slate Warrior~Wind~Fiend~1900~400~4~7~Effect Monster~true~89~false~false~false~false~false~3~none~false~false~Ultra Rare~(Text)~wind&fiend&flip&board control
+Darklord Superbia~Dark~Fairy~2900~2400~8~3~Effect Monster~true~84~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~dark&fairy&easy summon&graveyard
+Tierra, Source of Destruction~Light~Fiend~3400~3600~11~5~Effect Monster~true~55~false~false~false~false~false~1~none~false~false~Ultimate Rare~Cannot be Normal Summoned/Set. Must be Special Summoned (from your hand) by shuffling 10 other cards with different names from your hand and/or field into the Deck and/or Extra Deck, and cannot be Special Summoned by other ways. This card's Special Summon cannot be negated. If this card is Special Summoned: Shuffle all cards into the Deck, except this card, from each player's hand, field, Graveyard, and face-up Pendulum Monsters from the Extra Deck. Neither player can activate cards or effects in response to this effect's activation.~light&fiend&board control
+Horus the Black Flame Dragon LV8~Fire~Dragon~3000~1800~8~1~Effect Monster~true~89~false~false~false~false~false~3~none~false~false~Ultra Rare~(Text)~fire&dragon&LV&board control
+Infernal Flame Emperor~Fire~Pyro~2700~1600~9~3~Effect Monster~true~75~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~fire&pyro&st removal&banish
+King of the Swamp~Water~Aqua~500~1100~3~1~Effect Monster~true~80~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~water&aqua&fusion&search
+Armed Dragon LV7~Wind~Dragon~2800~1000~7~1~Effect Monster~true~83~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~wind &dragon&LV&board control
+Apprentice Piper~Dark~Spellcaster~100~1500~2~3~Effect Monster~true~96~false~false~false~false~false~1~none~false~false~Ultimate Rare~(Text)~easy summon&flip&spellcaster&dark
+Super-Ancient Dinobeast~Earth~Dinosaur~2700~1400~8~1~Effect Monster~true~79~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~dinosaur&earth&easy summon
+Gigaplant~Earth~Plant~2400~1200~6~1~Effect Monster~true~70~false~false~false~false~false~3~none~false~false~Rare~(Text)~earth&plant&gemini&easy summon&insect
+UFO Turtle~Fire~Machine~1400~1200~4~1~Effect Monster~true~50~false~false~false~false~false~3~none~false~false~Common~(Text)~fire&machine&search&easy summon
+Lightray Gearfried~Light~Warrior~2800~2200~8~2~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Common~(Text)~light&warrior&lightray
+Lightray Diabolos~Light~Dragon~2800~1000~7~2~Effect Monster~true~49~false~false~false~false~false~3~none~false~false~Common~(Text)~light&dragon&lightray
+Lightray Daedalus~Light~Sea Serpent~2600~1500~7~2~Effect Monster~true~59~false~false~false~false~false~3~none~false~false~Rare~(Text)~light&sea serpent&lightray&board control
+Lightray Grepher~Light~Warrior~1700~1600~4~1~Effect Monster~true~42~false~false~false~false~false~3~none~false~false~Common~(Text)~light&warrior&lightray
+Don Zaloog~Dark~Warrior~1400~1500~4~1~Effect Monster~true~35~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~dark&warrior&opponent discard
+Sirenorca~Water~Winged Beast~2200~1000~5~2~Effect Monster~true~65~false~false~false~false~false~3~none~false~false~Rare~(Text)~fish&winged beast&water&easy summon
+Chainsaw Insect~Earth~Insect~2400~0~4~3~Effect Monster~true~78~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~earth&insect&defense
+Ultimate Tyranno~Earth~Dinosaur~3000~2200~8~3~Effect Monster~true~88~false~false~false~false~false~3~none~false~false~Ultra Rare~(Text)~dinosaur&earth&board control
+Spell Strider~Earth~Warrior~1800~600~4~3~Effect Monster~true~59~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~earth&warrior&st removal&banish
+Genesis Dragon~Light~Dragon~2200~1800~6~1~Effect Monster~true~61~false~false~false~false~false~3~none~false~false~Common~(Text)~light&dragon&graveyard
+Risebell the Star Psycher~Wind~Psychic~1500~1500~4~1~Effect Monster~true~32~false~false~false~false~false~3~none~false~false~Common~(Text)~wind&psychic&ritual
+Al-Lumi'Raj~Wind~Wyrm~1600~1000~3~1~Effect Monster~true~55~false~false~false~false~false~3~none~false~false~Common~(Text)~wind&wyrm&board control
+Dark Lucius LV4~Earth~Fiend~1000~300~4~3~Effect Monster~true~10~false~false~false~false~false~3~none~false~false~Common~(Text)~LV&earth&fiend
+Aztekipede, The Worm Warrior~Earth~Insect~1900~400~4~2~Effect Monster~true~56~false~false~false~false~false~3~none~false~false~Common~Cannot be Normal Summoned/Set. Must be Special Summoned by banishing 1 Insect-Type monster from your Graveyard, and cannot be Special Summoned by other ways. If this card inflicts battle damage to your opponent: Send the top card of their Deck to the Graveyard~earth&insect&banish&opponent discard
+Destiny Hero - Disk Commander~Dark~Warrior~300~300~1~3~Effect Monster~true~23~false~false~false~false~false~3~none~false~false~Common~(Text)~destiny hero&graveyard&draw&dark&warrior
+Relinquished Spider~Earth~Insect~300~500~2~1~Effect Monster~true~37~false~false~false~false~false~3~none~false~false~Rare~(Text)~earth&insect&board control
+Mother Spider~Dark~Insect~2300~1200~6~1~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&insect&easy summon&board control
+Shield Worm~Earth~Insect~800~2000~4~4~Effect Monster~true~44~false~false~false~false~false~3~none~false~false~Common~(Text)~earth&insect&defense&opponent discard
+Dark General Freed~Dark~Warrior~2300~1700~5~2~Effect Monster~true~77~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&warrior&board control&search
+Airknight Parshath~Light~Fairy~1900~1400~5~3~Effect Monster~true~52~false~false~false~false~false~3~none~false~false~Common~(Text)~light&fairy&draw
+Exploder Dragon~Earth~Dragon~1000~0~3~1~Effect Monster~true~52~false~false~false~false~false~3~none~false~false~Rare~(Text)~earth&dragon&board control
+Fabled Gallabas~Light~Fiend~1500~800~4~1~Effect Monster~true~69~false~false~false~false~false~3~none~false~false~Rare~(Text)~light&fiend&board control&player discard
+Fabled Ashenveil~Light~Fiend~1600~1200~4~1~Effect Monster~true~71~false~false~false~false~false~3~none~false~false~Rare~(Text)~light&fiend&board control&player discard
+Gishki Abyss~Water~Fish~800~500~2~1~Effect Monster~true~49~false~false~false~false~false~3~none~false~false~Rare~(Text)~gishki&water&fish&search
 
 
 (Spell)~none~none~0~0~0~(quantity)~Spell~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)

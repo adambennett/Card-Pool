@@ -50,13 +50,14 @@ public class main
 
 		readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards);		
 	
+		printRarities(allCards);
 		ArrayList<Card> allCardsNoDupes = listMaker(allCards);
 		printRarities(allCardsNoDupes);
-		//imageCheck(allCardsNoDupes);
+		imageCheck(allCardsNoDupes);
 		//crossLimitPrint(allCardsNoDupes);
 		//textCheck(allCardsNoDupes);
-		//parseHubFormat(allCardsNoDupes);
-		printDiscoverSpell(allCardsNoDupes);
+		parseHubFormat(allCardsNoDupes);
+		//printDiscoverSpell(allCardsNoDupes);
 		
 		
 		// CONSOLE DRAFT START
@@ -1734,7 +1735,7 @@ public class main
 			if (isImage("src/images/" + card.getName() + ".png")) { }
 			else { System.out.print(card.getName() + "', '"); unique++; }
 		}
-		System.out.println("Cards w/o Image: " + unique);
+		System.out.println("\nCards w/o Image: " + unique);
 	}
 	public static void crossLimitPrint(ArrayList<Card> pool)
 	{

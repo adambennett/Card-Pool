@@ -496,6 +496,13 @@ public class CardPool_GUI_1_Stable {
 				JLabel pick1Score = new JLabel(String.valueOf(threeChoiceTemp.get(0).getTierScore())); 
 				JLabel pick2Score = new JLabel(String.valueOf(threeChoiceTemp.get(1).getTierScore())); 
 				JLabel pick3Score = new JLabel(String.valueOf(threeChoiceTemp.get(2).getTierScore())); 
+				JLabel pick1Name = new JLabel(threeChoiceTemp.get(0).getName());
+				JLabel pick2Name = new JLabel(threeChoiceTemp.get(1).getName());
+				JLabel pick3Name = new JLabel(threeChoiceTemp.get(2).getName());
+				JButton pick1Text = new JButton("Text");
+				JButton pick2Text = new JButton("Text");
+				JButton pick3Text = new JButton("Text");
+				pick1Text.setEnabled(false); pick2Text.setEnabled(false); pick3Text.setEnabled(false);
 				JProgressBar avgDeckScore = new JProgressBar(0, 100);
 				avgDeckScore.setToolTipText("Average Card Score");
 				avgDeckScore.setStringPainted(true);
@@ -505,27 +512,38 @@ public class CardPool_GUI_1_Stable {
 				poolSize.setString(String.valueOf(draftPools.get(playerDrafting).size()));*/
 
 				// Adding everything to the draft window
-				c.insets = new Insets(0,10,10,10); 
+				c.insets = new Insets(10,10,5,10); 
 				c.weightx = 0.5;  c.gridx = 1; c.gridy = 0; playerDraftLbl.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(playerDraftLbl, c);
+				c.gridx = 0; c.gridy = 1; pick1Name.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Name, c);
+				c.insets = new Insets(0,180,5,180);
+				c.gridx = 0; c.gridy = 2; pick1Text.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Text, c);
+				c.insets = new Insets(10,10,5,10); 
+				c.gridx = 1; c.gridy = 1; pick2Name.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Name, c);
+				c.insets = new Insets(0,180,5,180);
+				c.gridx = 1; c.gridy = 2; pick2Text.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Text, c);
+				c.insets = new Insets(10,10,5,10); 
+				c.gridx = 2; c.gridy = 1; pick3Name.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Name, c);
+				c.insets = new Insets(0,180,5,180);
+				c.gridx = 2; c.gridy = 2; pick3Text.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Text, c);
 				c.insets = new Insets(30,75,10,75); 
-				c.gridx = 0; c.gridy = 1; DraftInit.getContentPane().add(cardPick1, c); 
-				c.gridx = 1; c.gridy = 1; DraftInit.getContentPane().add(cardPick2, c); 
-				c.gridx = 2; c.gridy = 1; DraftInit.getContentPane().add(cardPick3, c);
+				c.gridx = 0; c.gridy = 3; DraftInit.getContentPane().add(cardPick1, c); 
+				c.gridx = 1; c.gridy = 3; DraftInit.getContentPane().add(cardPick2, c); 
+				c.gridx = 2; c.gridy = 3; DraftInit.getContentPane().add(cardPick3, c);
 				c.insets = new Insets(0,75,10,75); 
-				c.gridx = 0; c.gridy = 4; DraftInit.getContentPane().add(viewDeck, c);
-				c.gridx = 1; c.gridy = 4; pickCounter.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pickCounter, c);
-				c.gridx = 2; c.gridy = 4; DraftInit.getContentPane().add(reroll, c);
+				c.gridx = 0; c.gridy = 6; DraftInit.getContentPane().add(viewDeck, c);
+				c.gridx = 1; c.gridy = 6; pickCounter.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pickCounter, c);
+				c.gridx = 2; c.gridy = 6; DraftInit.getContentPane().add(reroll, c);
 				c.insets = new Insets(0,10,10,10); 
-				c.gridx = 0; c.gridy = 2; pick1Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Rarity, c);
-				c.gridx = 1; c.gridy = 2; pick2Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Rarity, c); 
-				c.gridx = 2; c.gridy = 2; pick3Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Rarity, c);
-				c.gridx = 0; c.gridy = 3; pick1Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Score, c);
-				c.gridx = 1; c.gridy = 3; pick2Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Score, c);
-				c.gridx = 2; c.gridy = 3; pick3Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Score, c);
-				c.gridx = 1; c.gridy = 5; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolCardCount, c);
+				c.gridx = 0; c.gridy = 4; pick1Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Rarity, c);
+				c.gridx = 1; c.gridy = 4; pick2Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Rarity, c); 
+				c.gridx = 2; c.gridy = 4; pick3Rarity.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Rarity, c);
+				c.gridx = 0; c.gridy = 5; pick1Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Score, c);
+				c.gridx = 1; c.gridy = 5; pick2Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Score, c);
+				c.gridx = 2; c.gridy = 5; pick3Score.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Score, c);
+				c.gridx = 1; c.gridy = 7; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolCardCount, c);
 				//c.gridx = 1; c.gridy = 5; poolCardCount.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(poolSize, c);
 				c.insets = new Insets(0,500,10,500); 
-				c.gridx = 0; c.gridy = 6; c.gridwidth = 3; DraftInit.getContentPane().add(avgDeckScore, c);
+				c.gridx = 0; c.gridy = 8; c.gridwidth = 3; DraftInit.getContentPane().add(avgDeckScore, c);
 
 
 
@@ -569,6 +587,10 @@ public class CardPool_GUI_1_Stable {
 							pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
 							pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
 							pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+							
+							pick1Name.setText(threeChoiceTemp.get(0).getName());
+							pick2Name.setText(threeChoiceTemp.get(1).getName());
+							pick3Name.setText(threeChoiceTemp.get(2).getName());
 							
 							avgScore = avgScoreCards(drafted, (pickNumber));
 							avgDeckScore.setString(String.valueOf(avgScore));
@@ -673,21 +695,22 @@ public class CardPool_GUI_1_Stable {
 									reroll.setText("Reroll " + "(" + rerollsLocal + ")");
 									drafted.clear();
 									removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
+									threeChoiceTemp.clear();
 									threeChoiceTemp = picks(draftPools.get(playerDrafting), drafted, 3);
 									ImageIcon coh3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 									else { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
-									cardPick1.setIcon(coh2);
+									cardPick1.setIcon(coh3);
 
 									ImageIcon bewd3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 									else { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
-									cardPick2.setIcon(bewd2);
+									cardPick2.setIcon(bewd3);
 
 									ImageIcon exodia3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
-									cardPick3.setIcon(exodia2);			
+									cardPick3.setIcon(exodia3);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 
@@ -701,6 +724,10 @@ public class CardPool_GUI_1_Stable {
 									pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
 									pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
 									pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+									
+									pick1Name.setText(threeChoiceTemp.get(0).getName());
+									pick2Name.setText(threeChoiceTemp.get(1).getName());
+									pick3Name.setText(threeChoiceTemp.get(2).getName());
 									
 									avgScore = avgScoreCards(drafted, (pickNumber));
 									avgDeckScore.setString(String.valueOf(avgScore));
@@ -1193,6 +1220,10 @@ public class CardPool_GUI_1_Stable {
 							pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
 							pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
 							
+							pick1Name.setText(threeChoiceTemp.get(0).getName());
+							pick2Name.setText(threeChoiceTemp.get(1).getName());
+							pick3Name.setText(threeChoiceTemp.get(2).getName());
+							
 							avgScore = avgScoreCards(drafted, (pickNumber));
 							avgDeckScore.setString(String.valueOf(avgScore));
 							avgDeckScore.setValue(avgScore);
@@ -1294,21 +1325,22 @@ public class CardPool_GUI_1_Stable {
 									reroll.setText("Reroll " + "(" + rerollsLocal + ")");
 									drafted.clear();
 									removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
+									threeChoiceTemp.clear();
 									threeChoiceTemp = picks(draftPools.get(playerDrafting), drafted, 3);
 									ImageIcon coh3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 									else { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
-									cardPick1.setIcon(coh2);
+									cardPick1.setIcon(coh3);
 
 									ImageIcon bewd3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 									else { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
-									cardPick2.setIcon(bewd2);
+									cardPick2.setIcon(bewd3);
 
 									ImageIcon exodia3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
-									cardPick3.setIcon(exodia2);			
+									cardPick3.setIcon(exodia3);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 
@@ -1322,6 +1354,10 @@ public class CardPool_GUI_1_Stable {
 									pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
 									pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
 									pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+									
+									pick1Name.setText(threeChoiceTemp.get(0).getName());
+									pick2Name.setText(threeChoiceTemp.get(1).getName());
+									pick3Name.setText(threeChoiceTemp.get(2).getName());
 									
 									avgScore = avgScoreCards(drafted, (pickNumber));
 									avgDeckScore.setString(String.valueOf(avgScore));
@@ -1785,6 +1821,10 @@ public class CardPool_GUI_1_Stable {
 							pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
 							pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
 							
+							pick1Name.setText(threeChoiceTemp.get(0).getName());
+							pick2Name.setText(threeChoiceTemp.get(1).getName());
+							pick3Name.setText(threeChoiceTemp.get(2).getName());
+							
 							avgScore = avgScoreCards(drafted, (pickNumber));
 							avgDeckScore.setString(String.valueOf(avgScore));
 							avgDeckScore.setValue(avgScore);
@@ -1886,21 +1926,22 @@ public class CardPool_GUI_1_Stable {
 									reroll.setText("Reroll " + "(" + rerollsLocal + ")");
 									drafted.clear();
 									removeLimitedCardsVoid(draftPools.get(playerDrafting), drafted);
+									threeChoiceTemp.clear();
 									threeChoiceTemp = picks(draftPools.get(playerDrafting), drafted, 3);
 									ImageIcon coh3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png")) { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + "Small.png");}
 									else { coh3 = new ImageIcon("src/images/" + threeChoiceTemp.get(0).getName() + ".png"); }
-									cardPick1.setIcon(coh2);
+									cardPick1.setIcon(coh3);
 
 									ImageIcon bewd3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png")) { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + "Small.png");}
 									else { bewd3 = new ImageIcon("src/images/" + threeChoiceTemp.get(1).getName() + ".png"); }
-									cardPick2.setIcon(bewd2);
+									cardPick2.setIcon(bewd3);
 
 									ImageIcon exodia3 = null;
 									if (isImage("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png")) { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + "Small.png");}
 									else { exodia3 = new ImageIcon("src/images/" + threeChoiceTemp.get(2).getName() + ".png"); }
-									cardPick3.setIcon(exodia2);			
+									cardPick3.setIcon(exodia3);			
 									pickCounter.setText("Pick " + pickNumber + "/" + cardsToDraftLocal);
 									poolCardCount.setText("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 
@@ -1914,6 +1955,10 @@ public class CardPool_GUI_1_Stable {
 									pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
 									pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
 									pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+									
+									pick1Name.setText(threeChoiceTemp.get(0).getName());
+									pick2Name.setText(threeChoiceTemp.get(1).getName());
+									pick3Name.setText(threeChoiceTemp.get(2).getName());
 									
 									avgScore = avgScoreCards(drafted, (pickNumber));
 									avgDeckScore.setString(String.valueOf(avgScore));
@@ -2378,6 +2423,10 @@ public class CardPool_GUI_1_Stable {
 							pick1Score.setText(String.valueOf(threeChoiceTemp.get(0).getTierScore()));
 							pick2Score.setText(String.valueOf(threeChoiceTemp.get(1).getTierScore()));
 							pick3Score.setText(String.valueOf(threeChoiceTemp.get(2).getTierScore()));
+							
+							pick1Name.setText(threeChoiceTemp.get(0).getName());
+							pick2Name.setText(threeChoiceTemp.get(1).getName());
+							pick3Name.setText(threeChoiceTemp.get(2).getName());
 							
 							avgScore = avgScoreCards(drafted, (pickNumber));
 							avgDeckScore.setString(String.valueOf(avgScore));
@@ -12870,7 +12919,7 @@ public class CardPool_GUI_1_Stable {
 				Divine.setEnabled(true); Dragon.setEnabled(true); Fairy.setEnabled(true);
 				Fiend.setEnabled(true); Fish.setEnabled(true); Insect.setEnabled(true);
 				Machine.setEnabled(true); Plant.setEnabled(true); 
-				//Psychic.setEnabled(true);
+				Psychic.setEnabled(true);
 				Pyro.setEnabled(true); Reptile.setEnabled(true); Rock.setEnabled(true);
 				SeaSerpent.setEnabled(true); Spellcaster.setEnabled(true); Thunder.setEnabled(true);
 				Warrior.setEnabled(true); WingedBeast.setEnabled(true); Wyrm.setEnabled(true);
