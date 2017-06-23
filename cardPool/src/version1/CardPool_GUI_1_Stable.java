@@ -19,9 +19,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,6 +82,7 @@ public class CardPool_GUI_1_Stable {
 	private static Card dynamicCard = new Card("init");
 	private ArrayList<Card> drafted = new ArrayList<Card>();
 	private ArrayList<Card> threeChoiceTemp = new ArrayList<Card>();
+	private ArrayList<Card> discovered = new ArrayList<Card>();
 	private static JList<Card> dynamicList = new JList<Card>();
 	private static JList<ListEntry> dynamicList2 = new JList<ListEntry>();
 	private static DefaultListModel<Card> dynamicModel1 = new DefaultListModel<Card>();
@@ -209,10 +215,11 @@ public class CardPool_GUI_1_Stable {
 		JLabel lblCardCount = DefaultComponentFactory.getInstance().createTitle("Cards Available: " + totalCards); 
 		JLabel lblUniqueCards = new JLabel("Unique Cards: " + totalUnique); 
 		JSpinner numberOfPlayers = new JSpinner(); numberOfPlayers.setModel(new SpinnerNumberModel(1, 1, 10, 1));	
-		JSpinner cardsToDraft = new JSpinner(); cardsToDraft.setModel(new SpinnerNumberModel(60, 10, 200, 5)); 
+		JSpinner cardsToDraft = new JSpinner(); cardsToDraft.setModel(new SpinnerNumberModel(60, 10, 300, 5)); 
 		JSpinner rerolls = new JSpinner(); rerolls.setModel(new SpinnerNumberModel(1, 0, 10, 1)); 
 		JComboBox<String> fillStyle = new JComboBox<String>(); 
 		JButton draftStart = new JButton("Start Draft"); 
+		draftStart.setForeground(Color.RED);
 		JMenuBar menuBar = new JMenuBar();
 		JMenu mnViewDatabase = new JMenu("Database");
 		mnViewDatabase.setToolTipText("View cards that exist within the overall draft pool");
@@ -319,6 +326,13 @@ public class CardPool_GUI_1_Stable {
 		JMenuItem highScore = new JMenuItem("TierScore > 60");
 		JMenuItem veryHighScore = new JMenuItem("TierScore > 75");
 		JMenuItem OP = new JMenuItem("TierScore > 85");
+		JMenu dictionary = new JMenu("Index");
+		JMenuItem terms = new JMenuItem("Glossary");
+		JMenuItem rulings = new JMenuItem("Card Rulings");
+		JMenuItem rules = new JMenuItem("Basic Rules");
+		JMenuItem advRules = new JMenuItem("Advanced Rules");
+		JMenuItem draftRules = new JMenuItem("Draft Information");
+		JMenuItem report = new JMenuItem("Report");
 
 		DraftInit.getContentPane().add(lblOfPlayers); 
 		DraftInit.getContentPane().add(numberOfPlayers);
@@ -335,11 +349,14 @@ public class CardPool_GUI_1_Stable {
 		lblCardCount.setHorizontalAlignment(SwingConstants.CENTER);
 		DraftInit.getContentPane().add(lblUniqueCards);
 		DraftInit.setJMenuBar(menuBar);
-		menuBar.add(mnViewDatabase); menuBar.add(mnBan);
+		menuBar.add(mnViewDatabase); menuBar.add(mnBan); menuBar.add(dictionary);
 		viewDatabaseListenerInit(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, allCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon);
 		mnBan.add(blacklist); mnBan.add(mnBanAll);
 		mnBan.add(mnBanGrouping); mnBan.add(mnBanAttribute);
 		mnBan.add(mnBanType); mnBan.add(mnBanCard); mnBan.add(mnBanScore);
+		
+		dictionary.add(rules); dictionary.add(advRules); dictionary.add(terms);
+		dictionary.add(rulings); dictionary.add(draftRules); dictionary.add(report);
 
 		mnBanAll.add(ultimateBanner); mnBanAll.add(ultraBanner); 
 		mnBanAll.add(superBanner); mnBanAll.add(rareBanner);
@@ -401,6 +418,8 @@ public class CardPool_GUI_1_Stable {
 				Discard, EasySummon, Aqua, Beast, BeastWarrior, Dinosaur, Divine, Dragon, Fairy, Fiend, Fish, Insect, Machine, Plant, Psychic, Pyro, Reptile, Rock, SeaSerpent, 
 				Spellcaster, Thunder, Warrior, WingedBeast, Wyrm, Zombie, Spell, Trap, Contin, ContinSpell, ContinTrap, Field, Quickplay, Equip, Counter, lowScore, medScore,
 				highScore, veryHighScore, OP);
+		
+		dictionaryListeners(rules);
 
 		// End primary window components
 
@@ -453,6 +472,8 @@ public class CardPool_GUI_1_Stable {
 
 				// Fills up an array used to display the correct database of cards during the draft (banned cards removed)
 				ArrayList<Card> draftAllCards = new ArrayList<Card>();
+				ArrayList<Card> graveyard = new ArrayList<Card>();
+				for (ArrayList<Card> deck : draftPools) { for (Card card : deck) { graveyard.add(card); } }
 				for (int d = 0; d < draftPools.size(); d++) { for (int e = 0; e < draftPools.get(d).size(); e++) { draftAllCards.add(draftPools.get(d).get(e)); } }
 				cardCounter(draftAllCards);
 				draftAllCards.sort(draftAllCards.get(0));
@@ -486,7 +507,7 @@ public class CardPool_GUI_1_Stable {
 				
 				// Setup the labels on the draft window
 				JLabel pickCounter = new JLabel("Pick " + pickNumber + "/" + cardsToDraftLocal);
-				pickCounter.setToolTipText("<html>Chances for Next 3 Cards:<br>--------------------------------<br>Common: 72.6%<br>Rare: 18.4%<br>Super Rare: 6.2%<br>Ultra Rare; 2.4%<br>Ultimate Rare: 0.4%");
+				pickCounter.setToolTipText("<html>Chances for Next 3 Cards:<br>--------------------------------<br>Common: 72.6%<br>Rare: 18.4%<br>Super Rare: 6.2%<br>Ultra Rare: 2.4%<br>Ultimate Rare: 0.4%");
 				JLabel poolCardCount = new JLabel("Pool: " + draftPools.get(playerDrafting).size() + "/" + defPoolSize);
 				//JProgressBar poolSize = new JProgressBar(0, defPoolSize);
 				JLabel playerDraftLbl = new JLabel("Player " + (playerDrafting + 1));
@@ -502,7 +523,7 @@ public class CardPool_GUI_1_Stable {
 				JButton pick1Text = new JButton("Text");
 				JButton pick2Text = new JButton("Text");
 				JButton pick3Text = new JButton("Text");
-				pick1Text.setEnabled(false); pick2Text.setEnabled(false); pick3Text.setEnabled(false);
+				//pick1Text.setEnabled(false); pick2Text.setEnabled(false); pick3Text.setEnabled(false);
 				JProgressBar avgDeckScore = new JProgressBar(0, 100);
 				avgDeckScore.setToolTipText("Average Card Score");
 				avgDeckScore.setStringPainted(true);
@@ -515,17 +536,17 @@ public class CardPool_GUI_1_Stable {
 				c.insets = new Insets(10,10,5,10); 
 				c.weightx = 0.5;  c.gridx = 1; c.gridy = 0; playerDraftLbl.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(playerDraftLbl, c);
 				c.gridx = 0; c.gridy = 1; pick1Name.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Name, c);
-				c.insets = new Insets(0,180,5,180);
+				c.insets = new Insets(5,180, 0, 180);
 				c.gridx = 0; c.gridy = 2; pick1Text.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick1Text, c);
 				c.insets = new Insets(10,10,5,10); 
 				c.gridx = 1; c.gridy = 1; pick2Name.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Name, c);
-				c.insets = new Insets(0,180,5,180);
+				c.insets = new Insets(5,180,0,180);
 				c.gridx = 1; c.gridy = 2; pick2Text.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick2Text, c);
 				c.insets = new Insets(10,10,5,10); 
 				c.gridx = 2; c.gridy = 1; pick3Name.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Name, c);
-				c.insets = new Insets(0,180,5,180);
+				c.insets = new Insets(5,180,0,180);
 				c.gridx = 2; c.gridy = 2; pick3Text.setHorizontalAlignment(SwingConstants.CENTER); DraftInit.getContentPane().add(pick3Text, c);
-				c.insets = new Insets(30,75,10,75); 
+				c.insets = new Insets(5,75,10,75); 
 				c.gridx = 0; c.gridy = 3; DraftInit.getContentPane().add(cardPick1, c); 
 				c.gridx = 1; c.gridy = 3; DraftInit.getContentPane().add(cardPick2, c); 
 				c.gridx = 2; c.gridy = 3; DraftInit.getContentPane().add(cardPick3, c);
@@ -546,6 +567,7 @@ public class CardPool_GUI_1_Stable {
 				c.gridx = 0; c.gridy = 8; c.gridwidth = 3; DraftInit.getContentPane().add(avgDeckScore, c);
 
 
+				
 
 				// Button Listeners for the draft window - cardPick listeners handle most of the draft logic	
 				cardPick1.addActionListener(new ActionListener() 
@@ -555,6 +577,14 @@ public class CardPool_GUI_1_Stable {
 						if (pickNumber <= cardsToDraftLocal)
 						{
 							drafted.add(threeChoiceTemp.get(0));
+							for (int i = 0; i < graveyard.size(); i++)
+							{
+								if (graveyard.get(i).getName().equals(threeChoiceTemp.get(0).getName()))
+								{
+									if (graveyard.get(i).getQuantity() > 1) { graveyard.get(i).decrement(); }
+									else { graveyard.remove(i); i = graveyard.size() + 10; }
+								}
+							}
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(0));
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(1));
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(2));
@@ -741,7 +771,36 @@ public class CardPool_GUI_1_Stable {
 									finalFrame.setBounds(100, 100, 496, 443);
 									finalFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 									finalFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-
+									
+									/*
+									ArrayList<Card> waterEffects = new ArrayList<Card>();
+									for (Card card : draftAllCards)
+									{
+										if (card.getAttribute().equals("Water") && card.getCardType().equals("Effect Monster"))
+										{
+											waterEffects.add(card);
+										}
+									}
+									
+									ArrayList<Card> effects = new ArrayList<Card>();
+									for (Card card : draftAllCards)
+									{
+										if (card.getCardType().equals("Effect Monster"))
+										{
+											effects.add(card);
+										}
+									}
+									
+									ArrayList<Card> spells = new ArrayList<Card>();
+									for (Card card : draftAllCards)
+									{
+										if (card.getCardType().equals("Spell"))
+										{
+											spells.add(card);
+										}
+									}
+									*/
+									
 									JButton viewDeckOf = new JButton("View Deck");
 									JButton viewStats = new JButton("Deck Stats");
 									JTextArea sendTo = new JTextArea(1, 15);
@@ -749,67 +808,68 @@ public class CardPool_GUI_1_Stable {
 									sendTo.setToolTipText("Send to this address");
 									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); Date date = new Date();
 									JComboBox playerDeck = new JComboBox();
-									JComboBox discoverOptions = new JComboBox();
-									discoverOptions.setModel(new DefaultComboBoxModel(new String[] {"Aqua", "Beast", "Board Control", "Card Draw", "Common", "Counter Trap", "Dark",
+									//JComboBox discoverOptions = new JComboBox();
+									/*discoverOptions.setModel(new DefaultComboBoxModel(new String[] {"Aqua", "Beast", "Board Control", "Card Draw", "Common", "Counter Trap", "Dark",
 											"Dinosaur", "Easy Summon", "Effect Monster", "Exodia", "Field Spell", "Fiend", "Flip Effect", "Fusion Monster", "Fusion or Ritual",
 											"Gadget", "Gishki", "Highly Rated", "Level 4 Effect Monster", "Level 4 Monster", "Level 4 Normal Monster", "Light", "Lightsworn",
 											"Monster", "No Tribute Monster", "Normal Monster", "One Tribute Effect Monster", "One Tribute Monster", "One Tribute Normal Monster",
 											"Plant", "Random", "Rare", "Ritual Monster", "Spell", "Spell or Trap", "Super Rare", "Toon", "Trap", "Two Tribute Effect Monster", 
 											"Two Tribute Monster", "Two Tribute Normal Monster", "Ultimate Rare", "Ultra Rare", "Unique", "Warrior", "Water", "Zombie"}));
-									JComboBox discoverLocation = new JComboBox();
+									*/
+									//discoverOptions.setModel(new DefaultComboBoxModel(new String[] {"Effect", "Random", "Spell", "Water Effect"}));
+									//JButton discoverBtn = new JButton("Discover");
 									finalFrame.getContentPane().add(playerDeck);
 									switch (playerCountLocal)
 									{
 									case 1:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck"}));
 										break;
 									case 2:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck"}));
 										break;
 									case 3:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck"}));
 										break;
 									case 4:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck"}));
 										break;
 									case 5:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
-												"Player 5 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+										//		"Player 5 Deck"}));
 										break;
 									case 6:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
-												"Player 5 Deck", "Player 6 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+										//		"Player 5 Deck", "Player 6 Deck"}));
 										break;
 									case 7:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
-												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+										//		"Player 5 Deck", "Player 6 Deck", "Player 7 Deck"}));
 										break;
 									case 8:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
-												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+										//		"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck"}));
 										break;
 									case 9:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
-												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+										//		"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck"}));
 										break;
 									case 10:
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
-												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck", "Player 10 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+										//		"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck", "Player 10 Deck"}));
 										break;
 									default: 
 										playerDeck.setModel(new DefaultComboBoxModel(new String[] {"Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10"}));
-										discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
-												"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck", "Player 10 Deck"}));
+										//discoverLocation.setModel(new DefaultComboBoxModel(new String[] { "Pool", "Player 1 Deck", "Player 2 Deck", "Player 3 Deck", "Player 4 Deck", 
+										//		"Player 5 Deck", "Player 6 Deck", "Player 7 Deck", "Player 8 Deck", "Player 9 Deck", "Player 10 Deck"}));
 										break;
 									}
 
@@ -1156,15 +1216,165 @@ public class CardPool_GUI_1_Stable {
 										}// END EMAIL
 									});
 								
+									/*
+									discoverBtn.addActionListener(new ActionListener()
+									{
+										@Override
+										public void actionPerformed(ActionEvent e) 
+										{
+											discovered.clear();
+												if (discoverOptions.getSelectedItem().toString().equals("Effect"))
+												{
+													discovered = discoverCardType(draftAllCards, "Effect Monster");
+												}
+												
+												else if (discoverOptions.getSelectedItem().toString().equals("Random"))
+												{
+													discovered = discoverCard(draftAllCards);
+												}
+												
+												else if (discoverOptions.getSelectedItem().toString().equals("Spell"))
+												{
+													discovered = discoverCardType(draftAllCards, "Spell");
+												}
+												
+												else if (discoverOptions.getSelectedItem().toString().equals("Water Effect"))
+												{
+													//discovered = discoverAttributeCardType(draftAllCards, "Water", "Effect Monster");
+													discovered = discoverWaterEffect(waterEffects);
+												}
+											JFrame discoverFrame = new JFrame();
+											discoverFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+											discoverFrame.setBounds(100, 100, 496, 443);
+											discoverFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+											discoverFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+											JPanel panel = new JPanel();
+											JTextArea cards = new JTextArea(1, 15);
+											cards.setEditable(false);
+											for (Card card : discovered)
+											{
+												cards.append(card.getName() + "\n");	
+											}
+											panel.add(cards);
+											discoverFrame.add(panel);
+											discoverFrame.pack();
+											discoverFrame.setTitle("Discover");
+											discoverFrame.setResizable(false);
+											discoverFrame.setVisible(true);
+											
+										}	
+									});
+									*/
+
+
+									Date dateFinal = new Date();
+									Random seeder = new Random();
+									int seederValue = seeder.nextInt(10000000);
 									
+									String deckDirectory = dateFinal.toString().substring(0, 10) + " [" + seederValue + "]";
 									
+								    Path path = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory);
+							        //if directory exists?
+							        if (!Files.exists(path)) 
+							        {
+							            try {
+							                Files.createDirectories(path);
+							            } catch (IOException e) {
+							                //fail to create directory
+							                e.printStackTrace();
+							            }
+							        }
+							        Path path2 = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery");
+							        //if directory exists?
+							        if (!Files.exists(path2)) 
+							        {
+							            try {
+							                Files.createDirectories(path2);
+							            } catch (IOException e) {
+							                //fail to create directory
+							                e.printStackTrace();
+							            }
+							        }
+							        
+							        // Human Readable Output
+									try{
+										int counter = 1;
+										for (ArrayList<Card> deck : draftDecks)
+										{
+											int cardCount = cardCount(deck);
+											PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Deck " + counter + ".txt", "UTF-8");
+											writer.println("Number of Cards: " + cardCount);
+											writer.println("--------------------------");
+											for (Card card : deck)
+											{
+												if (card.getQuantity() == 0) {}
+												else { writer.println(card.getName() + "  ~" + card.getQuantity()); }
+											}
+											writer.close();
+											counter++;
+										}
+										
+										PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Pool.txt", "UTF-8");
+										cardCounter(graveyard); graveyard.sort(graveyard.get(0));
+										int cardCount = cardCount(graveyard);
+										writer.println("Number of Cards: " + cardCount);
+										writer.println("--------------------------");
+										for (Card card : graveyard)
+										{
+											if (card.getQuantity() == 0) {}
+											else { writer.println(card.getName() + "  ~" + card.getQuantity()); }
+										}
+										writer.close();
+										
+									} catch (IOException e) {
+										System.out.println("file output error");
+									}
+
+									// Discovery Output
+									try{
+										int counter = 1;
+										for (ArrayList<Card> deck : draftDecks)
+										{
+											PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery" + "\\Deck " + counter + ".txt", "UTF-8");
+											for (Card card : deck)
+											{
+												if (card.getQuantity() == 0) {}
+												else { writer.println(card.getName() + "~" + card.getAttribute() + "~" + card.getType() + "~" + card.getAtk() + "~" + card.getDef() + "~" + card.getLvl() +
+														"~" + card.getQuantity() + "~" + card.getCardType() + "~" + card.isMonster() + "~" + card.getTierScore() + "~" + card.isContin() + "~" + card.isQuickplay() +
+														"~" + card.isCounter() + "~" + card.isField() + "~" + card.isEquip() + "~" + card.getLimit() + "~" + card.getCrosslimit() + "~" + card.isRitual() +
+														"~" + card.isNormal() + "~" + card.getRarity() + "~" + card.getText() + "~" + card.getSynergies()); }
+											}
+											writer.close();
+											counter++;
+										}
+										
+										PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery" + "\\Pool.txt", "UTF-8");
+										cardCounter(graveyard); graveyard.sort(graveyard.get(0));
+										for (Card card : graveyard)
+										{
+											if (card.getQuantity() == 0) {}
+											else {  writer.println(card.getName() + "~" + card.getAttribute() + "~" + card.getType() + "~" + card.getAtk() + "~" + card.getDef() + "~" + card.getLvl() +
+													"~" + card.getQuantity() + "~" + card.getCardType() + "~" + card.isMonster() + "~" + card.getTierScore() + "~" + card.isContin() + "~" + card.isQuickplay() +
+													"~" + card.isCounter() + "~" + card.isField() + "~" + card.isEquip() + "~" + card.getLimit() + "~" + card.getCrosslimit() + "~" + card.isRitual() +
+													"~" + card.isNormal() + "~" + card.getRarity() + "~" + card.getText() + "~" + card.getSynergies()); }
+										}
+										//writer.print("~~");
+										writer.close();
+										
+									} catch (IOException e) {
+										System.out.println("file output error");
+									}
+
+									
+
+
 									playerDeck.setEditable(false);
 									finalFrame.getContentPane().add(viewDeckOf);
 									finalFrame.getContentPane().add(viewStats);
 									finalFrame.getContentPane().add(send);
 									finalFrame.getContentPane().add(sendTo);
 									//finalFrame.getContentPane().add(discoverOptions);
-									//finalFrame.getContentPane().add(discoverLocation);
+									//finalFrame.getContentPane().add(discoverBtn);
 									finalFrame.setTitle("Draft Complete");
 									finalFrame.setResizable(false);
 
@@ -1187,6 +1397,14 @@ public class CardPool_GUI_1_Stable {
 						if (pickNumber <= cardsToDraftLocal)
 						{
 							drafted.add(threeChoiceTemp.get(1));
+							for (int i = 0; i < graveyard.size(); i++)
+							{
+								if (graveyard.get(i).getName().equals(threeChoiceTemp.get(1).getName()))
+								{
+									if (graveyard.get(i).getQuantity() > 1) { graveyard.get(i).decrement(); }
+									else { graveyard.remove(i); i = graveyard.size() + 10; }
+								}
+							}
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(0));
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(1));
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(2));
@@ -1759,6 +1977,104 @@ public class CardPool_GUI_1_Stable {
 
 										}// END EMAIL
 									});
+									
+									Date dateFinal = new Date();
+									Random seeder = new Random();
+									int seederValue = seeder.nextInt(10000000);
+									
+									String deckDirectory = dateFinal.toString().substring(0, 10) + " [" + seederValue + "]";
+									
+								    Path path = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory);
+							        //if directory exists?
+							        if (!Files.exists(path)) 
+							        {
+							            try {
+							                Files.createDirectories(path);
+							            } catch (IOException e) {
+							                //fail to create directory
+							                e.printStackTrace();
+							            }
+							        }
+							        Path path2 = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery");
+							        //if directory exists?
+							        if (!Files.exists(path2)) 
+							        {
+							            try {
+							                Files.createDirectories(path2);
+							            } catch (IOException e) {
+							                //fail to create directory
+							                e.printStackTrace();
+							            }
+							        }
+							        
+							        // Human Readable Output
+									try{
+										int counter = 1;
+										for (ArrayList<Card> deck : draftDecks)
+										{
+											int cardCount = cardCount(deck);
+											PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Deck " + counter + ".txt", "UTF-8");
+											writer.println("Number of Cards: " + cardCount);
+											writer.println("--------------------------");
+											for (Card card : deck)
+											{
+												if (card.getQuantity() == 0) {}
+												else { writer.println(card.getName() + "  ~" + card.getQuantity()); }
+											}
+											writer.close();
+											counter++;
+										}
+										
+										PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Pool.txt", "UTF-8");
+										cardCounter(graveyard); graveyard.sort(graveyard.get(0));
+										int cardCount = cardCount(graveyard);
+										writer.println("Number of Cards: " + cardCount);
+										writer.println("--------------------------");
+										for (Card card : graveyard)
+										{
+											if (card.getQuantity() == 0) {}
+											else { writer.println(card.getName() + "  ~" + card.getQuantity()); }
+										}
+										writer.close();
+										
+									} catch (IOException e) {
+										System.out.println("file output error");
+									}
+
+									// Discovery Output
+									try{
+										int counter = 1;
+										for (ArrayList<Card> deck : draftDecks)
+										{
+											PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery" + "\\Deck " + counter + ".txt", "UTF-8");
+											for (Card card : deck)
+											{
+												if (card.getQuantity() == 0) {}
+												else { writer.println(card.getName() + "~" + card.getAttribute() + "~" + card.getType() + "~" + card.getAtk() + "~" + card.getDef() + "~" + card.getLvl() +
+														"~" + card.getQuantity() + "~" + card.getCardType() + "~" + card.isMonster() + "~" + card.getTierScore() + "~" + card.isContin() + "~" + card.isQuickplay() +
+														"~" + card.isCounter() + "~" + card.isField() + "~" + card.isEquip() + "~" + card.getLimit() + "~" + card.getCrosslimit() + "~" + card.isRitual() +
+														"~" + card.isNormal() + "~" + card.getRarity() + "~" + card.getText() + "~" + card.getSynergies()); }
+											}
+											writer.close();
+											counter++;
+										}
+										
+										PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery" + "\\Pool.txt", "UTF-8");
+										cardCounter(graveyard); graveyard.sort(graveyard.get(0));
+										for (Card card : graveyard)
+										{
+											if (card.getQuantity() == 0) {}
+											else {  writer.println(card.getName() + "~" + card.getAttribute() + "~" + card.getType() + "~" + card.getAtk() + "~" + card.getDef() + "~" + card.getLvl() +
+													"~" + card.getQuantity() + "~" + card.getCardType() + "~" + card.isMonster() + "~" + card.getTierScore() + "~" + card.isContin() + "~" + card.isQuickplay() +
+													"~" + card.isCounter() + "~" + card.isField() + "~" + card.isEquip() + "~" + card.getLimit() + "~" + card.getCrosslimit() + "~" + card.isRitual() +
+													"~" + card.isNormal() + "~" + card.getRarity() + "~" + card.getText() + "~" + card.getSynergies()); }
+										}
+										//writer.print("~~");
+										writer.close();
+										
+									} catch (IOException e) {
+										System.out.println("file output error");
+									}
 								
 									
 									
@@ -1788,6 +2104,14 @@ public class CardPool_GUI_1_Stable {
 						if (pickNumber <= cardsToDraftLocal)
 						{
 							drafted.add(threeChoiceTemp.get(2));
+							for (int i = 0; i < graveyard.size(); i++)
+							{
+								if (graveyard.get(i).getName().equals(threeChoiceTemp.get(2).getName()))
+								{
+									if (graveyard.get(i).getQuantity() > 1) { graveyard.get(i).decrement(); }
+									else { graveyard.remove(i); i = graveyard.size() + 10; }
+								}
+							}
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(0));
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(1));
 							draftPools.get(playerDrafting).remove(threeChoiceTemp.get(2));
@@ -2361,6 +2685,103 @@ public class CardPool_GUI_1_Stable {
 										}// END EMAIL
 									});
 								
+									Date dateFinal = new Date();
+									Random seeder = new Random();
+									int seederValue = seeder.nextInt(10000000);
+									
+									String deckDirectory = dateFinal.toString().substring(0, 10) + " [" + seederValue + "]";
+									
+								    Path path = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory);
+							        //if directory exists?
+							        if (!Files.exists(path)) 
+							        {
+							            try {
+							                Files.createDirectories(path);
+							            } catch (IOException e) {
+							                //fail to create directory
+							                e.printStackTrace();
+							            }
+							        }
+							        Path path2 = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery");
+							        //if directory exists?
+							        if (!Files.exists(path2)) 
+							        {
+							            try {
+							                Files.createDirectories(path2);
+							            } catch (IOException e) {
+							                //fail to create directory
+							                e.printStackTrace();
+							            }
+							        }
+							        
+							        // Human Readable Output
+									try{
+										int counter = 1;
+										for (ArrayList<Card> deck : draftDecks)
+										{
+											int cardCount = cardCount(deck);
+											PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Deck " + counter + ".txt", "UTF-8");
+											writer.println("Number of Cards: " + cardCount);
+											writer.println("--------------------------");
+											for (Card card : deck)
+											{
+												if (card.getQuantity() == 0) {}
+												else { writer.println(card.getName() + "  ~" + card.getQuantity()); }
+											}
+											writer.close();
+											counter++;
+										}
+										
+										PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Pool.txt", "UTF-8");
+										cardCounter(graveyard); graveyard.sort(graveyard.get(0));
+										int cardCount = cardCount(graveyard);
+										writer.println("Number of Cards: " + cardCount);
+										writer.println("--------------------------");
+										for (Card card : graveyard)
+										{
+											if (card.getQuantity() == 0) {}
+											else { writer.println(card.getName() + "  ~" + card.getQuantity()); }
+										}
+										writer.close();
+										
+									} catch (IOException e) {
+										System.out.println("file output error");
+									}
+
+									// Discovery Output
+									try{
+										int counter = 1;
+										for (ArrayList<Card> deck : draftDecks)
+										{
+											PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery" + "\\Deck " + counter + ".txt", "UTF-8");
+											for (Card card : deck)
+											{
+												if (card.getQuantity() == 0) {}
+												else { writer.println(card.getName() + "~" + card.getAttribute() + "~" + card.getType() + "~" + card.getAtk() + "~" + card.getDef() + "~" + card.getLvl() +
+														"~" + card.getQuantity() + "~" + card.getCardType() + "~" + card.isMonster() + "~" + card.getTierScore() + "~" + card.isContin() + "~" + card.isQuickplay() +
+														"~" + card.isCounter() + "~" + card.isField() + "~" + card.isEquip() + "~" + card.getLimit() + "~" + card.getCrosslimit() + "~" + card.isRitual() +
+														"~" + card.isNormal() + "~" + card.getRarity() + "~" + card.getText() + "~" + card.getSynergies()); }
+											}
+											writer.close();
+											counter++;
+										}
+										
+										PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery" + "\\Pool.txt", "UTF-8");
+										cardCounter(graveyard); graveyard.sort(graveyard.get(0));
+										for (Card card : graveyard)
+										{
+											if (card.getQuantity() == 0) {}
+											else {  writer.println(card.getName() + "~" + card.getAttribute() + "~" + card.getType() + "~" + card.getAtk() + "~" + card.getDef() + "~" + card.getLvl() +
+													"~" + card.getQuantity() + "~" + card.getCardType() + "~" + card.isMonster() + "~" + card.getTierScore() + "~" + card.isContin() + "~" + card.isQuickplay() +
+													"~" + card.isCounter() + "~" + card.isField() + "~" + card.isEquip() + "~" + card.getLimit() + "~" + card.getCrosslimit() + "~" + card.isRitual() +
+													"~" + card.isNormal() + "~" + card.getRarity() + "~" + card.getText() + "~" + card.getSynergies()); }
+										}
+										//writer.print("~~");
+										writer.close();
+										
+									} catch (IOException e) {
+										System.out.println("file output error");
+									}
 									
 									
 									playerDeck.setEditable(false);
@@ -2383,7 +2804,91 @@ public class CardPool_GUI_1_Stable {
 					}
 				});	
 
+				pick1Text.addActionListener(new ActionListener()
+				{
 
+					@Override
+					public void actionPerformed(ActionEvent e) 
+					{
+						JFrame textFrame = new JFrame();
+						textFrame.setAlwaysOnTop(true);
+						textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+						textFrame.setBounds(100, 100, 496, 443);
+						textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						JPanel textPanel = new JPanel();
+						JTextArea textField = new JTextArea(6, 40);
+						textField.setEditable(false);
+						String temp = threeChoiceTemp.get(0).getText();
+						String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+						textField.setText(newTemp);
+						textField.setWrapStyleWord(true);
+						JScrollPane vertScroll = new JScrollPane(textField);
+						textPanel.add(vertScroll);
+						textFrame.getContentPane().add(textPanel);
+						textFrame.pack();
+						textFrame.setResizable(false);
+						textFrame.setVisible(true);
+						
+					}
+					
+				});
+				pick2Text.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e) 
+					{
+						JFrame textFrame = new JFrame();
+						textFrame.setAlwaysOnTop(true);
+						textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+						textFrame.setBounds(100, 100, 496, 443);
+						textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						JPanel textPanel = new JPanel();
+						JTextArea textField = new JTextArea(6, 40);
+						textField.setEditable(false);
+						String temp = threeChoiceTemp.get(1).getText();
+						String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+						textField.setText(newTemp);
+						textField.setWrapStyleWord(true);
+						JScrollPane vertScroll = new JScrollPane(textField);
+						textPanel.add(vertScroll);
+						textFrame.getContentPane().add(textPanel);
+						textFrame.pack();
+						textFrame.setResizable(false);
+						textFrame.setVisible(true);
+						
+					}
+					
+				});
+				pick3Text.addActionListener(new ActionListener()
+				{
+
+					@Override
+					public void actionPerformed(ActionEvent e) 
+					{
+						JFrame textFrame = new JFrame();
+						textFrame.setAlwaysOnTop(true);
+						textFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+						textFrame.setBounds(100, 100, 496, 443);
+						textFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						JPanel textPanel = new JPanel();
+						JTextArea textField = new JTextArea(6, 40);
+						textField.setEditable(false);
+						String temp = threeChoiceTemp.get(2).getText();
+						String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+						textField.setText(newTemp);
+						textField.setWrapStyleWord(true);
+						JScrollPane vertScroll = new JScrollPane(textField);
+						textPanel.add(vertScroll);
+						textFrame.getContentPane().add(textPanel);
+						textFrame.pack();
+						textFrame.setResizable(false);
+						textFrame.setVisible(true);
+						
+					}
+					
+				});
+				
 
 
 
@@ -3495,7 +4000,11 @@ public class CardPool_GUI_1_Stable {
 		
 		for (Card card : temp) 
 		{
-			 model.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - " + card.getQuantity() + ".png"), card));
+			if (card.getQuantity() == 3 && card.getLimit() == 3) { model.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - Lim3.png"), card)); }
+			else if (card.getQuantity() == 2 && card.getLimit() == 2) { model.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - Lim2.png"), card));}
+			else if (card.getQuantity() == 1 && card.getLimit() == 1) { model.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - Lim1.png"), card));}
+			else if (card.getQuantity() == 2 && card.getLimit() != 2) { model.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - 2Alt.png"), card)); }
+			else { model.addElement(new ListEntry(card.getName(), new ImageIcon("src/images/Quantity - " + card.getQuantity() + ".png"), card)); }
 		}
 	}
 	
@@ -13867,6 +14376,33 @@ public class CardPool_GUI_1_Stable {
 		
 	}
 	
+	public static ArrayList<Card> discoverCard(ArrayList<Card> pool)
+	{
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(pool.size());
+			Card discovered = new Card(pool.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
 	public static ArrayList<Card> discoverCardType2(ArrayList<Card> pool, String cardType, String cardType2)
 	{
 		int spells = 0;
@@ -14281,7 +14817,107 @@ public class CardPool_GUI_1_Stable {
 		
 	}
 	
+	public static ArrayList<Card> discoverAttributeCardType(ArrayList<Card> pool, String type, String cardType)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getAttribute().equals(type) && card.getCardType().equals(cardType))
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
 	
+	public static ArrayList<Card> discoverWaterEffect(ArrayList<Card> pool)
+	{
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(pool.size());
+			Card discovered = new Card(pool.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
+	public static void dictionaryListeners(JMenuItem rules)
+	{
+		/*rules.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				JFrame rulesFrame = new JFrame();
+				JTextArea rulesBox = new JTextArea();
+				JScrollPane vertScroll = new JScrollPane(rulesBox);
+				rulesBox.setEditable(false);
+				rulesFrame.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+				rulesFrame.setBounds(600, 600, 275, 200);
+				rulesFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				rulesFrame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+				rulesFrame.setTitle("Basic Rules");
+				String basicRuleSet = basicRulesString();
+				rulesBox.setText(basicRuleSet);
+				rulesBox.setWrapStyleWord(true);
+				vertScroll.setViewportView(rulesBox);
+				rulesFrame.add(vertScroll);
+				rulesFrame.pack();
+				rulesFrame.setResizable(false);
+				rulesFrame.setVisible(true);
+			}
+				
+		});	*/
+				
+	}
+	
+	public static String basicRulesString()
+	{
+		String temp = "Preparing to Duel  Shuffle your deck.  Roll to decide who goes first.  First turn player does not draw and cannot attack until their second turn.  Each player draws 5 cards. They may mulligan up to two of those cards.  When you mulligan, redraw before shuffling the selected cards back into your deck.   Winning & Losing  Each player starts off the game with 8000 Life Points (LP).  When you reduce your opponent's LP to 0, you win.  Alternatively, if your opponent cannot draw a card during their draw phase, you win.   Card Types  Monster Cards  Monsters can be normal/tribute summoned in face up attack positon or face down defense positon.  You can only normal summon, tribute summon or set 1 monster per turn.  Special summons do not count towards this limit.  Monsters can be special summoned in face up attack or defense position.  You have 5 total monster zones available.  Monsters of level 4 and below can be normal summoned without tributing.  Monsters of level 5 or 6 can only be normal summoned by tributing 1 other monster already on the field.  Monsters of level 7 or higher can only be normal summoned by tributing 2 other monsters already on the field.  You can change your monsters battle positions once per turn.  If you flip a face down monster face up, it must be put into attack position before you may switch it to defense position.  Flipping a monster face up during your turn as a position change is considered a flip summon.  Monsters with effects that start with FLIP: activate their effects even when flipped face up by attacking monsters (even when sent to the graveyard).  Monsters have attributes (seen in the top right corner of the card, ex: dark, light, fire)  Monsters have types (seen in the card text above the atk/def, ex: warrior, beast, machine)  When a monster attacks another monster, you calculate damage based on the position of the monsters.  When two attack position monsters battle, the monster with the higher attack wins the battle.  Damage is inflicted to the controller of the losing monsters LP equal to the difference in the two monsters attack.  When an attack position monster attacks a defense positon monster, the defense position monster is only destroyed  if the attacking monsters attack is higher than its defense. If the defense value is higher, the difference is inflicted  on the attacking monsters controllers LP.  Fusion Monsters  Fusion monsters can only be special summoned by using the spell card Polymerization and discarding/tributing the  monsters listed within the fusion monsters card text. If you discard the necessary cards to fusion summon, you may  special summon the designated fusion monster from your extra deck into face up attack or defense position.  Ritual Monsters  Ritual monsters are similar to fusion, but instead of Polymerization, you need a specific spell card that is usually listed  within the ritual monster's card text. You must also discard/tribute monsters with combined total levels => the level of the ritual monster.  Spell Cards  Spell cards can be activated on your turn or set face down.  You have 5 total spell/trap card zones available.  1 additional spell zone is available for field spells. This zone is shared between players.  Playing a field spell into the occupied zone discards the active field spell.  Spell cards with the lightning bolt icon (quickplay spells) can be played from your hand or the field on your opponent's turn.  Trap Cards  Trap cards can be activated the turn after you have set them face down, or in response to an action your opponent takes on their turn.  You share the 5 spell/trap card zones between all your spell and trap cards.  Trap cards with the leftwards arrow icon (counter traps) cannot be countered except by with another counter trap card.  Turn Phases  1. Draw Phase - The turn player draws one card from their Deck. If there are no cards in the Deck during this phase, the player loses.  2. Standby Phase - No specific action occurs, but it exists for card effects that activate or resolve during this specific phase and maintenance costs.  3. Main Phase 1 - The turn player may summon or set a monster, activate cards and effects that they control, change the battle position of a monster (provided it wasn't summoned this turn), and set spells or traps face-down.  4. Battle Phase - The turn player may choose to attack the opposing player using any monsters on their field in Attack position. If the player chooses not to attack, they can skip straight to the End Phase.  5. Main Phase 2 - The player may do all the same actions that are available during Main Phase 1, though they cannot repeat certain actions already taken in Main Phase 1 (such as Normal Summoning) or change the battle position of a monster that has already been summoned, attacked, or had their battle position changed during the same turn.  6. End Phase - Some card effects take place during this phase. If the turn player has more than 10 cards in their hand, they must discard cards until they have 10";
+		String newTemp = WordUtils.wrap(temp, 75, "\n", false);
+		return newTemp;
+	}
 	
 		
 

@@ -1,0 +1,132 @@
+Card name, attribute, type, atk, def, lvl, quantity, cardtype, monster, tierscore, continuous, quickplay, counter, field, equip, limit, 
+crosslimit, ritual, normal, rarity, text, synergies, pool limit
+
+(Spell)~none~none~0~0~0~(quantity)~Spell~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
+(Trap)~none~none~0~0~0~(quantity)~Trap~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
+(Effect)~(Attr)~(Type)~ATK~DEF~Lvl~quantity~Effect Monster~true~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
+(Normal)~(Attribute)~(Type)~ATK~DEF~Lvl~(quantity)~Normal Monster~true~(score)~false~false~false~false~false~(limit)~none~false~false~Common~none~none
+
+AJsCollectables
+----------------
+
+
+Auggie's Games
+----------------
+
+Cards of Krypton
+----------------
+Preparation of Rites~none~none~0~0~0~2~Spell~false~53~false~false~false~false~false~3~none~false~false~Rare~(Text)~ritual
++1 Fiendish Chain
+
+
+CastleHillGamesLLC
+----------------
+Chainsaw Insect~Earth~Insect~2400~0~4~3~Effect Monster~true~60~false~false~false~false~false~3~none~false~false~Rare~(Text)~defense&insect&earth
+Jurassic World~none~none~0~0~0~1~Spell~false~48~false~false~false~false~false~3~none~false~false~Common~(Text)~dinosaur
+
+Chestysmagicguru
+----------------
+Pre-Preparation of Rites~none~none~0~0~0~1~Spell~false~69~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~ritual
+
+CollaborativeEntLLC
+----------------
+
+CoreTCG
+----------------
+
+Dolly's Toys and Games
+----------------
+
+Epikos CCG
+----------------
+
+Freitag
+----------------
+
+GameCrave
+----------------
+
+GameGoblins
+----------------
+
+GameHeroes
+----------------
+
+GameFuzion
+----------------
+
+GameTableAdventures
+----------------
+
+GameTimeCC
+----------------
+
+Great Lake Games
+----------------
+
+Ideal808
+----------------
+
+ISD Gaming
+----------------
+
+Limitless Games
+----------------
+
+Loot Island
+----------------
+
+Old School Gaming
+----------------
+
+OurGameHavenTX
+----------------
+
+Potts Gaming Store
+----------------
+
+Pro-PlayGames
+----------------
+
+RainyPanda Games
+----------------
+
+South Coast Cards
+----------------
+
+Sun Valley Gaming
+----------------
+
+Super Games Inc
+----------------
+
+The End Zone
+----------------
+
+The Next Level Games
+----------------
+
+Two Headed Games
+----------------
+
+Untapped Games
+----------------
+
+Voltage Games
+----------------
+
+XtremeGames
+----------------
+
+
+
+
+
+
+
+
+
+(Spell)~none~none~0~0~0~(quantity)~Spell~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
+(Trap)~none~none~0~0~0~(quantity)~Trap~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
+(Effect)~(Attr)~(Type)~ATK~DEF~Lvl~quantity~Effect Monster~true~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
+(Normal)~(Attribute)~(Type)~ATK~DEF~Lvl~(quantity)~Normal Monster~true~(score)~false~false~false~false~false~(limit)~none~false~false~Common~none~none

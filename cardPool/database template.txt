@@ -529,7 +529,7 @@ Red Archery Girl~Water~Aqua~1400~1500~4~8~Normal Monster~true~33~false~false~fal
 Red Eyes Toon Dragon~Dark~Dragon~2400~2000~7~1~Effect Monster~true~53~false~false~false~false~false~3~none~false~false~Super Rare~Cannot attack the turn it is Summoned. While you control "Toon World" and your opponent controls no Toon monsters, this card can attack your opponent directly. Once per turn: You can Special Summon 1 Toon monster from your hand, except "Red-Eyes Toon Dragon", ignoring its Summoning conditions.~toon&dark&dragon
 Red Gadget~Earth~Machine~1300~1500~4~1~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Common~(Text)~ancient gear&gadget&earth&machine&search
 Red-Eyes B. Chick~Dark~Dragon~800~500~1~2~Effect Monster~true~73~false~false~false~false~false~3~none~false~false~Super Rare~(Text)~dark&dragon&easy summon&red eyes
-Red-Eyes B. Dragon~Dark~Dragon~2400~2000~7~2~Normal Monster~true~40~false~false~false~false~false~3~none~false~false~Super Rare~none~dragon&dark&red eyes
+Red-Eyes B. Dragon~Dark~Dragon~2400~2000~7~2~Normal Monster~true~38~false~false~false~false~false~3~none~false~false~Super Rare~none~dragon&dark&red eyes
 Red-Eyes Black Metal Dragon~Dark~Machine~2800~2400~8~1~Effect Monster~true~35~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&machine&red eyes
 Red-Eyes Spirit~none~none~0~0~0~1~Trap~false~49~false~false~false~false~false~1~none~false~true~Common~Target 1 "Red-Eyes" monster in your Graveyard, except "Red-Eyes B. Chick"; Special Summon it.~easy summon&graveyard
 Red-Eyes Zombie Dragon~Dark~Zombie~2400~2000~7~1~Effect Monster~true~67~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&zombie&red eyes
@@ -932,7 +932,94 @@ Exploder Dragon~Earth~Dragon~1000~0~3~1~Effect Monster~true~52~false~false~false
 Fabled Gallabas~Light~Fiend~1500~800~4~1~Effect Monster~true~69~false~false~false~false~false~3~none~false~false~Rare~(Text)~light&fiend&board control&player discard
 Fabled Ashenveil~Light~Fiend~1600~1200~4~1~Effect Monster~true~71~false~false~false~false~false~3~none~false~false~Rare~(Text)~light&fiend&board control&player discard
 Gishki Abyss~Water~Fish~800~500~2~1~Effect Monster~true~49~false~false~false~false~false~3~none~false~false~Rare~(Text)~gishki&water&fish&search
+Gishki Aquamirror~none~none~0~0~0~1~Spell~false~65~false~false~false~false~false~3~none~true~false~Rare~(Text)~ritual&gishki
+Big Evolution Pill~none~none~0~0~0~1~Spell~false~84~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~dinosaur&easy summon&board control
+Gishki Ariel~Water~Spellcaster~1000~1800~4~2~Effect Monster~true~75~false~false~false~false~false~3~none~false~false~Rare~FLIP: You can add 1 "Gishki" monster from your deck to your hand.~gishki&search&flip
 
+Wulf, Lightsworn Beast~Light~Beast-Warrior~2100~300~4~1~Effect Monster~true~40~false~false~false~false~false~3~none~false~false~Common~(Text)~lightsworn&light&beast warrior&graveyard&player discard
+Garoth, Lightsworn Warrior~Light~Warrior~1850~1300~4~4~Effect Monster~true~65~false~false~false~false~false~3~none~false~false~Common~(Text)~lightsworn&light&warrior&draw&player discard
+Lyla, Lightsworn Sorceress~Light~Spellcaster~1700~200~4~3~Effect Monster~true~45~false~false~false~false~false~3~none~false~false~Common~(Text)~lightsworn&light&spellcaster&st removal&player discard
+Celestia, Lightsworn Angel~Light~Fairy~2300~200~5~3~Effect Monster~true~70~false~false~false~false~false~3~none~false~false~Common~(Text)~lightsworn&light&fairy&board control&player discard
+Shire, Lightsworn Spirit~Light~Fairy~400~1400~3~2~Effect Monster~true~48~false~false~false~false~false~3~none~false~false~Common~(Text)~lightsworn&light&fairy&graveyard&player discard
+Aurkus, Lightsworn Druid~Light~Beast-Warrior~1200~1800~3~3~Effect Monster~true~47~false~false~false~false~false~3~none~false~false~Common~(Text)~lightsworn&light&beast warrior&board control
+Gishki Emilia~Water~Spellcaster~1600~800~4~4~Effect Monster~true~79~false~false~false~false~false~3~none~false~false~Rare~(Text)~water&gishki&spellcaster&spirit&board control
+Gishki Diviner~Water~Sea Serpent~1200~800~3~1~Effect Monster~true~20~false~false~false~false~false~3~none~false~false~Common~(Text)~gishki&draw&water&sea serpent
+Gishki Beast~Water~Beast~1500~1300~4~4~Effect Monster~true~39~false~false~false~false~false~3~none~false~false~Common~(Text)~water&beast&gishki&easy summon&graveyard
+Judge Man~Earth~Warrior~2200~1500~6~4~Normal Monster~true~42~false~false~false~false~false~3~none~false~false~Common~none~earth&warrior
+Mr. Volcano~Fire~Pyro~2100~1300~5~4~Normal Monster~true~36~false~false~false~false~false~3~none~false~false~Common~none~fire&pyro
+Spirit of the Harp~Light~Fairy~800~2000~4~3~Normal Monster~true~40~false~false~false~false~false~3~none~false~false~Common~none~light&fairy&defense
+Illusionist Faceless Mage~Dark~Spellcaster~1200~2200~5~3~Normal Monster~true~34~false~false~false~false~false~3~none~false~false~Common~none~dark&spellcaster
+Swordstalker~Dark~Warrior~2000~1600~6~3~Normal Monster~true~29~false~false~false~false~false~3~none~false~false~Common~none~dark&warrior
+Gaia the Fierce Knight~Earth~Warrior~2300~2100~7~2~Normal Monster~true~25~false~false~false~false~false~3~none~false~false~Common~none~earth&warrior&gaia
+Empress Mantis~Wind~Insect~2200~1400~6~2~Normal Monster~true~42~false~false~false~false~false~3~none~false~false~Common~none~wind&insect
+Gadget Soldier~Fire~Machine~1800~2000~6~2~Normal Monster~true~26~false~false~false~false~false~3~none~false~false~Common~none~fire&machine
+Twin-Headed Fire Dragon~Fire~Pyro~2200~1700~6~1~Normal Monster~true~42~false~false~false~false~false~3~none~false~false~Common~none~fire&pyro
+Flame Cerebrus~Fire~Pyro~2100~1800~6~1~Normal Monster~true~41~false~false~false~false~false~3~none~false~false~Common~none~fire&pyro
+Curse of Dragon~Dark~Dragon~2000~1500~5~1~Normal Monster~true~28~false~false~false~false~false~3~none~false~false~Common~none~dark&dragon
+Hyozanryu~Light~Dragon~2100~2800~7~1~Normal Monster~true~49~false~false~false~false~false~3~none~false~false~Common~none~light&dragon&defense
+Garnecia Elefantis~Earth~Beast-Warrior~2400~2000~7~1~Normal Monster~true~36~false~false~false~false~false~3~none~false~false~Common~none~earth&beast warrior
+
+Big-Tusked Mammoth~Earth~Beast~2000~1000~5~3~Effect Monster~true~70~false~false~false~false~false~3~none~false~false~Rare~Monsters your opponent controls cannot attack the turn they are Summoned.~earth&beast&board control
+Prime Material Dragon~Light~Dragon~2400~2000~6~2~Effect Monster~true~75~false~false~false~false~false~3~none~false~false~Super Rare~Any effect that would inflict damage to a player increases their Life Points by the same amount, instead. During either player's turn, when a card or effect is activated that would destroy a monster(s) on the field: You can send 1 card from your hand to the Graveyard; negate the activation, and if you do, destroy it.~light&dragon&player discard&board control&life gain
+Fusilier Dragon, the Dual-Mode Beast~Dark~Machine~2800~2000~7~2~Effect Monster~true~87~false~false~false~false~false~3~none~false~false~Super Rare~You can Normal Summon/Set this card without Tributing, but its original ATK and DEF become halved.~dark&machine&easy summon&board control
+
+Missingno~Dark~Zombie~0~0~4~1~Effect Monster~true~65~false~false~false~false~false~1~none~false~false~Super Rare~When you Summon this monster, Discover a random effect monster. This card gains the Discovered monster's ATK, DEF and effects.~discover&custom&zombie&dark
+High Tide~none~none~0~0~0~1~Spell~false~45~false~false~false~false~false~3~none~false~false~Rare~Discover a Water effect monster. Special Summon 2 "Water Tokens" (Aqua-Type/WATER/Level 1/ATK 0/DEF 0) with the same effects as the Discovered monster. These Tokens cannot be Tributed for a Tribute Summon.~water&discover&custom&token&defense
+Spell Roulette~none~none~0~0~0~1~Spell~false~60~false~false~false~false~false~2~none~false~false~Common~Discover and active a random Spell.~discover&custom&board control
+Card Generator~none~none~0~0~0~1~Trap~false~75~true~false~false~false~false~1~none~false~false~Ultra Rare~Once per turn, during your Draw Phase, instead of conducting your normal draw you may Discover a random card and add a copy of it to your hand. During your End Phase, pay 900 Life Points or destroy this card.~discover&custom
+
+Animal Companion~none~none~0~0~0~1~Spell~false~40~false~false~false~false~false~3~none~false~false~Common~(Text)~discover&custom&beast&easy summon&hs
+Anti-Trap Sludge~Dark~Zombie~2000~2500~6~2~Effect Monster~true~80~false~false~false~false~false~3~none~false~false~Rare~(Text)~discover&custom&zombie&board control&dark
+Battle Miner~Fire~Warrior~1925~2065~4~1~Effect Monster~true~90~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~discover&custom&fire&warrior&easy summon&board control
+Call the Curators~none~none~0~0~0~1~Spell~false~70~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~discover&custom
+Charizard~Fire~Dragon~3100~2600~10~1~Effect Monster~true~83~false~false~false~false~false~1~none~false~false~Rare~(Text)~custom&dragon&fire&direct damage
+Consecration~none~none~0~0~0~1~Spell~false~75~false~true~false~false~false~1~none~false~false~Rare~(Text)~custom&board control&direct damage&hs
+Dark Vortex~none~none~0~0~0~1~Spell~false~66~false~false~false~false~false~1~none~false~false~Rare~(Text)~custom&board control&banish
+Dragon Summoning Ritual~none~none~0~0~0~1~Trap~false~78~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~dragon&discover&custom&easy summon
+Dragonfire Statue~Fire~Dragon~0~2800~1~1~Effect Monster~true~85~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~dragon&fire&discover&custom&player discard&easy summon
+Drakonid Operative~Fire~Dragon~2500~2600~6~1~Effect Monster~true~79~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~dragon&hs&discover&custom&fire
+Excavator~none~none~0~0~0~2~Spell~false~69~false~false~false~false~true~3~none~false~false~Common~(Text)~discover&custom
+Firelands Portal~none~none~0~0~0~1~Spell~false~95~false~false~false~false~false~1~none~false~false~Ultimate Rare~(Text)~discover&custom&board control&hs
+Flamestrike~none~none~0~0~0~1~Spell~false~85~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~discover&hs&custom&board control
+Gang Up~none~none~0~0~0~3~Trap~false~50~false~false~true~false~false~3~none~false~false~Common~(Text)~discover&custom&hs
+Greedpot Avatar~Earth~Beast~3700~3650~10~1~Effect Monster~true~90~false~false~false~false~false~1~none~false~false~Ultimate Rare~(Text)~earth&beast&draw&flip&discover&custom
+Infinity Dragon~Light~Divine-Beast~4000~4000~10~1~Effect Monster~true~90~false~false~false~false~false~1~none~false~false~Ultimate Rare~(Text)~discover&custom&divine&light
+Ivory Knight~Light~Rock~2350~2400~6~1~Effect Monster~true~42~false~false~false~false~false~3~none~false~false~Common~(Text)~discover&custom&rock&light&life gain&hs
+Kazakus~Dark~Spellcaster~1400~1700~4~1~Effect Monster~true~65~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~discover&custom&graveyard&dark&spellcaster&hs
+Kripparian, Lord of the Arena~Earth~Warrior~2650~2400~6~1~Effect Monster~true~85~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~earth&warrior&custom&board control&life gain
+Mad Scientist~Dark~Spellcaster~1600~1800~4~1~Effect Monster~true~86~false~false~false~false~false~1~none~false~false~Rare~(Text)~dark&spellcaster&discover&custom&hs&board control
+Mana Bind~none~none~0~0~0~1~Trap~false~65~false~false~true~false~false~1~none~false~false~Rare~(Text)~custom&hs
+Mech Assault Squad~Dark~Machine~2300~2100~6~1~Effect Monster~true~70~false~false~false~false~false~1~none~false~false~Rare~(Text)~dark&machine&custom
+Mega-Excavator~none~none~0~0~0~1~Spell~false~81~false~false~false~false~true~1~none~false~false~Super Rare~(Text)~discover&custom
+Monster Box~none~none~0~0~0~1~Spell~false~50~false~false~false~false~false~3~none~false~false~Common~(Text)~discover&custom
+Mulch~none~none~0~0~0~1~Spell~false~30~false~true~false~false~false~1~none~false~false~Common~(Text)~discover&custom&board control&hs
+Museum Curator~Dark~Warrior~1600~1500~4~1~Effect Monster~true~50~false~false~false~false~false~1~none~false~false~Common~(Text)~discover&custom&hs
+Naturia Swarm~Earth~Insect~2000~1850~4~1~Effect Monster~true~71~false~false~false~false~false~3~none~false~false~Rare~(Text)~insect&earth&naturia&custom&easy summon
+Nexus-Champion Saraad~Fire~Spellcaster~2400~2300~6~1~Effect Monster~true~85~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~hs&custom&discover&fire&spellcaster&graveyard
+Party at Kaiba's~none~none~0~0~0~1~Spell~false~39~false~false~false~false~false~1~none~false~false~Rare~(Text)~discover&custom
+Pierre the Gambler~Dark~Warrior~1750~0~3~1~Effect Monster~true~48~false~false~false~false~false~3~none~false~false~Common~(Text)~custom&discover&dark&warrior&coin flip
+Piloted Shredder~Earth~Machine~1850~1900~4~1~Effect Monster~true~59~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~discover&custom&hs&earth&machine&board control
+Piloted Sky Golem~Earth~Machine~2200~2450~6~1~Effect Monster~true~70~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~earth&machine&discover&custom&hs
+Plasma Eel~Water~Thunder~450~500~4~1~Effect Monster~true~90~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~discover&custom&flip&water&thunder&board control
+Pool Party~none~none~0~0~0~1~Spell~false~60~false~true~false~false~false~1~none~false~false~Rare~(Text)~discover&custom&easy summon&water
+Sacrificial Pact~none~none~0~0~0~1~Trap~false~55~true~false~false~false~false~1~none~false~false~Rare~(Text)~custom&hs&discover&zombie&life gain&graveyard
+Set the Stage~none~none~0~0~0~1~Spell~false~45~false~false~false~true~false~3~none~false~false~Common~(Text)~discover&custom&board control
+Sneed's Old Shredder~Earth~Machine~2850~2600~8~1~Effect Monster~true~93~false~false~false~false~false~1~none~false~false~Ultimate Rare~(Text)~earth&machine&hs&custom&discover
+Spellslinger~Earth~Spellcaster~1850~2000~4~1~Effect Monster~true~56~false~false~false~false~false~3~none~false~false~Common~(Text)~custom&discover&hs&spellcaster&earth
+The Curator~Light~Rock~2200~3250~7~1~Effect Monster~true~85~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~flip&rock&light&discover&custom&hs&defense&search
+The Legend of Exodia~none~none~0~0~0~1~Spell~false~36~false~false~false~false~false~1~none~false~false~Common~(Text)~discover&exodia&custom&draw
+The Wall~Water~Rock~0~4500~10~1~Effect Monster~true~70~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~water&rock&flip&opponent discard&board control&custom
+Token Vacuum~none~none~0~0~0~1~Spell~false~25~false~false~false~false~false~3~none~false~false~Common~(Text)~token&board control&discover&custom
+Unstable Portal~none~none~0~0~0~1~Spell~false~82~false~false~false~false~false~3~none~false~false~Common~(Text)~hs&custom&discover&easy summon
+Wrath of the Old Gods~none~none~0~0~0~1~Spell~false~90~false~false~false~false~false~1~none~false~false~Ultra Rare~(Text)~discover&custom
+Yogg-Saron, Hope's End~Water~Divine-Beast~1700~1500~10~1~Effect Monster~true~79~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~water&divine beast&graveyard&discover&hs&custom
+Lotus Agents~Wind~Psychic~2500~1300~6~1~Effect Monster~true~80~false~false~false~false~false~1~none~false~false~Super Rare~(Text)~wind&psychic&discover&hs&custom
+Grimestreet Informant~Earth~Warrior~1100~1100~4~1~Effect Monster~true~60~false~false~false~false~false~3~none~false~false~Common~(Text)~earth&warrior&discover&custom&hs
+Kabal Courier~Dark~Spellcaster~1200~1200~4~1~Effect Monster~true~68~false~false~false~false~false~3~none~false~false~Rare~(Text)~dark&spellcaster&custom&hs&discover
+Moonglade Portal~none~none~0~0~0~1~Spell~false~57~false~false~false~false~false~1~none~false~false~Rare~(Text)~life gain&discover&custom&hs&easy summon
+Finders Keepers~none~none~0~0~0~1~Trap~false~60~false~false~true~false~false~1~none~false~false~Common~(Text)~board control&discover&custom&hs
+Transmogrification~none~none~0~0~0~1~Spell~false~70~false~false~false~false~false~1~none~false~false~Rare~Tribute 2 monsters on your side of the field to Discover and Special Summon a random Fusion monster.~fusion&discover&custom&easy summon
+Astral Disintegration~none~none~0~0~0~1~Spell~false~25~false~false~false~false~false~3~none~false~false~Common~Discard your entire hand. Discover random cards and add them to your hand until you have the same number of cards you discarded.~discover&custom&player discard
 
 (Spell)~none~none~0~0~0~(quantity)~Spell~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)
 (Trap)~none~none~0~0~0~(quantity)~Trap~false~(score)~false~false~false~false~false~(limit)~none~false~false~Common~(Text)~(Synergies)

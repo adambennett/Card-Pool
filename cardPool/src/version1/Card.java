@@ -131,6 +131,16 @@ public class Card implements Comparator<Card>
 		this.quantity = quantity;
 		this.rarity = rarity;
 	}
+	
+	public void decrement(int no)
+	{
+		this.quantity = this.quantity - no;
+	}
+	
+	public void decrement()
+	{
+		this.quantity--;
+	}
 
 	// Getters and Setters //
 	public String getName() { return name;	}

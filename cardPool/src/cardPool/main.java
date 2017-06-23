@@ -50,13 +50,18 @@ public class main
 
 		readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards);		
 	
-		printRarities(allCards);
+		//printRarities(allCards);
 		ArrayList<Card> allCardsNoDupes = listMaker(allCards);
-		printRarities(allCardsNoDupes);
-		imageCheck(allCardsNoDupes);
+		//printRarities(allCardsNoDupes);
+		//imageCheck(allCardsNoDupes);
+		//monsterPrintAttribute(allCardsNoDupes, "Water");
+		//monsterPrintType(allCardsNoDupes, "Dinosaur");
+		printDiscoverEffectAttribute(allCardsNoDupes, "Water");
+		//cardDistrib(allCardsNoDupes);
+		//cardDistrib(allCards);
 		//crossLimitPrint(allCardsNoDupes);
 		//textCheck(allCardsNoDupes);
-		parseHubFormat(allCardsNoDupes);
+		//parseHubFormat(allCardsNoDupes);
 		//printDiscoverSpell(allCardsNoDupes);
 		
 		
@@ -1695,6 +1700,43 @@ public class main
 		
 	}
 	
+	public static ArrayList<Card> discoverEffectAttribute(ArrayList<Card> pool, String attribute)
+	{
+		int spells = 0;
+		boolean checker = false;
+		cardCounter(pool);
+		pool.sort(pool.get(0));
+		ArrayList<Card> spellList = new ArrayList<Card>();
+		ArrayList<Card> threeSpells = new ArrayList<Card>();
+		for (Card card : pool)
+		{
+			if (card.getAttribute().equals(attribute) && card.getCardType().equals("Effect Monster"))
+			{
+				spells++;
+				spellList.add(card);
+			}
+		}
+		
+		while (threeSpells.size() < 3)
+		{
+			Random rand = new Random();
+			int seed = rand.nextInt(spells);
+			Card discovered = new Card(spellList.get(seed));
+			for (Card card : threeSpells)
+			{
+				if (discovered.getName().equals(card.getName()))
+				{
+					checker = true;
+				}
+			}
+			
+			if (checker == false) { threeSpells.add(discovered); }
+		}
+		
+		return threeSpells;
+		
+	}
+	
 	public static void printRarities(ArrayList<Card> pool)
 	{
 		System.out.println("\n\nRARITY PRINT\n--------------------");
@@ -1762,6 +1804,98 @@ public class main
 		System.out.println("\nCards w/o text: " + textlessCounter);
 	}
 	
+	public static void monsterPrintAttribute(ArrayList<Card> pool, String attribute)
+	{
+		System.out.println("\n\n" + attribute + " MONSTERS\n--------------------");
+		Card dummy = new Card("dummy");
+		int textlessCounter = 0;
+		for (Card card : pool)
+		{
+			if (card.getAttribute().equals(attribute))
+			{
+				if (card.getName().equals(dummy.getName())) {}
+				else { textlessCounter++; dummy = card; System.out.println(card.getName()); }
+			}
+		}
+		
+		System.out.println("\n" + attribute + " Monsters: " + textlessCounter);
+	}
+	
+	public static void monsterPrintType(ArrayList<Card> pool, String attribute)
+	{
+		System.out.println("\n\n" + attribute + " MONSTERS\n--------------------");
+		Card dummy = new Card("dummy");
+		int textlessCounter = 0;
+		for (Card card : pool)
+		{
+			if (card.getType().equals(attribute))
+			{
+				if (card.getName().equals(dummy.getName())) {}
+				else { textlessCounter++; dummy = card; System.out.println(card.getName()); }
+			}
+		}
+		
+		System.out.println("\n" + attribute + " Monsters: " + textlessCounter);
+	}
+	
+	public static void cardDistrib(ArrayList<Card> pool)
+	{
+		System.out.println("\n\nCARD DISTRIBUTION\n--------------------");
+		Card dummy = new Card("dummy");
+		int normal = 0;
+		int effect = 0;
+		int fusion = 0;
+		int spells = 0;
+		int traps = 0;
+		int ritual = 0;
+		int other = 0;
+		for (Card card : pool)
+		{
+			if (card.getCardType().equals("Effect Monster"))
+			{
+				effect++;
+			}
+			
+			else if (card.getCardType().equals("Normal Monster"))
+			{
+				normal++;
+			}
+			
+			else if (card.getCardType().equals("Fusion Monster"))
+			{
+				fusion++;
+			}
+			
+			else if (card.getCardType().equals("Ritual Monster"))
+			{
+				ritual++;
+			}
+			
+			else if (card.getCardType().equals("Spell"))
+			{
+				spells++;
+			}
+			
+			else if (card.getCardType().equals("Trap"))
+			{
+				traps++;
+			}
+			
+			else
+			{
+				other++;
+			}
+		}
+		
+		System.out.println("Normal: " + normal);
+		System.out.println("Effect: " + effect);
+		System.out.println("Fusion: " + fusion);
+		System.out.println("Ritual: " + ritual);
+		System.out.println("Spells: " + spells);
+		System.out.println("Traps: " + traps);
+		System.out.println("Other: " + other);
+	}
+	
 	public static void parseHubFormat(ArrayList<Card> pool)
 	{
 		System.out.println("\n\nPARSEHUB FORMAT\n--------------------");
@@ -1783,6 +1917,16 @@ public class main
 	{
 		System.out.println("\n\nDISCOVER RANDOM SPELL\n--------------------");
 		ArrayList<Card> discovered = discoverSpell(pool);
+		for (int i = 0; i < 3; i++)
+		{
+			System.out.println("Spell #" + (i + 1) + ": " + discovered.get(i).getName());
+		}
+	}
+	
+	public static void printDiscoverEffectAttribute(ArrayList<Card> pool, String attribute)
+	{
+		System.out.println("\n\nDISCOVER RANDOM " + attribute + " MONSTER\n--------------------");
+		ArrayList<Card> discovered = discoverEffectAttribute(pool, attribute);
 		for (int i = 0; i < 3; i++)
 		{
 			System.out.println("Spell #" + (i + 1) + ": " + discovered.get(i).getName());
