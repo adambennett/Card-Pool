@@ -46,6 +46,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -72,6 +73,7 @@ import org.apache.commons.lang3.text.WordUtils;
 public class CardPool_GUI_1_Stable {
 
 	private JFrame DraftInit;
+	private static JFrame DraftOutput;
 	private static JFrame singleCardView = null;
 	private int rerollsSoFar = 0;
 	private int pickNumber = 1;
@@ -122,7 +124,8 @@ public class CardPool_GUI_1_Stable {
 	private ImageLabel score1I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); 
 	private ImageLabel score2I = new ImageLabel(new ImageIcon("src/images/Total Deck Score.png")); 
 	private ImageIcon refreshI = new ImageIcon("src/images/View - Reset.png"); 
-	
+	private String pathString = "C:\\";	
+	private Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 
 	// GUI Init Stuff
 	public static void main(String[] args) 
@@ -133,8 +136,8 @@ public class CardPool_GUI_1_Stable {
 				try {
 					CardPool_GUI_1_Stable window = new CardPool_GUI_1_Stable();
 					window.DraftInit.setVisible(true);
-					
 					if (window.DraftInit.isVisible() == false) { System.exit(0); }
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -192,23 +195,20 @@ public class CardPool_GUI_1_Stable {
 		// totalCards initialized to the size of the database after read, totalUnique has the size equal to number of unique cards in the database
 		// banModel is the model that will contain all cards that are banned at any point, banned is the actual list of cards inside the model
 
-
 		// GUI Setup
 		DraftInit = new JFrame();	
 		DraftInit.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+		//Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		DraftInit.setBounds(600, 600, 275, 200);
+		//DraftInit.setBounds(0,0,screenSize.width, screenSize.height);
 		DraftInit.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		DraftInit.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		DraftInit.setTitle("Draft Options");
-		
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		DraftInit.setLocation(dim.width/2-DraftInit.getSize().width/2, dim.height/2-DraftInit.getSize().height/2);
-		
-	
-		
 
 		// Draft Start window components
 		JLabel lblOfPlayers = DefaultComponentFactory.getInstance().createLabel("Players"); 
+		lblOfPlayers.setSize(lblOfPlayers.getPreferredSize());
 		JLabel lblOfCards = DefaultComponentFactory.getInstance().createLabel("Cards to Draft");
 		JLabel lblOfRerolls = DefaultComponentFactory.getInstance().createLabel("Rerolls"); 
 		JLabel lblOfPool = new JLabel("Pool Fill");	
@@ -333,6 +333,8 @@ public class CardPool_GUI_1_Stable {
 		JMenuItem advRules = new JMenuItem("Advanced Rules");
 		JMenuItem draftRules = new JMenuItem("Draft Information");
 		JMenuItem report = new JMenuItem("Report");
+		JMenu output = new JMenu("Deck Ouput");
+		JMenuItem change = new JMenuItem("Change output directory");
 
 		DraftInit.getContentPane().add(lblOfPlayers); 
 		DraftInit.getContentPane().add(numberOfPlayers);
@@ -349,7 +351,7 @@ public class CardPool_GUI_1_Stable {
 		lblCardCount.setHorizontalAlignment(SwingConstants.CENTER);
 		DraftInit.getContentPane().add(lblUniqueCards);
 		DraftInit.setJMenuBar(menuBar);
-		menuBar.add(mnViewDatabase); menuBar.add(mnBan); menuBar.add(dictionary);
+		menuBar.add(mnViewDatabase); menuBar.add(mnBan); menuBar.add(dictionary); menuBar.add(output);
 		viewDatabaseListenerInit(mnViewDatabase, mntmViewAllCards, mntmNewMenuItem, allCards, mntmUltraRares, mntmSuperRares, mntmRares, mntmCommon);
 		mnBan.add(blacklist); mnBan.add(mnBanAll);
 		mnBan.add(mnBanGrouping); mnBan.add(mnBanAttribute);
@@ -357,6 +359,8 @@ public class CardPool_GUI_1_Stable {
 		
 		dictionary.add(rules); dictionary.add(advRules); dictionary.add(terms);
 		dictionary.add(rulings); dictionary.add(draftRules); dictionary.add(report);
+		
+		output.add(change);
 
 		mnBanAll.add(ultimateBanner); mnBanAll.add(ultraBanner); 
 		mnBanAll.add(superBanner); mnBanAll.add(rareBanner);
@@ -420,9 +424,51 @@ public class CardPool_GUI_1_Stable {
 				highScore, veryHighScore, OP);
 		
 		dictionaryListeners(rules);
+		
+		change.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				DraftOutput.setVisible(true);
+				DraftInit.setVisible(false);
+			}
+	
+		});
 
 		// End primary window components
 
+		//Output GUI Setup
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new java.io.File("C:\\"));
+		chooser.setDialogTitle("select folder");
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		chooser.setAcceptAllFileFilterUsed(false);
+		
+		DraftOutput = new JFrame();	
+		DraftOutput.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 11));
+		DraftOutput.setBounds(600, 600, 275, 200);
+		DraftOutput.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		DraftOutput.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		DraftOutput.setTitle("Deck Output Folder");
+		DraftOutput.getContentPane().add(chooser);
+		DraftOutput.setResizable(false);
+		DraftOutput.pack();
+		DraftOutput.setLocation(dim.width/2-DraftOutput.getSize().width/2, dim.height/2-DraftOutput.getSize().height/2);
+		
+		chooser.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				pathString = chooser.getSelectedFile().toString() + "\\";
+				DraftOutput.setVisible(false);
+				DraftInit.setVisible(true);
+				System.out.println(pathString);
+			}
+		});
+		
 
 		// Init main draft window
 		draftStart.addActionListener(new ActionListener() 
@@ -1273,7 +1319,7 @@ public class CardPool_GUI_1_Stable {
 									
 									String deckDirectory = dateFinal.toString().substring(0, 10) + " [" + seederValue + "]";
 									
-								    Path path = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory);
+								    Path path = Paths.get(pathString + deckDirectory);
 							        //if directory exists?
 							        if (!Files.exists(path)) 
 							        {
@@ -1284,7 +1330,7 @@ public class CardPool_GUI_1_Stable {
 							                e.printStackTrace();
 							            }
 							        }
-							        Path path2 = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery");
+							        Path path2 = Paths.get(pathString + deckDirectory + "\\Discovery");
 							        //if directory exists?
 							        if (!Files.exists(path2)) 
 							        {
@@ -1302,7 +1348,7 @@ public class CardPool_GUI_1_Stable {
 										for (ArrayList<Card> deck : draftDecks)
 										{
 											int cardCount = cardCount(deck);
-											PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Deck " + counter + ".txt", "UTF-8");
+											PrintWriter writer = new PrintWriter(pathString + deckDirectory + "\\Deck " + counter + ".txt", "UTF-8");
 											writer.println("Number of Cards: " + cardCount);
 											writer.println("--------------------------");
 											for (Card card : deck)
@@ -1314,7 +1360,7 @@ public class CardPool_GUI_1_Stable {
 											counter++;
 										}
 										
-										PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Pool.txt", "UTF-8");
+										PrintWriter writer = new PrintWriter(pathString + deckDirectory + "\\Pool.txt", "UTF-8");
 										cardCounter(graveyard); graveyard.sort(graveyard.get(0));
 										int cardCount = cardCount(graveyard);
 										writer.println("Number of Cards: " + cardCount);
@@ -1335,7 +1381,7 @@ public class CardPool_GUI_1_Stable {
 										int counter = 1;
 										for (ArrayList<Card> deck : draftDecks)
 										{
-											PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery" + "\\Deck " + counter + ".txt", "UTF-8");
+											PrintWriter writer = new PrintWriter(pathString + deckDirectory + "\\Discovery" + "\\Deck " + counter + ".txt", "UTF-8");
 											for (Card card : deck)
 											{
 												if (card.getQuantity() == 0) {}
@@ -1348,7 +1394,7 @@ public class CardPool_GUI_1_Stable {
 											counter++;
 										}
 										
-										PrintWriter writer = new PrintWriter("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery" + "\\Pool.txt", "UTF-8");
+										PrintWriter writer = new PrintWriter(pathString + deckDirectory + "\\Discovery" + "\\Pool.txt", "UTF-8");
 										cardCounter(graveyard); graveyard.sort(graveyard.get(0));
 										for (Card card : graveyard)
 										{
@@ -1984,7 +2030,7 @@ public class CardPool_GUI_1_Stable {
 									
 									String deckDirectory = dateFinal.toString().substring(0, 10) + " [" + seederValue + "]";
 									
-								    Path path = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory);
+								    Path path = Paths.get(pathString + deckDirectory);
 							        //if directory exists?
 							        if (!Files.exists(path)) 
 							        {
@@ -1995,7 +2041,7 @@ public class CardPool_GUI_1_Stable {
 							                e.printStackTrace();
 							            }
 							        }
-							        Path path2 = Paths.get("C:\\Users\\Adam\\Documents\\YGO Draft Decks\\" + deckDirectory + "\\Discovery");
+							        Path path2 = Paths.get(pathString + deckDirectory + "\\Discovery");
 							        //if directory exists?
 							        if (!Files.exists(path2)) 
 							        {
@@ -14918,6 +14964,8 @@ public class CardPool_GUI_1_Stable {
 		String newTemp = WordUtils.wrap(temp, 75, "\n", false);
 		return newTemp;
 	}
+	
+	
 	
 		
 
