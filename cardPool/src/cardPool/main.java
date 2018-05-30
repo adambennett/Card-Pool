@@ -53,10 +53,11 @@ public class main
 		//printRarities(allCards);
 		ArrayList<Card> allCardsNoDupes = listMaker(allCards);
 		//printRarities(allCardsNoDupes);
+		printRarities(allCards);
 		//imageCheck(allCardsNoDupes);
 		//monsterPrintAttribute(allCardsNoDupes, "Water");
 		//monsterPrintType(allCardsNoDupes, "Dinosaur");
-		printDiscoverEffectAttribute(allCardsNoDupes, "Water");
+		//printDiscoverEffectAttribute(allCardsNoDupes, "Water");
 		//cardDistrib(allCardsNoDupes);
 		//cardDistrib(allCards);
 		//crossLimitPrint(allCardsNoDupes);

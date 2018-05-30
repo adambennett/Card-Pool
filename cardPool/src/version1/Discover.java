@@ -308,6 +308,7 @@ public class Discover
 			public void actionPerformed(ActionEvent e) 
 			{
 				directory = chooser.getSelectedFile().toString();
+				System.out.println(directory);
 				File dir = new File(directory);
 				File[] directoryListing = dir.listFiles();
 				if (directoryListing != null) {
