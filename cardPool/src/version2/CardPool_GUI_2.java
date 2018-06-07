@@ -1,6 +1,5 @@
 package version2;
 
-import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -21,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -64,14 +63,11 @@ import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-
-
-
 import javax.swing.ToolTipManager;
 
-import com.jgoodies.forms.factories.DefaultComponentFactory;
-
 import org.apache.commons.lang3.text.WordUtils;
+
+import com.jgoodies.forms.factories.DefaultComponentFactory;
 
 public class CardPool_GUI_2 {
 
@@ -259,8 +255,19 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		boolean field = false;	boolean equip = false;	boolean ritual = false;	boolean normal = false;
 		// END Variable Init
 
-		// Database Setup
-		readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards, databaseName);		
+		// Database Setup - Sequential
+		//readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards, databaseName);		
+		
+		// Database Setup - Parallel
+		LinkedBlockingQueue<Card> poolQ = new LinkedBlockingQueue<Card>();
+		InputStream db = getClass().getResourceAsStream(databaseName);
+		Split s = new Split(db);
+		int chunk = s.getStart() / 8;
+		try { s.processAllDraft(8, chunk, poolQ, 0, databaseName);} catch (Exception e2) { e2.printStackTrace(); }
+		voidCopyLBQtoAL(allCards, poolQ);
+		allCards.sort(allCards.get(0));
+		
+		// Database Setup - Universal
 		ArrayList<Card> backupAllCards = copyPool(allCards);
 		ArrayList<Card> allCardsNopeDupe = listMaker(allCards);
 		ArrayList<Card> blackListed = new ArrayList<Card>();
@@ -15047,7 +15054,15 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		return newTemp;
 	}
 	
-	
+	public void voidCopyLBQtoAL(ArrayList<Card> copyOver, LinkedBlockingQueue<Card> copyFrom)
+    {
+    	copyOver.clear();
+		for (Card card : copyFrom)
+		{
+			Card tempCard = new Card(card);
+			copyOver.add(tempCard);
+		}
+    }
 	
 		
 
