@@ -14,3 +14,14 @@ is determined based on chance. Players choose one of the three card which is the
 removed from their pool of available cards. Players can 'reroll' which removes all three offered cards from their pool and generates 
 three new ones.
 
+
+Download:
+
+http://www.mediafire.com/file/7ip8sdcdh8j440w/Card%20Pool.exe (exe)
+
+https://drive.google.com/open?id=1polY5XEsyclMBDyjxRnJJE1mPQKFY75w (exe)
+
+http://www.mediafire.com/file/8ddd7g3ks8yw0xb/Card%20Pool.zip (zip)
+
+https://drive.google.com/open?id=1p_QgymGY9Nxq96eNePJAlDl5CWUXjq_m (zip)
+
