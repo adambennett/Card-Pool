@@ -17,7 +17,7 @@ three new ones.
 
 Download:
 
-// (exe)
+http://www.mediafire.com/file/9b55g4b4npk28du/Card%20Pool.exe (exe)
 
 https://drive.google.com/open?id=1NKz_NtwnL6yTeInxdsxIIebhJoAq0rCJ (exe)
 
