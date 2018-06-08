@@ -21,7 +21,7 @@ http://www.mediafire.com/file/9b55g4b4npk28du/Card%20Pool.exe (exe)
 
 https://drive.google.com/open?id=1NKz_NtwnL6yTeInxdsxIIebhJoAq0rCJ (exe)
 
-// (zip)
+http://www.mediafire.com/file/9m14ihthhl1tiau/Card%20Pool.zip (zip)
 
 https://drive.google.com/open?id=1PDIjyAuT_K_ohscFy99ixIwODqNkxUB1 (zip)
 
