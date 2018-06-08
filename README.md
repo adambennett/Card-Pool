@@ -17,11 +17,11 @@ three new ones.
 
 Download:
 
-http://www.mediafire.com/file/7ip8sdcdh8j440w/Card%20Pool.exe (exe)
+// (exe)
 
-https://drive.google.com/open?id=1polY5XEsyclMBDyjxRnJJE1mPQKFY75w (exe)
+https://drive.google.com/open?id=1NKz_NtwnL6yTeInxdsxIIebhJoAq0rCJ (exe)
 
-http://www.mediafire.com/file/8ddd7g3ks8yw0xb/Card%20Pool.zip (zip)
+// (zip)
 
-https://drive.google.com/open?id=1p_QgymGY9Nxq96eNePJAlDl5CWUXjq_m (zip)
+https://drive.google.com/open?id=1PDIjyAuT_K_ohscFy99ixIwODqNkxUB1 (zip)
 
