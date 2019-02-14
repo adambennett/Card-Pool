@@ -19,7 +19,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,7 +33,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -92,127 +90,129 @@ public class CardPool_GUI_2 {
 	
 	//Create and populate menu images
 	URL aquaURL = getClass().getResource("/images/Type - Aqua.png");
-	private Image aquaPic = Toolkit.getDefaultToolkit().getImage(aquaURL);
-	private ImageIcon aquaI = new ImageIcon(aquaPic);
 	URL beastURL = getClass().getResource("/images/Type - Beast.png");
-	private Image beastPic = Toolkit.getDefaultToolkit().getImage(beastURL);
-	private ImageIcon beastI = new ImageIcon(beastPic);
 	URL beastWarriorURL = getClass().getResource("/images/Type - Beast-Warrior.png");
-	private Image beastWarriorPic = Toolkit.getDefaultToolkit().getImage(beastWarriorURL);
-	private ImageIcon beastWarriorI = new ImageIcon(beastWarriorPic);
 	URL DinosaurURL = getClass().getResource("/images/Type - Dinosaur.png");
-	private Image DinosaurPic = Toolkit.getDefaultToolkit().getImage(DinosaurURL);
-	private ImageIcon dinosaurI = new ImageIcon(DinosaurPic);
 	URL divineURL = getClass().getResource("/images/Type - Divine-Beast.png");
-	private Image divinePic = Toolkit.getDefaultToolkit().getImage(divineURL);
-	private ImageIcon divineI = new ImageIcon(divinePic);
 	URL dragonURL = getClass().getResource("/images/Type - Dragon.png");
-	private Image dragonPic = Toolkit.getDefaultToolkit().getImage(dragonURL);
-	private ImageIcon dragonI = new ImageIcon(dragonPic);
 	URL fairyURL = getClass().getResource("/images/Type - Fairy.png");
-	private Image fairyPic = Toolkit.getDefaultToolkit().getImage(fairyURL);
-	private ImageIcon fairyI = new ImageIcon(fairyPic);
 	URL fiendURL = getClass().getResource("/images/Type - Fiend.png");
-	private Image fiendPic = Toolkit.getDefaultToolkit().getImage(fiendURL);
-	private ImageIcon fiendI = new ImageIcon(fiendPic);
 	URL fishURL = getClass().getResource("/images/Type - Fish.png");
-	private Image fishPic = Toolkit.getDefaultToolkit().getImage(fishURL);
-	private ImageIcon fishI = new ImageIcon(fishPic);
 	URL insectURL = getClass().getResource("/images/Type - Insect.png");
-	private Image insectPic = Toolkit.getDefaultToolkit().getImage(insectURL);
-	private ImageIcon insectI = new ImageIcon(insectPic);
 	URL machineURL = getClass().getResource("/images/Type - Machine.png");
-	private Image machinePic = Toolkit.getDefaultToolkit().getImage(machineURL);
-	private ImageIcon machineI = new ImageIcon(machinePic);
 	URL plantURL = getClass().getResource("/images/Type - Plant.png");
-	private Image plantPic = Toolkit.getDefaultToolkit().getImage(plantURL);
-	private ImageIcon plantI = new ImageIcon(plantPic);
-URL psychicURL = getClass().getResource("/images/Type - Psychic.png");
-	private Image psychicPic = Toolkit.getDefaultToolkit().getImage(psychicURL);
-	private ImageIcon psychicI = new ImageIcon(psychicPic);
+	URL psychicURL = getClass().getResource("/images/Type - Psychic.png");
 	URL pyroURL = getClass().getResource("/images/Type - Pyro.png");
-	private Image pyroPic = Toolkit.getDefaultToolkit().getImage(pyroURL);
-	private ImageIcon pyroI = new ImageIcon(pyroPic);
 	URL reptileURL = getClass().getResource("/images/Type - Reptile.png");
-	private Image reptilePic = Toolkit.getDefaultToolkit().getImage(reptileURL);
-	private ImageIcon reptileI = new ImageIcon(reptilePic);
 	URL rockURL = getClass().getResource("/images/Type - Rock.png");
-	private Image rockPic = Toolkit.getDefaultToolkit().getImage(rockURL);
-	private ImageIcon rockI = new ImageIcon(rockPic);
 	URL seaSerpentURL = getClass().getResource("/images/Type - Sea Serpent.png");
-	private Image seaSerpentPic = Toolkit.getDefaultToolkit().getImage(seaSerpentURL);
-	private ImageIcon seaSerpentI = new ImageIcon(seaSerpentPic);
 	URL spellcasterURL = getClass().getResource("/images/Type - Spellcaster.png");
-	private Image spellcasterPic = Toolkit.getDefaultToolkit().getImage(spellcasterURL);
-	private ImageIcon spellcasterI = new ImageIcon(spellcasterPic);
-URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
-	private Image thunderPic = Toolkit.getDefaultToolkit().getImage(thunderURL);
-	private ImageIcon thunderI = new ImageIcon(thunderPic);
+	URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 	URL warriorURL = getClass().getResource("/images/Type - Warrior.png");
-	private Image warriorPic = Toolkit.getDefaultToolkit().getImage(warriorURL);
-	private ImageIcon warriorI = new ImageIcon(warriorPic);
 	URL wingedBeastURL = getClass().getResource("/images/Type - Winged Beast.png");
-	private Image wingedBeastPic = Toolkit.getDefaultToolkit().getImage(wingedBeastURL);
-	private ImageIcon wingedBeastI = new ImageIcon(wingedBeastPic);
 	URL zombieURL = getClass().getResource("/images/Type - Zombie.png");
-	private Image zombiePic = Toolkit.getDefaultToolkit().getImage(zombieURL);
-	private ImageIcon zombieI = new ImageIcon(zombiePic);
-
 	URL darkURL = getClass().getResource("/images/Attribute - Dark.png");
-	private Image darkPic = Toolkit.getDefaultToolkit().getImage(darkURL);
-	private ImageIcon darkI = new ImageIcon(darkPic);
 	URL fireURL = getClass().getResource("/images/Attribute - Fire.png");
-	private Image firePic = Toolkit.getDefaultToolkit().getImage(fireURL);
-	private ImageIcon fireI = new ImageIcon(firePic);
 	URL earthURL = getClass().getResource("/images/Attribute - Earth.png");
-	private Image earthPic = Toolkit.getDefaultToolkit().getImage(earthURL);
-	private ImageIcon earthI = new ImageIcon(earthPic);
 	URL lightURL = getClass().getResource("/images/Attribute - Light.png");
-	private Image lightPic = Toolkit.getDefaultToolkit().getImage(lightURL);
-	private ImageIcon lightI = new ImageIcon(lightPic);
 	URL waterURL = getClass().getResource("/images/Attribute - Water.png");
-	private Image waterPic = Toolkit.getDefaultToolkit().getImage(waterURL);
-	private ImageIcon waterI = new ImageIcon(waterPic);
 	URL windURL = getClass().getResource("/images/Attribute - Wind.png");
-	private Image windPic = Toolkit.getDefaultToolkit().getImage(windURL);
-	private ImageIcon windI = new ImageIcon(windPic);
 	URL monsterURL = getClass().getResource("/images/Level Under 4 Icons.png");
-	private Image monsterPic = Toolkit.getDefaultToolkit().getImage(monsterURL);
-	private ImageIcon monsterI = new ImageIcon(monsterPic);
 	URL oneSacURL = getClass().getResource("/images/Level 56 Icons.png");
-	private Image oneSacPic = Toolkit.getDefaultToolkit().getImage(oneSacURL);
-	private ImageIcon oneSacI = new ImageIcon(oneSacPic);
 	URL twoSacURL = getClass().getResource("/images/Level 7 Icons.png");
-	private Image twoSacPic = Toolkit.getDefaultToolkit().getImage(twoSacURL);
-	private ImageIcon twoSacI = new ImageIcon(twoSacPic);
 	URL spellURL = getClass().getResource("/images/Attribute - Spell.png");
-	private Image spellPic = Toolkit.getDefaultToolkit().getImage(spellURL);
-	private ImageIcon spellI = new ImageIcon(spellPic);
 	URL trapURL = getClass().getResource("/images/Attribute - Trap.png");
-	private Image trapPic = Toolkit.getDefaultToolkit().getImage(trapURL);
-	private ImageIcon trapI = new ImageIcon(trapPic);
 	URL score1URL = getClass().getResource("/images/Total Deck Score.png");
-	private Image score1Pic = Toolkit.getDefaultToolkit().getImage(score1URL);
-	private ImageLabel score1I = new ImageLabel(new ImageIcon(score1Pic));
 	URL score2URL = getClass().getResource("/images/Total Deck Score.png");
-	private Image score2Pic = Toolkit.getDefaultToolkit().getImage(score2URL);
-	private ImageLabel score2I = new ImageLabel(new ImageIcon(score2Pic));
 	URL refreshURL = getClass().getResource("/images/View - Reset.png");
-	private Image refreshPic = Toolkit.getDefaultToolkit().getImage(refreshURL);
-	private ImageIcon refreshI = new ImageIcon(refreshPic);
 
+	private Image aquaPic = Toolkit.getDefaultToolkit().getImage(aquaURL);
+	private Image beastPic = Toolkit.getDefaultToolkit().getImage(beastURL);
+	private Image beastWarriorPic = Toolkit.getDefaultToolkit().getImage(beastWarriorURL);
+	private Image DinosaurPic = Toolkit.getDefaultToolkit().getImage(DinosaurURL);
+	private Image divinePic = Toolkit.getDefaultToolkit().getImage(divineURL);
+	private Image dragonPic = Toolkit.getDefaultToolkit().getImage(dragonURL);
+	private Image fairyPic = Toolkit.getDefaultToolkit().getImage(fairyURL);
+	private Image fiendPic = Toolkit.getDefaultToolkit().getImage(fiendURL);
+	private Image fishPic = Toolkit.getDefaultToolkit().getImage(fishURL);
+	private Image insectPic = Toolkit.getDefaultToolkit().getImage(insectURL);
+	private Image machinePic = Toolkit.getDefaultToolkit().getImage(machineURL);
+	private Image plantPic = Toolkit.getDefaultToolkit().getImage(plantURL);
+	private Image psychicPic = Toolkit.getDefaultToolkit().getImage(psychicURL);
+	private Image pyroPic = Toolkit.getDefaultToolkit().getImage(pyroURL);
+	private Image reptilePic = Toolkit.getDefaultToolkit().getImage(reptileURL);
+	private Image rockPic = Toolkit.getDefaultToolkit().getImage(rockURL);
+	private Image seaSerpentPic = Toolkit.getDefaultToolkit().getImage(seaSerpentURL);
+	private Image spellcasterPic = Toolkit.getDefaultToolkit().getImage(spellcasterURL);
+	private Image thunderPic = Toolkit.getDefaultToolkit().getImage(thunderURL);
+	private Image warriorPic = Toolkit.getDefaultToolkit().getImage(warriorURL);
+	private Image wingedBeastPic = Toolkit.getDefaultToolkit().getImage(wingedBeastURL);
+	private Image zombiePic = Toolkit.getDefaultToolkit().getImage(zombieURL);
+	private Image darkPic = Toolkit.getDefaultToolkit().getImage(darkURL);
+	private Image firePic = Toolkit.getDefaultToolkit().getImage(fireURL);
+	private Image earthPic = Toolkit.getDefaultToolkit().getImage(earthURL);
+	private Image lightPic = Toolkit.getDefaultToolkit().getImage(lightURL);
+	private Image waterPic = Toolkit.getDefaultToolkit().getImage(waterURL);
+	private Image windPic = Toolkit.getDefaultToolkit().getImage(windURL);
+	private Image monsterPic = Toolkit.getDefaultToolkit().getImage(monsterURL);
+	private Image oneSacPic = Toolkit.getDefaultToolkit().getImage(oneSacURL);
+	private Image twoSacPic = Toolkit.getDefaultToolkit().getImage(twoSacURL);
+	private Image spellPic = Toolkit.getDefaultToolkit().getImage(spellURL);
+	private Image trapPic = Toolkit.getDefaultToolkit().getImage(trapURL);
+	private Image score1Pic = Toolkit.getDefaultToolkit().getImage(score1URL);
+	private Image score2Pic = Toolkit.getDefaultToolkit().getImage(score2URL);
+	private Image refreshPic = Toolkit.getDefaultToolkit().getImage(refreshURL);
+	
+	private ImageIcon aquaI = new ImageIcon(aquaPic);
+	private ImageIcon beastI = new ImageIcon(beastPic);
+	private ImageIcon beastWarriorI = new ImageIcon(beastWarriorPic);
+	private ImageIcon dinosaurI = new ImageIcon(DinosaurPic);
+	private ImageIcon divineI = new ImageIcon(divinePic);
+	private ImageIcon dragonI = new ImageIcon(dragonPic);
+	private ImageIcon fairyI = new ImageIcon(fairyPic);
+	private ImageIcon fiendI = new ImageIcon(fiendPic);
+	private ImageIcon fishI = new ImageIcon(fishPic);
+	private ImageIcon insectI = new ImageIcon(insectPic);
+	private ImageIcon machineI = new ImageIcon(machinePic);
+	private ImageIcon plantI = new ImageIcon(plantPic);
+	private ImageIcon psychicI = new ImageIcon(psychicPic);
+	private ImageIcon pyroI = new ImageIcon(pyroPic);
+	private ImageIcon reptileI = new ImageIcon(reptilePic);
+	private ImageIcon rockI = new ImageIcon(rockPic);
+	private ImageIcon seaSerpentI = new ImageIcon(seaSerpentPic);
+	private ImageIcon spellcasterI = new ImageIcon(spellcasterPic);
+	private ImageIcon thunderI = new ImageIcon(thunderPic);
+	private ImageIcon warriorI = new ImageIcon(warriorPic);
+	private ImageIcon wingedBeastI = new ImageIcon(wingedBeastPic);
+	private ImageIcon zombieI = new ImageIcon(zombiePic);
+	private ImageIcon darkI = new ImageIcon(darkPic);
+	private ImageIcon fireI = new ImageIcon(firePic);
+	private ImageIcon earthI = new ImageIcon(earthPic);
+	private ImageIcon lightI = new ImageIcon(lightPic);
+	private ImageIcon waterI = new ImageIcon(waterPic);
+	private ImageIcon windI = new ImageIcon(windPic);
+	private ImageIcon monsterI = new ImageIcon(monsterPic);
+	private ImageIcon oneSacI = new ImageIcon(oneSacPic);
+	private ImageIcon twoSacI = new ImageIcon(twoSacPic);
+	private ImageIcon spellI = new ImageIcon(spellPic);
+	private ImageIcon trapI = new ImageIcon(trapPic);
+	private ImageLabel score1I = new ImageLabel(new ImageIcon(score1Pic));
+	private ImageLabel score2I = new ImageLabel(new ImageIcon(score2Pic));
+	private ImageIcon refreshI = new ImageIcon(refreshPic);
+	
 	// GUI Init Stuff
 	public static void main(String[] args) 
 	{
 		// Start GUI Stuff
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
+				try 
+				{
 					CardPool_GUI_2 window = new CardPool_GUI_2();
 					window.DraftInit.setVisible(true);
 					if (window.DraftInit.isVisible() == false) { System.exit(0); }
-					
-				} catch (Exception e) {
+				} catch (Exception e)
+				{
 					e.printStackTrace();
 				}
 			}
@@ -221,9 +221,9 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		
 		
 	}
-	public CardPool_GUI_2() {
+	public CardPool_GUI_2() 
+	{
 		initialize();
-		
 	}
 	// End GUI Init Stuff
 
@@ -235,16 +235,23 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 	{
 
 		// Default Dismiss Delay
-		// int dismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
+			// int dismissDelay = ToolTipManager.sharedInstance().getDismissDelay();
 		// Show forever
-	    int noDismissDelay = Integer.MAX_VALUE;
-	    ToolTipManager.sharedInstance().setDismissDelay(noDismissDelay);
+			int dismissDelay = Integer.MAX_VALUE;	// No Dismiss for UI text pop ups
+	    
+		ToolTipManager.sharedInstance().setDismissDelay(dismissDelay);
 
 		// Variable Initialization
 		ArrayList<Card> allCards = new ArrayList<Card>();
 		ArrayList<String> dumbThing = new ArrayList<String>();
 		ArrayList<ArrayList<Card>> draftDecks = new ArrayList<ArrayList<Card>>();
 		ArrayList<ArrayList<Card>> draftPools = new ArrayList<ArrayList<Card>>();
+		
+		// END Variable Init
+
+		// Database Setup - Sequential
+		/*
+		
 		String[] input = null;
 		String line = null;	String name = null;	String attribute = null;	String type = null;
 		String cardType = null;	String text = null;	String crosslimit = null;	String rarity = null;
@@ -253,10 +260,10 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		int limit = 0;	int quantity = 0;	int noOfCards = 1; 
 		boolean monster = false;	boolean contin = false;	boolean quickplay = false;	boolean counter = false;
 		boolean field = false;	boolean equip = false;	boolean ritual = false;	boolean normal = false;
-		// END Variable Init
-
-		// Database Setup - Sequential
-		//readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards, databaseName);		
+		readDatabase(noOfCards, line, input, name, attribute, type, cardType, atk, def, tierScore, lvl, quantity, limit, crosslimit, rarity, text, synergies, monster, contin, quickplay, counter, field, equip, ritual, normal, allCards, databaseName);		
+		
+		*/
+		
 		
 		// Database Setup - Parallel
 		LinkedBlockingQueue<Card> poolQ = new LinkedBlockingQueue<Card>();
@@ -575,14 +582,10 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 				menuBar.remove(mnBan);
 				mnViewDatabase.removeAll();
 				DraftInit.getContentPane().removeAll();	
-
 				DraftInit.getContentPane().setLayout(new GridBagLayout());
 				GridBagConstraints c = new GridBagConstraints();
 				c.fill = GridBagConstraints.HORIZONTAL;
-				
-				
-				
-				
+		
 				JButton viewDeck = new JButton("View Deck");
 				JButton reroll = new JButton("Reroll " + "(" + rerollsLocal + ")"); if (rerollsLocal == 0) { reroll.setEnabled(false); }
 				reroll.setToolTipText("<html>Discard these three cards from your pool.<br>Chances for Next 3 Cards<br>--------------------------------<br>Common: 80.1% (+7.5%)<br>Rare: 14.3% (-4.1%)<br>Super Rare: 3.8% (-1.4%)<br>Ultra Rare: 1.7% (-0.7%)<br>Ultimate Rare: 0.1% (-0.3%)");
@@ -713,6 +716,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 				// Button Listeners for the draft window - cardPick listeners handle most of the draft logic	
 				cardPick1.addActionListener(new ActionListener() 
 				{
+					@SuppressWarnings("unused")
 					public void actionPerformed(ActionEvent arg0) 
 					{
 						if (pickNumber <= cardsToDraftLocal)
@@ -807,8 +811,8 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 										{
 											// EMAIL
 											String to = sendTo.getText(); 
-											String from = "cardpoolsender@gmail.com"; 
-											String host = "localhost";//or IP address  
+											String from = ""; 
+											//String host = "localhost";//or IP address  
 
 											//Get the session object  
 											Properties properties = System.getProperties();  
@@ -1274,7 +1278,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 											sendTo.setEditable(false);
 											// EMAIL
 											String to = sendTo.getText(); 
-											String from = "cardpoolsender@gmail.com"; 
+											String from = ""; 
 											String host = "localhost";//or IP address  
 
 											//Get the session object  
@@ -1433,6 +1437,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 				});
 				cardPick2.addActionListener(new ActionListener() 
 				{
+					@SuppressWarnings("unused")
 					public void actionPerformed(ActionEvent arg0) 
 					{
 						if (pickNumber <= cardsToDraftLocal)
@@ -1527,7 +1532,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 										{
 											// EMAIL
 											String to = sendTo.getText(); 
-											String from = "cardpoolsender@gmail.com"; 
+											String from = ""; 
 											String host = "localhost";//or IP address  
 
 											//Get the session object  
@@ -1992,7 +1997,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 											sendTo.setEditable(false);
 											// EMAIL
 											String to = sendTo.getText(); 
-											String from = "cardpoolsender@gmail.com"; 
+											String from = ""; 
 											String host = "localhost";//or IP address  
 
 											//Get the session object  
@@ -2149,6 +2154,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 				});
 				cardPick3.addActionListener(new ActionListener() 
 				{
+					@SuppressWarnings("unused")
 					public void actionPerformed(ActionEvent arg0) 
 					{
 						if (pickNumber <= cardsToDraftLocal)
@@ -2243,7 +2249,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 										{
 											// EMAIL
 											String to = sendTo.getText(); 
-											String from = "cardpoolsender@gmail.com"; 
+											String from = ""; 
 											String host = "localhost";//or IP address  
 
 											//Get the session object  
@@ -2709,7 +2715,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 											sendTo.setEditable(false);
 											// EMAIL
 											String to = sendTo.getText(); 
-											String from = "cardpoolsender@gmail.com"; 
+											String from = ""; 
 											String host = "localhost";//or IP address  
 
 											//Get the session object  
@@ -4035,6 +4041,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
      * @param model
      * @return the correctly formatted list
      */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	void listEntryMaker(ArrayList<Card> pool, DefaultListModel model)
 	{
 		ArrayList<Card> temp = new ArrayList<Card>();
@@ -4405,6 +4412,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
      * @param noOfPlayers
      * @return void
      */
+	@SuppressWarnings("unused")
 	public static void fillAllPoolsScore(ArrayList<Card> allCards, ArrayList<ArrayList<Card>> decks, int noOfPlayers)
 	{
 		int ultimates = 0; int ultras = 0; int supers = 0; int rares = 0; int commons = 0;
@@ -4929,6 +4937,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 	}
 
 	// All the listeners for the ban: scores sub menu
+	@SuppressWarnings("rawtypes")
 	public static void banScoreListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem lowScore,
 			JMenuItem medScore, JMenuItem highScore, JMenuItem veryHighScore, JMenuItem OP)
 		{
@@ -5130,6 +5139,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		}
 	
 	// All the listeners for the ban: types sub menu
+	@SuppressWarnings("rawtypes")
 	public static void banTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Aqua,
 			JMenuItem Beast, JMenuItem BeastWarrior, JMenuItem Dinosaur, JMenuItem Divine, JMenuItem Dragon, JMenuItem Fairy, JMenuItem Fiend, JMenuItem Fish, JMenuItem Insect,
 			JMenuItem Machine, JMenuItem Plant, JMenuItem Psychic, JMenuItem Pyro, JMenuItem Reptile, JMenuItem Rock, JMenuItem SeaSerpent, JMenuItem Spellcaster,
@@ -6036,6 +6046,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 	}
 
 	// All the listeners for the ban: card type sub menu
+	@SuppressWarnings("rawtypes")
 	public static void banCardTypeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Spell,
 				JMenuItem Trap, JMenuItem Contin, JMenuItem ContinSpell, JMenuItem ContinTrap, JMenuItem Field, JMenuItem Quickplay, JMenuItem Equip, JMenuItem Counter)
 		{
@@ -6392,6 +6403,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		}
 	
 	// All the listeners for the ban: attributes sub menu
+	@SuppressWarnings("rawtypes")
 	public static void banAttributeListenerInit(ArrayList<Card> allCards, SortingListModel banModel, JLabel lblCardCount, JLabel lblUniqueCards, JFrame DraftInit, JMenuItem Water,
 			JMenuItem Fire, JMenuItem Wind, JMenuItem Light, JMenuItem Earth, JMenuItem Dark)
 	{
@@ -8014,7 +8026,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 	{
 		mntmViewAllCards.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -8287,7 +8299,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 		mntmNewMenuItem.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -8558,7 +8570,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 		mntmUltraRares.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -8829,7 +8841,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 		mntmSuperRares.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -9101,7 +9113,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 		mntmRares.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -9372,7 +9384,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 		mntmCommon.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -9653,7 +9665,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 			
 			mntmViewAllCards.addActionListener(new ActionListener() 
 			{
-				@SuppressWarnings("rawtypes")
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				public void actionPerformed(ActionEvent arg0) 
 				{
 
@@ -9925,7 +9937,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 			mntmNewMenuItem.addActionListener(new ActionListener() 
 			{
-				@SuppressWarnings("rawtypes")
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				public void actionPerformed(ActionEvent arg0) 
 				{
 
@@ -10196,7 +10208,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 			mntmUltraRares.addActionListener(new ActionListener() 
 			{
-				@SuppressWarnings("rawtypes")
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				public void actionPerformed(ActionEvent arg0) 
 				{
 
@@ -10467,7 +10479,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 			mntmSuperRares.addActionListener(new ActionListener() 
 			{
-				@SuppressWarnings("rawtypes")
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				public void actionPerformed(ActionEvent arg0) 
 				{
 
@@ -10739,7 +10751,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 			mntmRares.addActionListener(new ActionListener() 
 			{
-				@SuppressWarnings("rawtypes")
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				public void actionPerformed(ActionEvent arg0) 
 				{
 
@@ -11010,7 +11022,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 
 			mntmCommon.addActionListener(new ActionListener() 
 			{
-				@SuppressWarnings("rawtypes")
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				public void actionPerformed(ActionEvent arg0) 
 				{
 
@@ -11286,7 +11298,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		JMenuItem mntmViewAllCards = new JMenuItem("View all cards");
 		mntmViewAllCards.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -11564,7 +11576,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		JMenuItem mntmNewMenuItem = new JMenuItem("Ultimate Rare");
 		mntmNewMenuItem.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -11838,7 +11850,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		JMenuItem mntmUltraRares = new JMenuItem("Ultra Rare");
 		mntmUltraRares.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -12110,7 +12122,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		JMenuItem mntmSuperRares = new JMenuItem("Super Rare");
 		mntmSuperRares.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -12382,7 +12394,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		JMenuItem mntmRares = new JMenuItem("Rare");
 		mntmRares.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -12654,7 +12666,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		JMenuItem mntmCommon = new JMenuItem("Common");
 		mntmCommon.addActionListener(new ActionListener() 
 		{
-			@SuppressWarnings("rawtypes")
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public void actionPerformed(ActionEvent arg0) 
 			{
 
@@ -14428,6 +14440,7 @@ URL thunderURL = getClass().getResource("/images/Type - Thunder.png");
 		});
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void refreshList(ArrayList<Card> cards)
 	{
 		ArrayList<Card> tempDeck = listMaker(cards);
@@ -15099,8 +15112,14 @@ class ListEntry {
       return value;
    }}
 
+@SuppressWarnings("rawtypes")
 class ListEntryCellRenderer extends JLabel implements ListCellRenderer 
 { 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8536171979156717340L;
+	@SuppressWarnings("unused")
 	private JLabel label; 
 	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
