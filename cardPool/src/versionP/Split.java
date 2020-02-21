@@ -12,6 +12,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 public class Split 
 {
@@ -143,7 +144,7 @@ public class Split
         }
 
     
-    public Callable<String> processPartTask(final long start, final long end, LinkedBlockingQueue<Card> pool) {
+    public Callable<String> processPartTask(final long start, final long end, final LinkedBlockingQueue<Card> pool) {
         return new Callable<String>() {
             public String call()
                 throws Exception
@@ -153,7 +154,7 @@ public class Split
         };
     }
     
-    public Callable<String> processPartTaskDraft(final long start, final long end, LinkedBlockingQueue<Card> pool) {
+    public Callable<String> processPartTaskDraft(final long start, final long end, final LinkedBlockingQueue<Card> pool) {
         return new Callable<String>() {
             public String call()
                 throws Exception
@@ -192,24 +193,30 @@ public class Split
             throws Exception
         {
     	//System.out.println(chunkSize);
-            int count = (int)((startingSize + chunkSize - 1) / chunkSize);
-            java.util.List<Callable<String>> tasks = new ArrayList<Callable<String>>(count);
-           
-            for(int i = 0; i < count; i++)
-            { tasks.add(processPartTaskDraft(i * chunkSize, Math.min(startingSize, (i+1) * chunkSize), pool)); }
-          
-            ExecutorService es = Executors.newFixedThreadPool(noOfThreads);
-            es.invokeAll(tasks);
-            es.shutdown();
-            //spreader(pool);
-           
-            if (trip > 0) 
-            {
-            	for (Card card : pool)
-            	{
-            		System.out.println(card.getName() + " x" + card.getQuantity());
-            	}
-            }
+           try {
+			   int count = (int) ((startingSize + chunkSize - 1) / chunkSize);
+			   java.util.List<Callable<String>> tasks = new ArrayList<Callable<String>>(count);
+
+			   for (int i = 0; i < count; i++) {
+				   tasks.add(processPartTaskDraft(i * chunkSize, Math.min(startingSize, (i + 1) * chunkSize), pool));
+			   }
+
+			   ExecutorService es = Executors.newFixedThreadPool(noOfThreads);
+			   es.invokeAll(tasks);
+			   es.shutdown();
+			   //spreader(pool);
+
+			   if (trip > 0) {
+				   for (Card card : pool) {
+					   System.out.println(card.getName() + " x" + card.getQuantity());
+				   }
+			   }
+		   } catch (ArithmeticException e) {
+			   Logger.getGlobal().info("Failed to load database, probably? Divide by 0 exception");
+		   }
+           catch (Exception e) {
+			   Logger.getGlobal().info("Failed to load database, probably? Index out of bounds or something else weird..");
+		   }
 
         }
     
